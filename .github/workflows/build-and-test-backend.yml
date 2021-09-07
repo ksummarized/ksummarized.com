@@ -1,4 +1,4 @@
-name: Build and test
+name: Build and test - backend
 
 on:
   push:
@@ -28,10 +28,13 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Install dependencies
+      working-directory: ./backend
       run: dotnet restore
       
     - name: Build
+      working-directory: ./backend
       run: dotnet build --configuration Release --no-restore
     
     - name: Test
+      working-directory: ./backend
       run: dotnet test --no-restore --verbosity normal
