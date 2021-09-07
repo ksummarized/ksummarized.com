@@ -12,7 +12,7 @@ env:
   DOTNET_VERSION: '5.0.301' # The .NET SDK version to use
 
 jobs:
-  build-and-test:
+  build-and-test-backend:
 
     name: build-and-test-${{matrix.os}}
     runs-on: ${{ matrix.os }}
