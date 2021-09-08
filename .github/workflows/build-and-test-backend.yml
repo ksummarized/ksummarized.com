@@ -1,19 +1,17 @@
 name: Build and test - backend
 
 on:
-  push:
   pull_request:
-    branches: [ master ]
+    branches: [master]
     paths:
-    - '**.cs'
-    - '**.csproj'
+      - "**.cs"
+      - "**.csproj"
 
 env:
-  DOTNET_VERSION: '5.0.301' # The .NET SDK version to use
+  DOTNET_VERSION: "5.0.301" # The .NET SDK version to use
 
 jobs:
   build-and-test-backend:
-
     name: build-and-test-${{matrix.os}}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -21,20 +19,20 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Install dependencies
-      working-directory: ./backend
-      run: dotnet restore
-      
-    - name: Build
-      working-directory: ./backend
-      run: dotnet build --configuration Release --no-restore
-    
-    - name: Test
-      working-directory: ./backend
-      run: dotnet test --no-restore --verbosity normal
+      - name: Install dependencies
+        working-directory: ./backend
+        run: dotnet restore
+
+      - name: Build
+        working-directory: ./backend
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        working-directory: ./backend
+        run: dotnet test --no-restore --verbosity normal
