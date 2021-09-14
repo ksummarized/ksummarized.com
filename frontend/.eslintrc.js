@@ -2,6 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    jest: true,
   },
   extends: [
     "plugin:@typescript-eslint/recommended",
@@ -12,6 +13,7 @@ module.exports = {
   globals: {
     React: true,
     JSX: true,
+    jest: true,
   },
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -21,7 +23,7 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: "module",
   },
-  plugins: ["react", "@typescript-eslint", "prettier"],
+  plugins: ["react", "@typescript-eslint", "jest", "prettier"],
   settings: {
     "import/resolver": {
       typescript: {},
