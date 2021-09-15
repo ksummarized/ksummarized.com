@@ -2,11 +2,14 @@ name: Lint and test - frontend
 
 on:
   push:
+    paths:
+      - "**.ts"
+      - "**.tsx"
   pull_request:
     branches: [master]
     paths:
-      - "**.tsx"
       - "**.ts"
+      - "**.tsx"
 
 env:
   NODE_VERSION: "16"
