@@ -2,6 +2,9 @@ name: Build and test - backend
 
 on:
   push:
+    paths:
+      - "**.cs"
+      - "**.csproj"
   pull_request:
     branches: [master]
     paths:
