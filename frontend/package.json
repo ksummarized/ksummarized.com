@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview --host 0.0.0.0",
+    "serve": "vite preview --host 0.0.0.0 --port 8888",
     "lint": "eslint ./src/** ./tests/**",
     "lint:fix": "eslint ./src/** ./tests/** --fix",
     "format": "prettier --write .",
