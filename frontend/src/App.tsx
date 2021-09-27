@@ -11,7 +11,16 @@ function App(): JSX.Element {
         <img src={logo} className="App-logo" alt="logo" />
         <p>Hello Vite + React!</p>
         <p>
-          <button type="button" onClick={() => setCount((c) => c + 1)}>
+          <button
+            type="button"
+            onClick={async () => {
+              const result = await fetch(
+                "http://localhost:5001/WeatherForecast"
+              );
+              console.log(await result.text());
+              setCount((c) => c + 1);
+            }}
+          >
             count is: {count}
           </button>
         </p>
