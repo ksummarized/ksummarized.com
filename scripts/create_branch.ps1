@@ -1,5 +1,8 @@
+param(
+    [string]$assigne
+)
 $issue_titles = [ordered]@{}
-$issues = (gh issue list -a mtracewicz --json "number,title" | ConvertFrom-Json)
+$issues = (gh issue list -a $assigne --json "number,title" | ConvertFrom-Json)
 if ($issues.Length -eq 0) {
     exit
 }
