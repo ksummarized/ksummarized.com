@@ -1,15 +1,9 @@
 param(
-    [string]$assignee
+    [string]$Assignee = "@me"
 )
 
 $issue_titles = [ordered]@{}
-$issues = ""
-if ($assignee -eq "") {
-    $issues = (gh issue list --json "number,title" | ConvertFrom-Json)
-}
-else {
-    $issues = (gh issue list -a $assignee --json "number,title" | ConvertFrom-Json)
-}
+$issues = (gh issue list -a $Assignee --json "number,title" | ConvertFrom-Json)
 if ($issues.Length -eq 0) {
     exit
 }
