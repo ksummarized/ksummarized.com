@@ -5,4 +5,4 @@
 
 ## Scripts
 
-    Directory `scripts` contains some helpful scripts which automate some parts of working with this directory.
+Directory `scripts` contains some helpful scripts which automate some parts of working with this directory.
