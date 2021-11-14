@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -40,6 +42,17 @@ namespace api
                          builder.WithOrigins("*");
                      });
             });
+
+            var postgresUser = Environment.GetEnvironmentVariable("POSTGRES_USER");
+            var postgresPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+            var postgresDb = Environment.GetEnvironmentVariable("POSTGRES_DB");
+            var postgresHost = Environment.GetEnvironmentVariable("POSTGRES_HOST");
+            var postgresPort = Environment.GetEnvironmentVariable("POSTGRES_PORT");
+            var connectionString = $"host={postgresHost};port={postgresPort};database={postgresDb};username={postgresUser};password={postgresPassword}";
+
+            services.AddDbContext<ApiDbContext>(options => 
+                options.UseNpgsql(connectionString)
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

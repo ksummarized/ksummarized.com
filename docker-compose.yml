@@ -1,13 +1,36 @@
 version: "3.9"
 services:
+  postgres:
+    image: postgres:14.0-alpine
+    ports:
+      - "5432"
+    volumes:
+      - ks_postgresql:/var/lib/postgresql/data
+      # initial data, will be executed only once, during volume creation
+      - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql
+    environment: &postgres-env
+      POSTGRES_USER: "ksummarized"
+      POSTGRES_PASSWORD: "ksummarized"
+      POSTGRES_DB: "ksummarized"
+
   frontend:
     build:
       context: ./frontend
     ports:
       - "8888:8888"
+
   backend:
     build:
       context: ./backend
+    depends_on:
+      - "postgres"
     ports:
       - "5001:80"
       - "5000:443"
+    environment:
+      <<: *postgres-env
+      POSTGRES_HOST: "postgres"
+      POSTGRES_PORT: "5432"
+
+volumes:
+  ks_postgresql:
