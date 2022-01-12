@@ -30,5 +30,20 @@ namespace api.Controllers
                 return BadRequest("User already exists!");
             }
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody]UserVM user)
+        {
+            if (!ModelState.IsValid) { return BadRequest("Please provide login credentials!"); }
+            var result = await _userService.Login(user);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return Unauthorized("Invalid email or password");
+            }
+        }
     }
 }

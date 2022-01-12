@@ -36,6 +36,7 @@ namespace api
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireDigit = true;
+                options.Lockout.MaxFailedAccessAttempts = 3;
             });
             services.AddAuthentication(options =>
             {
@@ -61,6 +62,7 @@ namespace api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
             });
             services.AddScoped<IUserService,UserService>();
+            services.AddScoped<ITokenService,TokenService>();
 
             services.AddCors(options =>
             {
@@ -81,14 +83,15 @@ namespace api
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "api v1"));
             }
 
+            app.UseAuthentication();
+
             app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {
