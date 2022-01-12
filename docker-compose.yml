@@ -12,7 +12,7 @@ services:
       - "5001:80"
       - "5000:443"
     environment:
-      ConnectionStrings__Users: "Host=db;Database=Users;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      ConnectionStrings__Users: "Host=db;Database=users;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
       JWT__secret: "${JWT__secret}"
       JWT__audience: "${JWT__secret}"
       JWT__issuer: "${JWT__issuer}"
@@ -21,9 +21,10 @@ services:
   db:
     image: postgres:14.0-alpine
     ports:
-      - "5432"
+      - "5432:5432"
     volumes:
       - ks_postgresql:/var/lib/postgresql/data
+      - ./scripts/seed.sql:/docker-entrypoint-initdb.d/seed.sql
     environment:
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
