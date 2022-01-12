@@ -5,6 +5,7 @@ namespace api.Data
     public class UserVM
     {
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Required]
