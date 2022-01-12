@@ -12,6 +12,7 @@ services:
       - "5001:80"
       - "5000:443"
     environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
       ConnectionStrings__Users: "Host=db;Database=users;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
       JWT__secret: "${JWT__secret}"
       JWT__audience: "${JWT__secret}"

@@ -28,7 +28,7 @@ namespace api
         {
 
             services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Users")));
-            services.AddIdentity<UserModel,IdentityRole>().AddEntityFrameworkStores<UsersDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<UserModel, IdentityRole>().AddEntityFrameworkStores<UsersDbContext>().AddDefaultTokenProviders();
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 8;
@@ -61,8 +61,8 @@ namespace api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
             });
-            services.AddScoped<IUserService,UserService>();
-            services.AddScoped<ITokenService,TokenService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddCors(options =>
             {

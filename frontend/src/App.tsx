@@ -15,7 +15,7 @@ function App(): JSX.Element {
             type="button"
             onClick={async () => {
               const result = await fetch(
-                "https://localhost:5001/api/greetings/helloworld"
+                "http://localhost:5001/api/greetings/helloworld"
               );
               console.log(await result.text());
               setCount((c) => c + 1);
