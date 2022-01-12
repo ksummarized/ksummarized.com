@@ -14,6 +14,8 @@ namespace api.Controllers
         public AuthenticationController(IUserService userService) => _userService = userService;
 
         [HttpPost("register")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> Register([FromBody]UserVM user)
         {
             if (!ModelState.IsValid)
@@ -32,6 +34,8 @@ namespace api.Controllers
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
         public async Task<IActionResult> Login([FromBody]UserVM user)
         {
             if (!ModelState.IsValid) { return BadRequest("Please provide login credentials!"); }
