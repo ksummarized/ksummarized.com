@@ -1,11 +1,10 @@
-﻿using api.Data;
-using System.Collections.Generic;
+﻿using api.Data.DAO;
+using api.Data.DTO;
 
-namespace api.Services
+namespace api.Services;
+
+public interface ITokenService
 {
-    public interface ITokenService
-    {
-        (AuthResultVM authresult, RefreshToken refreshToken) Generate(UserModel user, RefreshToken refreshToken = null);
-        (bool IsSucess, AuthResultVM AuthResult, string Error) Refresh(TokenRequestDTO tokenRequestDTO, UserModel user, RefreshToken storedToken);
-    }
+    (AuthResultDTO authresult, RefreshToken refreshToken) Generate(UserModel user, RefreshToken refreshToken = null);
+    (bool IsSucess, AuthResultDTO AuthResult, string Error) Refresh(TokenRequestDTO tokenRequestDTO, UserModel user, RefreshToken storedToken);
 }

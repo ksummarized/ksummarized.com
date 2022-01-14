@@ -1,73 +1,72 @@
-﻿using api.Data;
+﻿using api.Data.DTO;
 using api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace api.Controllers
+namespace api.Controllers;
+
+[ApiController]
+[Route("/api/auth")]
+public class AuthenticationController : ControllerBase
 {
-    [ApiController]
-    [Route("/api/auth")]
-    public class AuthenticationController : ControllerBase
+    private readonly IUserService _userService;
+
+    public AuthenticationController(IUserService userService)
     {
-        private readonly IUserService _userService;
+        _userService = userService;
+    }
 
-        public AuthenticationController(IUserService userService)
+    [HttpPost("register")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> Register([FromBody] UserDTO user)
+    {
+        if (!ModelState.IsValid) { return BadRequest("Invalid data provided!"); }
+
+        var (IsSuccess, Error) = await _userService.Register(user);
+        if (IsSuccess)
         {
-            _userService = userService;
+            return Ok("User created");
+        }
+        else
+        {
+            return BadRequest(Error);
+        }
+    }
+
+    [HttpPost("login")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
+    public async Task<IActionResult> Login([FromBody] UserDTO user)
+    {
+        if (!ModelState.IsValid) { return BadRequest("Please provide login credentials!"); }
+
+        var (IsSuccess, AuthResult, Error) = await _userService.Login(user);
+        if (IsSuccess)
+        {
+            return Ok(AuthResult);
+        }
+        else
+        {
+            return Unauthorized(Error);
+        }
+    }
+
+    [HttpPost("refresh-token")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
+    public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDTO tokenRequestDTO)
+    {
+        if (!ModelState.IsValid) { return BadRequest("Invalid token request."); }
+        var (IsSuccess, AuthResult, Error) = await _userService.RefreshLogin(tokenRequestDTO);
+        if (IsSuccess)
+        {
+            return Ok(AuthResult);
+        }
+        else
+        {
+            return Unauthorized(Error);
         }
 
-        [HttpPost("register")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> Register([FromBody] UserVM user)
-        {
-            if (!ModelState.IsValid) { return BadRequest("Invalid data provided!"); }
-
-            var (IsSuccess, Error) = await _userService.Register(user);
-            if (IsSuccess)
-            {
-                return Ok("User created");
-            }
-            else
-            {
-                return BadRequest(Error);
-            }
-        }
-
-        [HttpPost("login")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(401)]
-        public async Task<IActionResult> Login([FromBody] UserVM user)
-        {
-            if (!ModelState.IsValid) { return BadRequest("Please provide login credentials!"); }
-
-            var (IsSuccess, AuthResult, Error) = await _userService.Login(user);
-            if (IsSuccess)
-            {
-                return Ok(AuthResult);
-            }
-            else
-            {
-                return Unauthorized(Error);
-            }
-        }
-
-        [HttpPost("refresh-token")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(401)]
-        public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDTO tokenRequestDTO)
-        {
-            if (!ModelState.IsValid) { return BadRequest("Invalid token request."); }
-            var (IsSuccess, AuthResult, Error) = await _userService.RefreshLogin(tokenRequestDTO);
-            if (IsSuccess)
-            {
-                return Ok(AuthResult);
-            }
-            else
-            {
-                return Unauthorized(Error);
-            }
-
-        }
     }
 }

@@ -1,29 +1,26 @@
-﻿using api.Data;
+﻿using api.Data.DAO;
+using api.Data.DTO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace api.Services
 {
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
-        private readonly UsersDbContext _usersDbContext;
         private readonly TokenValidationParameters _validationParameters;
-        public TokenService(IConfiguration configuration, UsersDbContext usersDbContext, TokenValidationParameters validationParameters)
+        public TokenService(IConfiguration configuration, TokenValidationParameters validationParameters)
         {
             _configuration = configuration;
-            _usersDbContext = usersDbContext;
             _validationParameters = validationParameters;
         }
 
-        public (AuthResultVM authresult, RefreshToken refreshToken) Generate(UserModel user, RefreshToken refreshToken = null)
+        public (AuthResultDTO authresult, RefreshToken refreshToken) Generate(UserModel user, RefreshToken refreshToken = null)
         {
             var claims = new List<Claim>()
             {
@@ -57,10 +54,10 @@ namespace api.Services
                 };
             }
 
-            return (new AuthResultVM() { Token = jwt, RefreshToken = refreshToken.Token, ExpiresAt = token.ValidTo }, refreshToken);
+            return (new AuthResultDTO() { Token = jwt, RefreshToken = refreshToken.Token, ExpiresAt = token.ValidTo }, refreshToken);
         }
 
-        public (bool IsSucess, AuthResultVM AuthResult, string Error) Refresh(TokenRequestDTO tokenRequestDTO, UserModel user, RefreshToken storedToken)
+        public (bool IsSucess, AuthResultDTO AuthResult, string Error) Refresh(TokenRequestDTO tokenRequestDTO, UserModel user, RefreshToken storedToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             try
@@ -71,7 +68,7 @@ namespace api.Services
             {
                 if (storedToken.IsRevoked || storedToken.DateExpire <= DateTime.UtcNow)
                 {
-                    return (false, null,  "Refresh token has been revoked or expired");
+                    return (false, null, "Refresh token has been revoked or expired");
                 }
             }
             return (true, Generate(user, storedToken).authresult, null);

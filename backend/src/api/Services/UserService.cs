@@ -1,10 +1,11 @@
 ﻿using api.Data;
 using Microsoft.AspNetCore.Identity;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
+using api.Data.DTO;
+using api.Data.DAO;
 
 namespace api.Services
 {
@@ -23,7 +24,7 @@ namespace api.Services
             _tokenService = tokenService;
         }
 
-        public async Task<(bool IsSuccess, IEnumerable<string> Error)> Register(UserVM user)
+        public async Task<(bool IsSuccess, IEnumerable<string> Error)> Register(UserDTO user)
         {
             var userExists = await _userManager.FindByEmailAsync(user.Email);
             if (userExists != null)
@@ -47,7 +48,7 @@ namespace api.Services
             }
         }
 
-        public async Task<(bool IsSuccess, AuthResultVM AuthResult, string Error)> Login(UserVM user)
+        public async Task<(bool IsSuccess, AuthResultDTO AuthResult, string Error)> Login(UserDTO user)
         {
             var existingUser = await _userManager.FindByEmailAsync(user.Email);
             if (existingUser == null)
@@ -66,7 +67,7 @@ namespace api.Services
                 return (false, null, "Invalid password");
             }
         }
-        public async Task<(bool IsSuccess, AuthResultVM AuthResult, string Error)> RefreshLogin(TokenRequestDTO tokenRequestDTO)
+        public async Task<(bool IsSuccess, AuthResultDTO AuthResult, string Error)> RefreshLogin(TokenRequestDTO tokenRequestDTO)
         {
             var storedToken = _usersDbContext.RefreshTokens.FirstOrDefault(t => t.Token.Equals(tokenRequestDTO.RefreshToken));
             var user = await _userManager.FindByIdAsync(storedToken.UserId);
