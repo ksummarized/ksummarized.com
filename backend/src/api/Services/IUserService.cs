@@ -1,11 +1,12 @@
 ﻿using api.Data;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace api.Services
 {
     public interface IUserService
     {
-        Task<AuthResultVM> Login(UserVM user);
-        Task<bool> Register(UserVM user);
+        Task<(bool IsSuccess,AuthResultVM AuthResult, string Error)> Login(UserVM user);
+        Task<(bool IsSuccess, IEnumerable<string> Error)> Register(UserVM user);
     }
 }

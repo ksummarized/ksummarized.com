@@ -16,37 +16,36 @@ namespace api.Controllers
         [HttpPost("register")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Register([FromBody]UserVM user)
+        public async Task<IActionResult> Register([FromBody] UserVM user)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) { return BadRequest("Invalid data provided!"); }
+
+            var (IsSuccess, Error) = await _userService.Register(user);
+            if (IsSuccess)
             {
-                return BadRequest("Invalid data provided!");
-            }
-            var result = await _userService.Register(user);
-            if (result)
-            {
-                return Ok();
+                return Ok("User created");
             }
             else
             {
-                return BadRequest("User already exists!");
+                return BadRequest(Error);
             }
         }
 
         [HttpPost("login")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> Login([FromBody]UserVM user)
+        public async Task<IActionResult> Login([FromBody] UserVM user)
         {
             if (!ModelState.IsValid) { return BadRequest("Please provide login credentials!"); }
-            var result = await _userService.Login(user);
-            if (result != null)
+
+            var (IsSuccess, AuthResult, Error) = await _userService.Login(user);
+            if (IsSuccess)
             {
-                return Ok(result);
+                return Ok(AuthResult);
             }
             else
             {
-                return Unauthorized("Invalid email or password");
+                return Unauthorized(Error);
             }
         }
     }

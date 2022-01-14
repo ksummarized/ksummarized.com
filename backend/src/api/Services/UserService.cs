@@ -1,7 +1,10 @@
 ﻿using api.Data;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace api.Services
 {
@@ -20,26 +23,45 @@ namespace api.Services
             _tokenService = tokenService;
         }
 
-        public async Task<bool> Register(UserVM user)
+        public async Task<(bool IsSuccess, IEnumerable<string> Error)> Register(UserVM user)
         {
             var userExists = await _userManager.FindByEmailAsync(user.Email);
-            if (userExists != null) { return false; }
-            var u = new UserModel()
+            if (userExists != null)
+            {
+                return (false, new[] { "User already exists" });
+            }
+            var newUser = new UserModel()
             {
                 Email = user.Email,
                 UserName = user.Email,
                 SecurityStamp = Guid.NewGuid().ToString()
             };
-            var result = await _userManager.CreateAsync(u, user.Password);
-            return result.Succeeded;
+            var result = await _userManager.CreateAsync(newUser, user.Password);
+            if (result.Succeeded)
+            {
+                return (true, null);
+            }
+            else
+            {
+                return (false, result.Errors.Select(e => e.Description).ToArray());
+            }
         }
 
-        public async Task<AuthResultVM> Login(UserVM user)
+        public async Task<(bool IsSuccess, AuthResultVM AuthResult, string Error)> Login(UserVM user)
         {
-            var u = await _userManager.FindByEmailAsync(user.Email);
-            if(u == null) { return null; }
-            else if( await _userManager.CheckPasswordAsync(u,user.Password)) { return _tokenService.Generate(user); }
-            else { return null; }
+            var existingUser = await _userManager.FindByEmailAsync(user.Email);
+            if (existingUser == null)
+            {
+                return (false, null, "User not found");
+            }
+            else if (await _userManager.CheckPasswordAsync(existingUser, user.Password))
+            {
+                return (true, _tokenService.Generate(user), null);
+            }
+            else
+            {
+                return (false, null, "Invalid password");
+            }
         }
     }
 }
