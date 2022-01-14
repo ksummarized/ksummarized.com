@@ -56,12 +56,30 @@ namespace api.Services
             }
             else if (await _userManager.CheckPasswordAsync(existingUser, user.Password))
             {
-                return (true, _tokenService.Generate(user), null);
+                var (authresult, refreshToken) = _tokenService.Generate(existingUser);
+                await _usersDbContext.RefreshTokens.AddAsync(refreshToken);
+                await _usersDbContext.SaveChangesAsync();
+                return (true, authresult, null);
             }
             else
             {
                 return (false, null, "Invalid password");
             }
+        }
+        public async Task<(bool IsSuccess, AuthResultVM AuthResult, string Error)> RefreshLogin(TokenRequestDTO tokenRequestDTO)
+        {
+            var storedToken = _usersDbContext.RefreshTokens.FirstOrDefault(t => t.Token.Equals(tokenRequestDTO.RefreshToken));
+            var user = await _userManager.FindByIdAsync(storedToken.UserId);
+            var (IsSucess, AuthResult, Error) = _tokenService.Refresh(tokenRequestDTO, user, storedToken);
+            if (IsSucess)
+            {
+                return (true, AuthResult, null);
+            }
+            else
+            {
+                return (false, null, Error);
+            }
+
         }
     }
 }

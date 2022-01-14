@@ -11,7 +11,10 @@ namespace api.Controllers
     {
         private readonly IUserService _userService;
 
-        public AuthenticationController(IUserService userService) => _userService = userService;
+        public AuthenticationController(IUserService userService)
+        {
+            _userService = userService;
+        }
 
         [HttpPost("register")]
         [ProducesResponseType(200)]
@@ -47,6 +50,24 @@ namespace api.Controllers
             {
                 return Unauthorized(Error);
             }
+        }
+
+        [HttpPost("refresh-token")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDTO tokenRequestDTO)
+        {
+            if (!ModelState.IsValid) { return BadRequest("Invalid token request."); }
+            var (IsSuccess, AuthResult, Error) = await _userService.RefreshLogin(tokenRequestDTO);
+            if (IsSuccess)
+            {
+                return Ok(AuthResult);
+            }
+            else
+            {
+                return Unauthorized(Error);
+            }
+
         }
     }
 }

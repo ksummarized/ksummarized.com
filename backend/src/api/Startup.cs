@@ -28,6 +28,18 @@ namespace api
         {
 
             services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Users")));
+            var tokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:secret"])),
+                ValidateAudience = true,
+                ValidAudience = Configuration["JWT:audience"],
+                ValidateIssuer = true,
+                ValidIssuer = Configuration["JWT:issuer"],
+                ValidateLifetime = true,
+                ClockSkew = System.TimeSpan.Zero
+            };
+            services.AddSingleton(tokenValidationParameters);
             services.AddIdentity<UserModel, IdentityRole>().AddEntityFrameworkStores<UsersDbContext>().AddDefaultTokenProviders();
             services.Configure<IdentityOptions>(options =>
             {
@@ -46,15 +58,7 @@ namespace api
             }).AddJwtBearer(options =>
             {
                 options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:secret"])),
-                    ValidateAudience = true,
-                    ValidAudience = Configuration["JWT:audience"],
-                    ValidateIssuer = true,
-                    ValidIssuer = Configuration["JWT:issuer"]
-                };
+                options.TokenValidationParameters = tokenValidationParameters;
             });
             services.AddControllers();
             services.AddSwaggerGen(c =>
