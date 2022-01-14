@@ -15,7 +15,7 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"
       ConnectionStrings__Users: "Host=db;Database=users;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
       JWT__secret: "${JWT__secret}"
-      JWT__audience: "${JWT__secret}"
+      JWT__audience: "${JWT__audience}"
       JWT__issuer: "${JWT__issuer}"
     depends_on:
       - "db"

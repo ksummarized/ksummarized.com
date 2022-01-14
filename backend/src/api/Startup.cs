@@ -18,9 +18,12 @@ namespace api;
 
 public class Startup
 {
-    public Startup(IConfiguration configuration)
+    private readonly IWebHostEnvironment _env;
+
+    public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
         Configuration = configuration;
+        _env = env;
     }
 
     public IConfiguration Configuration { get; }
@@ -60,7 +63,9 @@ public class Startup
         }).AddJwtBearer(options =>
         {
             options.SaveToken = true;
+            options.RequireHttpsMetadata = !_env.IsDevelopment();
             options.TokenValidationParameters = tokenValidationParameters;
+
         });
         services.AddControllers();
         services.AddSwaggerGen(c =>
