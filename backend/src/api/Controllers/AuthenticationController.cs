@@ -1,5 +1,5 @@
 ﻿using api.Data.DTO;
-using api.Services;
+using api.Services.Users;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 

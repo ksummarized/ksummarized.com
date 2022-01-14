@@ -1,7 +1,7 @@
 ﻿using api.Data.DAO;
 using api.Data.DTO;
 
-namespace api.Services;
+namespace api.Services.Tokens;
 
 public interface ITokenService
 {

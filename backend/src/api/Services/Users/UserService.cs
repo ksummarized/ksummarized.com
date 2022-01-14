@@ -6,8 +6,9 @@ using System.Linq;
 using System.Collections.Generic;
 using api.Data.DTO;
 using api.Data.DAO;
+using api.Services.Tokens;
 
-namespace api.Services
+namespace api.Services.Users
 {
     public class UserService : IUserService
     {
