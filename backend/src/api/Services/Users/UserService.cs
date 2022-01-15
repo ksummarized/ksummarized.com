@@ -71,7 +71,17 @@ namespace api.Services.Users
         public async Task<(bool IsSuccess, AuthResultDTO AuthResult, string Error)> RefreshLogin(TokenRequestDTO tokenRequestDTO)
         {
             var storedToken = _usersDbContext.RefreshTokens.FirstOrDefault(t => t.Token.Equals(tokenRequestDTO.RefreshToken));
+            if (storedToken == null)
+            {
+                return (false, null, "Refresh token is invalid!")
+;
+            }
             var user = await _userManager.FindByIdAsync(storedToken.UserId);
+            if (user == null)
+            {
+                return (false, null, "Refresh token is invalid!")
+;
+            }
             var (IsSucess, AuthResult, Error) = _tokenService.Refresh(tokenRequestDTO, user, storedToken);
             if (IsSucess)
             {
