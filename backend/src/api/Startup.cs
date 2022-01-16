@@ -41,8 +41,7 @@ public class Startup
             ValidAudience = Configuration["JWT:audience"],
             ValidateIssuer = true,
             ValidIssuer = Configuration["JWT:issuer"],
-            ValidateLifetime = true,
-            ClockSkew = System.TimeSpan.Zero
+            ValidateLifetime = true
         };
         services.AddSingleton(tokenValidationParameters);
         services.AddIdentity<UserModel, IdentityRole>().AddEntityFrameworkStores<UsersDbContext>().AddDefaultTokenProviders();

@@ -33,7 +33,7 @@ namespace api.Services.Tokens
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:issuer"],
                 audience: _configuration["JWT:audience"],
-                expires: DateTime.UtcNow.AddMinutes(1),
+                expires: DateTime.UtcNow.AddMinutes(10),
                 claims: claims,
                 signingCredentials: new SigningCredentials(
                     new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:secret"])),
