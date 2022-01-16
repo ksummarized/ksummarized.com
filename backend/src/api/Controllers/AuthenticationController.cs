@@ -1,5 +1,6 @@
 ﻿using api.Data.DTO;
 using api.Services.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -67,6 +68,16 @@ public class AuthenticationController : ControllerBase
         {
             return Unauthorized(Error);
         }
+    }    
 
+    [HttpPost("logout")]
+    [ProducesResponseType(200)]
+    [Authorize()]
+    public async Task<IActionResult> Logout()
+    {
+        var user = HttpContext.User;
+        await _userService.Logout(user.Identity.Name);
+        return Ok();
     }
+
 }
