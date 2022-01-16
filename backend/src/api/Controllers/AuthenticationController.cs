@@ -77,7 +77,7 @@ public class AuthenticationController : ControllerBase
     {
         var user = HttpContext.User;
         await _userService.Logout(user.Identity.Name);
-        return Ok();
+        return Ok("User has been loged out.");
     }
 
 }
