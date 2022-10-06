@@ -55,7 +55,6 @@ export default function LoginForm(): JSX.Element {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("WoW! Almost logged in!");
   };
 
   return (

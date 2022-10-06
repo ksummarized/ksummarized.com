@@ -47,7 +47,6 @@ export default function RegisterForm(): JSX.Element {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("WoW! Almost logged in!");
   };
 
   return (
