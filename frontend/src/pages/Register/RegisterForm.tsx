@@ -2,49 +2,15 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import InputAdornment from "@mui/material/InputAdornment";
-import InputLabel from "@mui/material/InputLabel";
-import IconButton from "@mui/material/IconButton";
-import FilledInput from "@mui/material/FilledInput";
 
 import logo from "../../assets/logo.png";
 import Colors from "../../styles/Colors";
-
-interface State {
-  password: string;
-  showPassword: boolean;
-}
+import ShowAndHidePasswordFilledField from "../../components/ShowAndHidePasswordFilledField/ShowAndHidePasswordFilledField";
 
 export default function RegisterForm(): JSX.Element {
-  const [values, setValues] = React.useState<State>({
-    password: "",
-    showPassword: false,
-  });
-
-  const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValues({ ...values, [prop]: event.target.value });
-    };
-
-  const handleClickShowPassword = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
-    });
-  };
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-  };
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   };
@@ -89,54 +55,8 @@ export default function RegisterForm(): JSX.Element {
             autoFocus
             variant="filled"
           />
-          <FormControl required fullWidth variant="filled" sx={{ mt: 3 }}>
-            <InputLabel htmlFor="filled-adornment-password">
-              Password
-            </InputLabel>
-            <FilledInput
-              id="password"
-              name="password"
-              type={values.showPassword ? "text" : "password"}
-              value={values.password}
-              onChange={handleChange("password")}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-          <FormControl required fullWidth variant="filled" sx={{ mt: 3 }}>
-            <InputLabel htmlFor="filled-adornment-password">
-              Confirm password
-            </InputLabel>
-            <FilledInput
-              id="confirm-password"
-              name="confirm-password"
-              type={values.showPassword ? "text" : "password"}
-              value={values.password}
-              onChange={handleChange("password")}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
+          <ShowAndHidePasswordFilledField sx={{ mb: 1 }} />
+          <ShowAndHidePasswordFilledField label="Confirm password" />
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 6 }}>
             REGISTER
           </Button>
