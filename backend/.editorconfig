@@ -228,3 +228,4 @@ dotnet_naming_style.underscoreprefix.required_prefix = _
 dotnet_naming_style.underscoreprefix.required_suffix = 
 dotnet_naming_style.underscoreprefix.word_separator = 
 dotnet_naming_style.underscoreprefix.capitalization = camel_case
+csharp_style_namespace_declarations=file_scoped:silent
