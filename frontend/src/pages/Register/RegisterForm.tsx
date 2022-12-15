@@ -64,7 +64,7 @@ export default function RegisterForm(): JSX.Element {
             type="reset"
             fullWidth
             variant="outlined"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 1, mb: 3 }}
           >
             CANCEL
           </Button>
