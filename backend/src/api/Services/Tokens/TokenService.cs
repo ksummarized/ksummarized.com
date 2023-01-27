@@ -31,12 +31,12 @@ namespace api.Services.Tokens
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
             var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:issuer"],
-                audience: _configuration["JWT:audience"],
+                issuer: _configuration["JWT:ISSUER"],
+                audience: _configuration["JWT:AUDIENCE"],
                 expires: DateTime.UtcNow.AddMinutes(10),
                 claims: claims,
                 signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:secret"])),
+                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:SECRET"])),
                     SecurityAlgorithms.HmacSha256
             ));
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
@@ -57,7 +57,7 @@ namespace api.Services.Tokens
             return (new AuthResultDTO() { Token = jwt, RefreshToken = refreshToken.Token, ExpiresAt = token.ValidTo }, refreshToken);
         }
 
-        public (bool IsSucess, AuthResultDTO AuthResult, string Error) Refresh(TokenRequestDTO tokenRequestDTO, UserModel user, RefreshToken storedToken)
+        public (bool IsSuccess, AuthResultDTO AuthResult, string Error) Refresh(TokenRequestDTO tokenRequestDTO, UserModel user, RefreshToken storedToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             try

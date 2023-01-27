@@ -32,7 +32,7 @@ cd ..\
 docker compose up --build
 ```
 
-You can now visit the site at: http://localhost:8888/
+You can now visit the site at: <http://localhost:8888/>
 
 ## Scripts
 
