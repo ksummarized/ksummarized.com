@@ -36,11 +36,11 @@ public class Startup
         var tokenValidationParameters = new TokenValidationParameters()
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:secret"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:SECRET"])),
             ValidateAudience = true,
-            ValidAudience = Configuration["JWT:audience"],
+            ValidAudience = Configuration["JWT:AUDIENCE"],
             ValidateIssuer = true,
-            ValidIssuer = Configuration["JWT:issuer"],
+            ValidIssuer = Configuration["JWT:ISSUER"],
             ValidateLifetime = true
         };
         services.AddSingleton(tokenValidationParameters);

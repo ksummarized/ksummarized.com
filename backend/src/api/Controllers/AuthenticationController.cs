@@ -37,6 +37,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost("login")]
     [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     public async Task<IActionResult> Login([FromBody] UserDTO user)
     {
@@ -55,6 +56,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost("refresh-token")]
     [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDTO tokenRequestDTO)
     {
@@ -68,7 +70,7 @@ public class AuthenticationController : ControllerBase
         {
             return Unauthorized(Error);
         }
-    }    
+    }
 
     [HttpPost("logout")]
     [ProducesResponseType(200)]
@@ -77,7 +79,7 @@ public class AuthenticationController : ControllerBase
     {
         var user = HttpContext.User;
         await _userService.Logout(user.Identity.Name);
-        return Ok("User has been loged out.");
+        return Ok("The user has been logged out.");
     }
 
 }

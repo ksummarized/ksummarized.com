@@ -13,14 +13,6 @@ To run this application locally it is recommended to have the following installe
 - dotnet sdk
 - entity framework tools
 
-First set up the following environment variables:
-
-- JWT\_\_SECRET
-- JWT\_\_AUDIENCE
-- JWT\_\_ISSUER
-- POSTGRES_PASSWORD
-- POSTGRES_USER
-
 Next go to the `scripts` directory and run `apply_migrations.ps1`
 Next You should go back to the main directory and run `docker compose up --build`
 This can be done with the following snippet.
@@ -32,7 +24,7 @@ cd ..\
 docker compose up --build
 ```
 
-You can now visit the site at: http://localhost:8888/
+You can now visit the site at: <http://localhost:8888/>
 
 ## Scripts
 

@@ -5,6 +5,7 @@ services:
       context: ./frontend
     ports:
       - "8888:8888"
+
   backend:
     build:
       context: ./backend
@@ -14,13 +15,13 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ConnectionStrings__Users: "Host=db;Database=users;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
-      JWT__secret: "${JWT__secret}"
-      JWT__audience: "${JWT__audience}"
-      JWT__issuer: "${JWT__issuer}"
     depends_on:
-      - "db"
+      db:
+        condition: service_healthy
+
   db:
     image: postgres:14.0-alpine
+    container_name: ks-database
     ports:
       - "5432:5432"
     volumes:
@@ -29,5 +30,11 @@ services:
     environment:
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER}'"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
 volumes:
   ks_postgresql:

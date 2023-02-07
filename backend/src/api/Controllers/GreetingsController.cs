@@ -9,6 +9,7 @@ public class GreetingsController : ControllerBase
 {
     [HttpGet]
     [Authorize]
+    [ProducesResponseType(200)]
     [Route("user")]
     public IActionResult Greet()
     {
@@ -16,6 +17,7 @@ public class GreetingsController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(200)]
     [Route("HelloWorld")]
     public IActionResult HelloWorld()
     {
