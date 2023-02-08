@@ -13,7 +13,7 @@ public class GreetingsController : ControllerBase
     [Route("user")]
     public IActionResult Greet()
     {
-        return Ok($"Hello {HttpContext.User.Identity.Name}");
+        return Ok($"Hello {HttpContext?.User?.Identity?.Name ?? "World" }");
     }
 
     [HttpGet]
