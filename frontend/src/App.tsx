@@ -4,8 +4,8 @@ import { ThemeProvider } from "@mui/material/styles";
 
 import "./App.css";
 import darkTheme from "./styles/Styles";
-import LoginForm from "./pages/Login/LoginForm";
-import RegisterForm from "./pages/Register/RegisterForm";
+import LoginPage from "./pages/Login/LoginPage";
+import RegisterPage from "./pages/Register/RegisterPage";
 import HomePage from "./pages/Home/HomePage";
 
 function App(): JSX.Element {
@@ -14,8 +14,8 @@ function App(): JSX.Element {
       <BrowserRouter>
         <Routes>
           <Route index element={<HomePage />} />
-          <Route path="login" element={<LoginForm />} />
-          <Route path="register" element={<RegisterForm />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
