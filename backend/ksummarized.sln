@@ -6,19 +6,15 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D7A1B70F-EE88-4B3C-A209-FE2517ADD026}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "api", "src\api\api.csproj", "{917A96E2-DAE3-432B-8C65-362D34194104}"
-	ProjectSection(ProjectDependencies) = postProject
-		{46A86EA5-587A-464E-94FA-FF35976D0A73} = {46A86EA5-587A-464E-94FA-FF35976D0A73}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A2E313A3-EE03-4A78-ABCE-42E7A4B7029A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ksummarized.UnitTests", "test\ksummarized.UnitTests\ksummarized.UnitTests.csproj", "{46A86EA5-587A-464E-94FA-FF35976D0A73}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D12C229D-2E15-43BD-951F-EF05AE7633D9}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		Dockerfile = Dockerfile
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,25 +38,25 @@ Global
 		{917A96E2-DAE3-432B-8C65-362D34194104}.Release|x64.Build.0 = Release|Any CPU
 		{917A96E2-DAE3-432B-8C65-362D34194104}.Release|x86.ActiveCfg = Release|Any CPU
 		{917A96E2-DAE3-432B-8C65-362D34194104}.Release|x86.Build.0 = Release|Any CPU
-		{46A86EA5-587A-464E-94FA-FF35976D0A73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46A86EA5-587A-464E-94FA-FF35976D0A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{46A86EA5-587A-464E-94FA-FF35976D0A73}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{46A86EA5-587A-464E-94FA-FF35976D0A73}.Debug|x64.Build.0 = Debug|Any CPU
-		{46A86EA5-587A-464E-94FA-FF35976D0A73}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{46A86EA5-587A-464E-94FA-FF35976D0A73}.Debug|x86.Build.0 = Debug|Any CPU
-		{46A86EA5-587A-464E-94FA-FF35976D0A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46A86EA5-587A-464E-94FA-FF35976D0A73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{46A86EA5-587A-464E-94FA-FF35976D0A73}.Release|x64.ActiveCfg = Release|Any CPU
-		{46A86EA5-587A-464E-94FA-FF35976D0A73}.Release|x64.Build.0 = Release|Any CPU
-		{46A86EA5-587A-464E-94FA-FF35976D0A73}.Release|x86.ActiveCfg = Release|Any CPU
-		{46A86EA5-587A-464E-94FA-FF35976D0A73}.Release|x86.Build.0 = Release|Any CPU
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}.Debug|x64.Build.0 = Debug|Any CPU
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}.Debug|x86.Build.0 = Debug|Any CPU
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}.Release|x64.ActiveCfg = Release|Any CPU
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}.Release|x64.Build.0 = Release|Any CPU
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}.Release|x86.ActiveCfg = Release|Any CPU
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{917A96E2-DAE3-432B-8C65-362D34194104} = {D7A1B70F-EE88-4B3C-A209-FE2517ADD026}
-		{46A86EA5-587A-464E-94FA-FF35976D0A73} = {A2E313A3-EE03-4A78-ABCE-42E7A4B7029A}
+		{D21A0FAE-B25F-4975-9EBC-76E24CDA1969} = {A2E313A3-EE03-4A78-ABCE-42E7A4B7029A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EB55458A-327D-41D5-8211-352C32273E00}
