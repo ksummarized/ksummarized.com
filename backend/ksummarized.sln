@@ -12,7 +12,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D12C229D-2E15-43BD-951F-EF05AE7633D9}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		src\api\Dockerfile = src\api\Dockerfile
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{D21A0FAE-B25F-4975-9EBC-76E24CDA1969}"
