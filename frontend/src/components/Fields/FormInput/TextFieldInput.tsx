@@ -2,11 +2,11 @@ import * as React from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { TextField, TextFieldProps } from "@mui/material";
 
-type FormInputProps = {
+type TextFieldInputProps = {
   name: string;
 } & TextFieldProps;
 
-function FormInput({ name, ...otherProps }: FormInputProps) {
+function TextFieldInput({ name, ...otherProps }: TextFieldInputProps) {
   const {
     control,
     formState: { errors },
@@ -31,4 +31,4 @@ function FormInput({ name, ...otherProps }: FormInputProps) {
   );
 }
 
-export default FormInput;
+export default TextFieldInput;

@@ -4,8 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 
-import FormInput from "../../Fields/FormInput/FormInput";
+import TextFieldInput from "../../Fields/FormInput/TextFieldInput";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 const validationSchema = z
   .object({
@@ -29,7 +32,9 @@ const validationSchema = z
 
 type ValidationSchema = z.infer<typeof validationSchema>;
 
-function Form() {
+function RegisterForm() {
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
   const defaultValues: ValidationSchema = {
     email: "",
     password: "",
@@ -41,10 +46,22 @@ function Form() {
     defaultValues,
   });
 
-  const onSubmitHandler: SubmitHandler<ValidationSchema> = (
+  const onSubmitHandler: SubmitHandler<ValidationSchema> = async (
     data: ValidationSchema
   ) => {
-    console.log(JSON.stringify(data, null, 4));
+    try {
+      const response = await axiosPrivate.post("/auth/register", {
+        email: data.email,
+        password: data.password,
+      });
+      alert(response.data);
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error(error);
+      if (isAxiosError(error)) {
+        alert(error.response?.data);
+      }
+    }
   };
 
   return (
@@ -55,7 +72,7 @@ function Form() {
         noValidate
         sx={{ mt: 1 }}
       >
-        <FormInput
+        <TextFieldInput
           helperText="Please enter your email address"
           margin="normal"
           required
@@ -67,7 +84,7 @@ function Form() {
           autoFocus
           variant="filled"
         />
-        <FormInput
+        <TextFieldInput
           fullWidth
           required
           id="password"
@@ -77,7 +94,7 @@ function Form() {
           type="password"
           sx={{ mb: 1 }}
         />
-        <FormInput
+        <TextFieldInput
           fullWidth
           required
           id="confirmPassword"
@@ -97,4 +114,4 @@ function Form() {
   );
 }
 
-export default Form;
+export default RegisterForm;
