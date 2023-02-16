@@ -51,6 +51,7 @@ module.exports = {
     "@typescript-eslint/no-shadow": ["error"],
     "no-unused-vars": "off",
     "react/jsx-props-no-spreading": "off",
+    "no-param-reassign": ["error", { props: false }],
     "import/no-extraneous-dependencies": [
       "error",
       {
