@@ -5,10 +5,11 @@ import { z } from "zod";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
-import { isAxiosError } from "axios";
 
 import TextFieldInput from "../../Fields/FormInput/TextFieldInput";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import fetchPlus from "../../../helpers/fetchPlus";
+import Constants from "../../../helpers/Constants";
+import StatusCode from "../../../helpers/StatusCode";
 
 const validationSchema = z
   .object({
@@ -33,7 +34,6 @@ const validationSchema = z
 type ValidationSchema = z.infer<typeof validationSchema>;
 
 function RegisterForm() {
-  const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const defaultValues: ValidationSchema = {
     email: "",
@@ -49,19 +49,32 @@ function RegisterForm() {
   const onSubmitHandler: SubmitHandler<ValidationSchema> = async (
     data: ValidationSchema
   ) => {
-    try {
-      const response = await axiosPrivate.post("/auth/register", {
+    fetchPlus(`${Constants.BASE_URL}/auth/register`, {
+      body: JSON.stringify({
         email: data.email,
         password: data.password,
+      }),
+    })
+      .then((response: Response) => {
+        // TODO: When the backend API will be fixed, changed the status code to 201 (CREATED)
+        if (response.status !== StatusCode.OK) {
+          return response.text().then((text) => {
+            throw new Error(text);
+          });
+        }
+        return response.text();
+      })
+      .then((responseData: string) => {
+        alert(responseData);
+        navigate("/login", { replace: true });
+      })
+      .catch((error: Error) => {
+        alert(error);
       });
-      alert(response.data);
-      navigate("/login", { replace: true });
-    } catch (error) {
-      console.error(error);
-      if (isAxiosError(error)) {
-        alert(error.response?.data);
-      }
-    }
+  };
+
+  const onCancelHandler: React.MouseEventHandler = () => {
+    navigate(Constants.NAVIGATE_PREVIOUS_PAGE);
   };
 
   return (
@@ -106,7 +119,13 @@ function RegisterForm() {
         <Button type="submit" fullWidth variant="contained" sx={{ mt: 6 }}>
           REGISTER
         </Button>
-        <Button type="reset" fullWidth variant="outlined" sx={{ mt: 1, mb: 3 }}>
+        <Button
+          type="button"
+          onClick={onCancelHandler}
+          fullWidth
+          variant="outlined"
+          sx={{ mt: 1, mb: 3 }}
+        >
           CANCEL
         </Button>
       </Box>

@@ -1,18 +1,25 @@
-import axios from "../api/axios";
+import Constants from "../helpers/Constants";
+import fetchPlus from "../helpers/fetchPlus";
 
 const useRefreshToken = () => {
   const refresh = async () => {
-    const response = await axios.get("/auth/refresh-token", {
-      withCredentials: true,
-    });
     const localStorageUser = localStorage.getItem("user");
     let user = null;
     if (localStorageUser) {
       user = JSON.parse(localStorageUser);
-      user.token = response.data.token;
+      const responseData = await fetchPlus(
+        `${Constants.BASE_URL}/auth/refresh-token`,
+        {
+          body: JSON.stringify({
+            token: user.token,
+            refreshToken: user.refreshToken,
+          }),
+        }
+      );
+      user.token = responseData.token;
       localStorage.setItem("user", JSON.stringify(user));
     }
-    return response.data.token;
+    return user?.token;
   };
 
   return refresh;

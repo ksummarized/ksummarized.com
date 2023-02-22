@@ -52,5 +52,6 @@ module.exports = {
     "no-unused-vars": "off",
     "react/jsx-props-no-spreading": "off",
     "no-param-reassign": ["error", { props: false }],
+    "no-undef": "off",
   },
 };

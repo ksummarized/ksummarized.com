@@ -9,7 +9,6 @@ import Typography from "@mui/material/Typography";
 import { Link as ReactLink } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { useNavigate, useLocation } from "react-router-dom";
-import { isAxiosError } from "axios";
 
 import googleLogo from "../../../assets/googleLogo.svg";
 import githubLogo from "../../../assets/githubLogo.svg";
@@ -17,7 +16,10 @@ import facebookLogo from "../../../assets/facebookLogo.svg";
 import twitterLogo from "../../../assets/twitterLogo.svg";
 import TextFieldInput from "../../Fields/FormInput/TextFieldInput";
 import CheckboxInput from "../../Fields/FormInput/CheckboxInput";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import StatusCode from "../../../helpers/StatusCode";
+import Constants from "../../../helpers/Constants";
+import { UserType } from "../../../helpers/CustomTypes";
+import useFetchPlus from "../../../hooks/useFetchPlus";
 
 const validationSchema = z.object({
   email: z
@@ -35,7 +37,7 @@ const validationSchema = z.object({
 type ValidationSchema = z.infer<typeof validationSchema>;
 
 function LoginForm() {
-  const axiosPrivate = useAxiosPrivate();
+  const fetchPlus = useFetchPlus();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -54,24 +56,32 @@ function LoginForm() {
   const onSubmitHandler: SubmitHandler<ValidationSchema> = async (
     data: ValidationSchema
   ) => {
-    try {
-      const response = await axiosPrivate.post("/auth/login", {
+    fetchPlus(`${Constants.BASE_URL}/auth/login`, {
+      body: JSON.stringify({
         email: data.email,
         password: data.password,
+      }),
+    })
+      .then((response: Response) => {
+        if (response.status !== StatusCode.OK) {
+          return response.text().then((text) => {
+            throw new Error(text);
+          });
+        }
+        return response.json();
+      })
+      .then((responseData: UserType) => {
+        const token = responseData?.token;
+        const refreshToken = responseData?.refreshToken;
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ email: data.email, token, refreshToken })
+        );
+        navigate(from, { replace: true });
+      })
+      .catch((error: Error) => {
+        alert(error);
       });
-      const token = response?.data?.token;
-      const refreshToken = response?.data?.refreshToken;
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ email: data.email, token, refreshToken })
-      );
-      navigate(from, { replace: true });
-    } catch (error) {
-      console.error(error);
-      if (isAxiosError(error)) {
-        alert(error.response?.data);
-      }
-    }
   };
 
   return (
