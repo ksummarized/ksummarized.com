@@ -53,7 +53,7 @@ function LoginForm() {
     defaultValues,
   });
 
-  const onSubmitHandler: SubmitHandler<ValidationSchema> = async (
+  const onSubmitHandler: SubmitHandler<ValidationSchema> = (
     data: ValidationSchema
   ) => {
     fetchPlus(`${Constants.BASE_URL}/auth/login`, {
