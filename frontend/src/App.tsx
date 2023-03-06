@@ -4,18 +4,21 @@ import { ThemeProvider } from "@mui/material/styles";
 
 import "./App.css";
 import darkTheme from "./styles/Styles";
-import LoginForm from "./pages/Login/LoginForm";
-import RegisterForm from "./pages/Register/RegisterForm";
+import LoginPage from "./pages/Login/LoginPage";
+import RegisterPage from "./pages/Register/RegisterPage";
 import HomePage from "./pages/Home/HomePage";
+import RequireAuth from "./helpers/RequireAuth";
 
 function App(): JSX.Element {
   return (
     <ThemeProvider theme={darkTheme}>
       <BrowserRouter>
         <Routes>
-          <Route index element={<HomePage />} />
-          <Route path="login" element={<LoginForm />} />
-          <Route path="register" element={<RegisterForm />} />
+          <Route element={<RequireAuth />}>
+            <Route index element={<HomePage />} />
+          </Route>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
