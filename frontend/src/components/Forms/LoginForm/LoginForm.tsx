@@ -53,35 +53,31 @@ function LoginForm() {
     defaultValues,
   });
 
-  const onSubmitHandler: SubmitHandler<ValidationSchema> = (
+  const onSubmitHandler: SubmitHandler<ValidationSchema> = async (
     data: ValidationSchema
   ) => {
-    fetchPlus(`${Constants.BASE_URL}/auth/login`, {
-      body: JSON.stringify({
-        email: data.email,
-        password: data.password,
-      }),
-    })
-      .then((response: Response) => {
-        if (response.status !== StatusCode.OK) {
-          return response.text().then((text) => {
-            throw new Error(text);
-          });
-        }
-        return response.json();
-      })
-      .then((responseData: UserType) => {
-        const token = responseData?.token;
-        const refreshToken = responseData?.refreshToken;
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ email: data.email, token, refreshToken })
-        );
-        navigate(from, { replace: true });
-      })
-      .catch((error: Error) => {
-        alert(error);
+    try {
+      const response = await fetchPlus(`${Constants.BASE_URL}/auth/login`, {
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
       });
+      if (response.status !== StatusCode.OK) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+      const responseData = await response.json();
+      const token = responseData?.token;
+      const refreshToken = responseData?.refreshToken;
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ email: data.email, token, refreshToken })
+      );
+      navigate(from, { replace: true });
+    } catch (error) {
+      alert(error);
+    }
   };
 
   return (

@@ -46,31 +46,25 @@ function RegisterForm() {
     defaultValues,
   });
 
-  const onSubmitHandler: SubmitHandler<ValidationSchema> = (
+  const onSubmitHandler: SubmitHandler<ValidationSchema> = async (
     data: ValidationSchema
   ) => {
-    fetchPlus(`${Constants.BASE_URL}/auth/register`, {
-      body: JSON.stringify({
-        email: data.email,
-        password: data.password,
-      }),
-    })
-      .then((response: Response) => {
-        // TODO: When the backend API will be fixed, changed the status code to 201 (CREATED)
-        if (response.status !== StatusCode.OK) {
-          return response.text().then((text) => {
-            throw new Error(text);
-          });
-        }
-        return response.text();
-      })
-      .then((responseData: string) => {
-        alert(responseData);
-        navigate("/login", { replace: true });
-      })
-      .catch((error: Error) => {
-        alert(error);
+    try {
+      const response = await fetchPlus(`${Constants.BASE_URL}/auth/register`, {
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
       });
+      const responseData = await response.text();
+      if (response.status !== 200) {
+        throw new Error(responseData);
+      }
+      alert(responseData);
+      navigate("/login", { replace: true });
+    } catch (error) {
+      alert(error);
+    }
   };
 
   const onCancelHandler: React.MouseEventHandler = () => {
