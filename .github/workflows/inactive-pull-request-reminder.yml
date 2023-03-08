@@ -1,0 +1,15 @@
+name: "Inactive PR reminder"
+on:
+  schedule:
+    # Run everyday at midnight
+    - cron: "0 0 * * *"
+
+jobs:
+  inactive-pr-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: sojusan/github-action-reminder@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reminder_message: "Two days have passed since the last activity. Please take care of this PR."
+          inactivity_deadline_hours: 48
