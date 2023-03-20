@@ -1,7 +1,6 @@
 ﻿using api.Data;
 using api.Data.DAO;
 using api.Data.DTO;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
