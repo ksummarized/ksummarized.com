@@ -2,7 +2,6 @@
 using api.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace api.Controllers;
 
@@ -77,8 +76,10 @@ public class AuthenticationController : ControllerBase
     [Authorize()]
     public async Task<IActionResult> Logout()
     {
-        var user = HttpContext.User;
-        await _userService.Logout(user.Identity.Name);
+        if (HttpContext.User?.Identity?.Name is not null)
+        {
+            await _userService.Logout(HttpContext.User.Identity.Name);
+        }
         return Ok("The user has been logged out.");
     }
 

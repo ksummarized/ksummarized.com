@@ -12,17 +12,22 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Users")));
+
+var jwtOptions = new JwtOptions();
+builder.Configuration.Bind("Jwt", jwtOptions);
 var tokenValidationParameters = new TokenValidationParameters()
 {
     ValidateIssuerSigningKey = true,
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JWT:SECRET"])),
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtOptions.Secret)),
     ValidateAudience = true,
-    ValidAudience = builder.Configuration["JWT:AUDIENCE"],
+    ValidAudience = jwtOptions.Audience,
     ValidateIssuer = true,
-    ValidIssuer = builder.Configuration["JWT:ISSUER"],
+    ValidIssuer = jwtOptions.Issuer,
     ValidateLifetime = true
 };
 builder.Services.AddSingleton(tokenValidationParameters);
+builder.Services.AddSingleton(jwtOptions);
+
 builder.Services.AddIdentity<UserModel, IdentityRole>().AddEntityFrameworkStores<UsersDbContext>().AddDefaultTokenProviders();
 builder.Services.Configure<IdentityOptions>(options =>
 {
