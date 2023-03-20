@@ -19,7 +19,7 @@ namespace api.Services.Tokens
             _validationParameters = validationParameters;
         }
 
-        public (AuthResultDTO authresult, RefreshToken refreshToken) Generate(UserModel user, RefreshToken refreshToken = null)
+        public (AuthResultDTO authresult, RefreshToken refreshToken) Generate(UserModel user, RefreshToken? refreshToken = null)
         {
             var claims = new List<Claim>()
             {
@@ -35,7 +35,7 @@ namespace api.Services.Tokens
                 expires: DateTime.UtcNow.AddMinutes(10),
                 claims: claims,
                 signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtOptions.Secret)),
+                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtOptions.Secret!)),
                     SecurityAlgorithms.HmacSha256
             ));
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);

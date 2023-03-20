@@ -15,6 +15,11 @@ builder.Services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(build
 
 var jwtOptions = new JwtOptions();
 builder.Configuration.Bind("Jwt", jwtOptions);
+if(jwtOptions.Secret is null || jwtOptions.Issuer is null || jwtOptions.Audience is null)
+{
+    throw new Exception("Can't start application without JWT options");
+}
+
 var tokenValidationParameters = new TokenValidationParameters()
 {
     ValidateIssuerSigningKey = true,
