@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logos/logo.png";
 import Colors from "../../styles/Colors";
 
 import LoginForm from "../../components/Forms/LoginForm/LoginForm";

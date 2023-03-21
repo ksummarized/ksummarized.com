@@ -10,15 +10,14 @@ import { Link as ReactLink } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import googleLogo from "../../../assets/googleLogo.svg";
-import githubLogo from "../../../assets/githubLogo.svg";
-import facebookLogo from "../../../assets/facebookLogo.svg";
-import twitterLogo from "../../../assets/twitterLogo.svg";
+import googleLogo from "../../../assets/logos/googleLogo.svg";
+import githubLogo from "../../../assets/logos/githubLogo.svg";
+import facebookLogo from "../../../assets/logos/facebookLogo.svg";
+import twitterLogo from "../../../assets/logos/twitterLogo.svg";
 import TextFieldInput from "../../Fields/FormInput/TextFieldInput";
 import CheckboxInput from "../../Fields/FormInput/CheckboxInput";
 import StatusCode from "../../../helpers/StatusCode";
 import Constants from "../../../helpers/Constants";
-import { UserType } from "../../../helpers/CustomTypes";
 import useFetchPlus from "../../../hooks/useFetchPlus";
 
 const validationSchema = z.object({
