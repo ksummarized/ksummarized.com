@@ -57,7 +57,7 @@ function RegisterForm() {
         }),
       });
       const responseData = await response.text();
-      if (response.status !== 200) {
+      if (response.status !== StatusCode.OK) {
         throw new Error(responseData);
       }
       alert(responseData);
