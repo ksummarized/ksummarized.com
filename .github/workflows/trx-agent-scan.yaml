@@ -3,6 +3,7 @@ on:
     types:
       - 'opened'
       - 'reopened'
+  workflow_dispatch:
 jobs:
   execute-scan-workflow:
     uses: threatrix/threat-agent-scan/.github/workflows/scan-repo-reusable.yaml@master
