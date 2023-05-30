@@ -1,3 +1,4 @@
+name: Threatrix dependency scan
 on:
   pull_request:
     types:
