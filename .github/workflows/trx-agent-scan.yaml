@@ -1,0 +1,17 @@
+on:
+  pull_request:
+    types:
+      - 'opened'
+      - 'reopened'
+  workflow_dispatch:
+jobs:
+  execute-scan-workflow:
+    uses: threatrix/threat-agent-scan/.github/workflows/scan-repo-reusable.yaml@master
+    with:
+      app-name: ksummarized.com
+      trx-host: https://app.threatrix.io
+    secrets:
+      TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      THREATRIX_SERVER_API_KEY: ${{ secrets.TRX_API_KEY }}
+      THREATRIX_EID: ${{ secrets.TRX_EID }}
+      THREATRIX_OID: ${{ secrets.TRX_OID }}
