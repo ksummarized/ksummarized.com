@@ -1,10 +1,16 @@
-name: SonarCloud
+name: SonarCloud Backend
 on:
   push:
     branches:
       - master
+    paths:
+      - "**.cs"
+      - "**.csproj"
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - "**.cs"
+      - "**.csproj"
 jobs:
   build:
     name: Build and analyze
