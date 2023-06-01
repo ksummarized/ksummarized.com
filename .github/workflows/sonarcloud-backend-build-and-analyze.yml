@@ -20,10 +20,10 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: 'zulu' # Alternative distribution options are available.
+          distribution: "zulu" # Alternative distribution options are available.
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
         with:
@@ -45,11 +45,11 @@ jobs:
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
       - name: Build and analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACKEND }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"ksummarized_ksummarized.com" /o:"ksummarized" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"ksummarized_ksummarized.com_backend" /o:"ksummarized" /d:sonar.login="${{ secrets.SONAR_TOKEN_BACKEND }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet restore backend/ksummarized.sln
           dotnet build backend/ksummarized.sln
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN_BACKEND }}"
