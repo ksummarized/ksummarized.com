@@ -13,3 +13,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reminder_message: "Two days have passed since the last activity. Please take care of this PR."
           inactivity_deadline_hours: 48
+          default_users_to_notify: |
+            @Sojusan
+            @mtracewicz
