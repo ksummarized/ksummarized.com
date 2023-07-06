@@ -2,18 +2,17 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    jest: true,
   },
   extends: [
     "plugin:@typescript-eslint/recommended",
     "airbnb",
     "plugin:react/recommended",
     "plugin:prettier/recommended",
+    "plugin:vitest/recommended",
   ],
   globals: {
     React: true,
     JSX: true,
-    jest: true,
   },
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -23,7 +22,7 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: "module",
   },
-  plugins: ["react", "@typescript-eslint", "jest", "prettier"],
+  plugins: ["react", "@typescript-eslint", "vitest", "prettier"],
   settings: {
     "import/resolver": {
       typescript: {},
