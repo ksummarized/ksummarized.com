@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 Write-Host "Starting DB"
 docker compose up db -d 2>&1 > $null
 Write-Output "Generateing migration script"
