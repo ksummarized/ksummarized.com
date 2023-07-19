@@ -33,6 +33,10 @@ jobs:
         working-directory: ./frontend
         run: npm install
 
+      - name: Check licenses
+        working-directory: ./frontend
+        run: npm run license-checker
+
       - name: Lint
         working-directory: ./frontend
         run: npm run lint
