@@ -37,7 +37,7 @@ jobs:
       - name: Check licenses
         working-directory: ./backend
         run: |
-          dotnet tool install --global dotnet-project-licenses
+          dotnet tool install --global dotnet-project-licenses --version 2.7.1
           dotnet-project-licenses -i src/api --allowed-license-types allowed-licenses.json
 
       - name: Build
