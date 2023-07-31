@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "license-checker": "license-checker --excludePackage \"ksummarized@0.1.0\" --summary --onlyAllow \"MIT;ISC;Apache-2.0;BSD-3-Clause;BSD-2-Clause;CC0-1.0;0BSD;Python-2.0;MPL-2.0;CC-BY-4.0;CC-BY-3.0\""
+    "license-checker-linux": "license-checker --excludePackage $(cat licenses-exclude-packages.txt) --summary --onlyAllow $(cat allowed-licenses.txt)",
+    "license-checker-windows": "cd scripts && windows_check_licenses.bat"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
