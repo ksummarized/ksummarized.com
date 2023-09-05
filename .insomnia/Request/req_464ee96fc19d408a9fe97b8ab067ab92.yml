@@ -1,7 +1,7 @@
 _id: req_464ee96fc19d408a9fe97b8ab067ab92
 type: Request
-parentId: wrk_20192206620f4a8cbffbba87b3f7846a
-modified: 1693947154981
+parentId: fld_1a11cb0df6b24f76b7bdade88278cfb7
+modified: 1693948371581
 created: 1693947134210
 url: http://localhost:5005/api/auth/register
 name: Register
@@ -21,7 +21,7 @@ headers:
   - name: User-Agent
     value: Insomnia/2023.5.7
 authentication: {}
-metaSortKey: -1693942561643
+metaSortKey: -1693948365685
 isPrivate: false
 settingStoreCookies: true
 settingSendCookies: true

@@ -1,10 +1,10 @@
-_id: req_de951a3b547b4c5ab9fc483dfc5140c4
+_id: req_f51d4ac1487c45349171ebba46eba0b7
 type: Request
 parentId: fld_0f73416e532d49ccb5126b2e662d8ab2
-modified: 1693948385195
-created: 1693947179482
-url: http://localhost:5005/api/greetings/user
-name: Greet
+modified: 1693948390218
+created: 1693948335958
+url: http://localhost:5005/api/greetings/helloworld
+name: Hello
 description: ""
 method: GET
 body: {}
@@ -14,10 +14,10 @@ headers:
     value: Insomnia/2023.5.7
 authentication:
   type: bearer
-  disabled: false
+  disabled: true
   token: "{% response 'body', 'req_f388c4524e264ac68623e72c6671a95c',
     'b64::JC50b2tlbg==::46b', 'always', 60 %}"
-metaSortKey: -1693948385165
+metaSortKey: -1693948385265
 isPrivate: false
 settingStoreCookies: true
 settingSendCookies: true
