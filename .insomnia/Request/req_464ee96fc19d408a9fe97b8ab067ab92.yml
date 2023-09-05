@@ -1,9 +1,9 @@
 _id: req_464ee96fc19d408a9fe97b8ab067ab92
 type: Request
 parentId: fld_1a11cb0df6b24f76b7bdade88278cfb7
-modified: 1693948371581
+modified: 1693951245540
 created: 1693947134210
-url: http://localhost:5005/api/auth/register
+url: https://localhost:5000/api/auth/register
 name: Register
 description: ""
 method: POST
