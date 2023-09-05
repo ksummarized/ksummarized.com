@@ -8,8 +8,16 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using api;
+
+Log.Logger = new LoggerConfiguration().Enrich.WithCoretaltionId("corelationId", true).WriteTo
+                                             .Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}]{CorelationId} {Message:lj}{NewLine}{Exception}")
+                                             .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpContextAccessor();
+builder.Host.UseSerilog();
 
 builder.Services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Users")));
 
@@ -86,6 +94,7 @@ app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
+app.UseSerilogRequestLogging();
 app.UseRouting();
 app.UseAuthorization();
 

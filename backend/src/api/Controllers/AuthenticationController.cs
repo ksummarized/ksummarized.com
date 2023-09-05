@@ -10,10 +10,13 @@ namespace api.Controllers;
 public class AuthenticationController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly ILogger<AuthenticationController> _logger;
 
-    public AuthenticationController(IUserService userService)
+    public AuthenticationController(IUserService userService, ILogger<AuthenticationController> logger)
     {
         _userService = userService;
+        _logger = logger;
+
     }
 
     [HttpPost("register")]
@@ -45,10 +48,12 @@ public class AuthenticationController : ControllerBase
         var (IsSuccess, AuthResult, Error) = await _userService.Login(user);
         if (IsSuccess)
         {
+            _logger.LogInformation("User {user} loged in.", user.Email);
             return Ok(AuthResult);
         }
         else
         {
+            _logger.LogInformation("Failed login for {User}", user.Email);
             return Unauthorized(Error);
         }
     }
