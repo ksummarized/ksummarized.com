@@ -1,0 +1,31 @@
+_id: req_464ee96fc19d408a9fe97b8ab067ab92
+type: Request
+parentId: wrk_20192206620f4a8cbffbba87b3f7846a
+modified: 1693947154981
+created: 1693947134210
+url: http://localhost:5005/api/auth/register
+name: Register
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"Email":"test@test.com",
+    	"Password":"Test123!@#"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+  - name: User-Agent
+    value: Insomnia/2023.5.7
+authentication: {}
+metaSortKey: -1693942561643
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

@@ -1,0 +1,27 @@
+_id: req_de951a3b547b4c5ab9fc483dfc5140c4
+type: Request
+parentId: wrk_20192206620f4a8cbffbba87b3f7846a
+modified: 1693947412476
+created: 1693947179482
+url: http://localhost:5005/api/greetings/user
+name: Greet
+description: ""
+method: GET
+body: {}
+parameters: []
+headers:
+  - name: User-Agent
+    value: Insomnia/2023.5.7
+authentication:
+  type: bearer
+  disabled: false
+  token: "{% response 'body', 'req_f388c4524e264ac68623e72c6671a95c',
+    'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+metaSortKey: -1693942561593
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
