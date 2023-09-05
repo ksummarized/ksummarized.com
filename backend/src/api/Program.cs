@@ -11,93 +11,106 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using api;
 
-Log.Logger = new LoggerConfiguration().Enrich.WithCoretaltionId("corelationId", true).WriteTo
-                                             .Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}]{CorelationId} {Message:lj}{NewLine}{Exception}")
+const string logFormat =  "[{Timestamp:HH:mm:ss} {Level:u3}]{CorelationId} {Message:lj}{NewLine}{Exception}";
+Log.Logger = new LoggerConfiguration().Enrich.WithCoretaltionId()
+                                             .WriteTo
+                                             .Console(outputTemplate: logFormat)
                                              .CreateLogger();
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHttpContextAccessor();
-builder.Host.UseSerilog();
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
+    builder.Services.AddHttpContextAccessor();
+    builder.Host.UseSerilog();
+    builder.Services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Users")));
 
-builder.Services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Users")));
-
-var jwtOptions = new JwtOptions();
-builder.Configuration.Bind("Jwt", jwtOptions);
-if(jwtOptions.Secret is null || jwtOptions.Issuer is null || jwtOptions.Audience is null)
-{
-    throw new Exception("Can't start application without JWT options");
-}
-
-var tokenValidationParameters = new TokenValidationParameters()
-{
-    ValidateIssuerSigningKey = true,
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtOptions.Secret)),
-    ValidateAudience = true,
-    ValidAudience = jwtOptions.Audience,
-    ValidateIssuer = true,
-    ValidIssuer = jwtOptions.Issuer,
-    ValidateLifetime = true
-};
-builder.Services.AddSingleton(tokenValidationParameters);
-builder.Services.AddSingleton(jwtOptions);
-
-builder.Services.AddIdentity<UserModel, IdentityRole>().AddEntityFrameworkStores<UsersDbContext>().AddDefaultTokenProviders();
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    options.Password.RequiredLength = 8;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireDigit = true;
-    options.Lockout.MaxFailedAccessAttempts = 3;
-});
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.SaveToken = true;
-    options.RequireHttpsMetadata = builder.Environment.IsProduction();
-    options.TokenValidationParameters = tokenValidationParameters;
-
-});
-builder.Services.AddControllers();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
-});
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: "AllowAll", builder =>
+    var jwtOptions = new JwtOptions();
+    builder.Configuration.Bind("Jwt", jwtOptions);
+    if (jwtOptions.Secret is null || jwtOptions.Issuer is null || jwtOptions.Audience is null)
     {
-        builder.WithOrigins("*");
+        throw new Exception("Can't start application without JWT options");
+    }
+
+    var tokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtOptions.Secret)),
+        ValidateAudience = true,
+        ValidAudience = jwtOptions.Audience,
+        ValidateIssuer = true,
+        ValidIssuer = jwtOptions.Issuer,
+        ValidateLifetime = true
+    };
+    builder.Services.AddSingleton(tokenValidationParameters);
+    builder.Services.AddSingleton(jwtOptions);
+
+    builder.Services.AddIdentity<UserModel, IdentityRole>().AddEntityFrameworkStores<UsersDbContext>().AddDefaultTokenProviders();
+    builder.Services.Configure<IdentityOptions>(options =>
+    {
+        options.Password.RequiredLength = 8;
+        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireDigit = true;
+        options.Lockout.MaxFailedAccessAttempts = 3;
     });
-});
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(options =>
+    {
+        options.SaveToken = true;
+        options.RequireHttpsMetadata = true;
+        options.TokenValidationParameters = tokenValidationParameters;
 
-var app = builder.Build();
+    });
+    builder.Services.AddControllers();
+    builder.Services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
+    });
+    builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<ITokenService, TokenService>();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "api v1"));
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(name: "AllowAll", builder =>
+        {
+            builder.WithOrigins("*");
+        });
+    });
+
+    var app = builder.Build();
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+        app.UseSwagger();
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "api v1"));
+    }
+
+    app.UseAuthentication();
+
+    app.UseCors("AllowAll");
+
+    app.UseHttpsRedirection();
+    app.UseHsts();
+
+    app.UseSerilogRequestLogging();
+    app.UseRouting();
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
 }
-
-app.UseAuthentication();
-
-app.UseCors("AllowAll");
-
-app.UseHttpsRedirection();
-
-app.UseSerilogRequestLogging();
-app.UseRouting();
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+catch (Exception ex)
+{
+    Log.Fatal("Error starting the application: {Exception}", ex);
+}
+finally
+{
+    Log.CloseAndFlush();
+}

@@ -15,6 +15,11 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ConnectionStrings__Users: "Host=db;Database=users;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx" 
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "devcertpasswd"
+      ASPNETCORE_URLS: "https://+:443;http://+:80"
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
     depends_on:
       db:
         condition: service_healthy

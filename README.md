@@ -14,6 +14,17 @@ To run this application locally it is recommended to have the following installe
 - dotnet sdk
 - entity framework tools
 
+First install dev-certs to use https in powershell
+```powershell
+dotnet dev-certs https -ep "$env:USERPROFILE\.aspnet\https\aspnetapp.pfx"  -p devcertpasswd
+dotnet dev-certs https --trust
+```
+or in bash/zsh
+```bash
+dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p devcertpasswd 
+dotnet dev-certs https --trust
+```
+
 Next go to the `scripts` directory and run `apply_migrations.ps1`
 Next You should go back to the main directory and run `docker compose up --build`
 This can be done with the following snippet.

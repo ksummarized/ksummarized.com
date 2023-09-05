@@ -7,27 +7,18 @@ namespace api;
 
 public static class LoggingExtensions
 {
-    public static LoggerConfiguration WithCoretaltionId(this LoggerEnrichmentConfiguration config, string header, bool addIfMissing)
-    => config.With(new CorelationIdEnricher(header, addIfMissing));
+    public static LoggerConfiguration WithCoretaltionId(this LoggerEnrichmentConfiguration config)
+    => config.With(new CorelationIdEnricher());
 }
 
 public class CorelationIdEnricher : ILogEventEnricher
 {
-    private const string CorrelationIdItemKey = "Serilog_CorrelationId";
-    private const string PropertyName = "CorelationId";
-    private readonly string _headerKey;
-    private readonly bool _addValueIfHeaderAbsence;
+    private const string _propertyName = "CorelationId";
     private readonly IHttpContextAccessor _contextAccessor;
 
-    public CorelationIdEnricher(string headerKey, bool addValueIfHeaderAbsence) : this(headerKey, addValueIfHeaderAbsence, new HttpContextAccessor())
+    public CorelationIdEnricher()
     {
-    }
-
-    internal CorelationIdEnricher(string headerKey, bool addValueIfHeaderAbsence, IHttpContextAccessor contextAccessor)
-    {
-        _headerKey = headerKey;
-        _addValueIfHeaderAbsence = addValueIfHeaderAbsence;
-        _contextAccessor = contextAccessor;
+        _contextAccessor = new HttpContextAccessor();
     }
 
 
@@ -39,20 +30,17 @@ public class CorelationIdEnricher : ILogEventEnricher
             return;
         }
 
-        if (httpContext.Items[CorrelationIdItemKey] is LogEventProperty logEventProperty)
+        if (httpContext.Items[_propertyName] is LogEventProperty logEventProperty)
         {
             logEvent.AddPropertyIfAbsent(logEventProperty);
             return;
         }
 
-        var header = httpContext.Request.Headers[_headerKey].ToString();
-        var correlationId = !string.IsNullOrWhiteSpace(header)
-            ? header
-            : (_addValueIfHeaderAbsence ? Guid.NewGuid().ToString() : null);
+        var correlationId = Guid.NewGuid().ToString();
 
-        var correlationIdProperty = new LogEventProperty(PropertyName, new ScalarValue(correlationId));
+        var correlationIdProperty = new LogEventProperty(_propertyName, new ScalarValue(correlationId));
         logEvent.AddOrUpdateProperty(correlationIdProperty);
 
-        httpContext.Items.Add(CorrelationIdItemKey, correlationIdProperty);
+        httpContext.Items.Add(_propertyName, correlationIdProperty);
     }
 }
