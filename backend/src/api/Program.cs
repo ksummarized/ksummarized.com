@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using api;
 
-const string logFormat =  "[{Timestamp:HH:mm:ss} {Level:u3}]{CorelationId} {Message:lj}{NewLine}{Exception}";
+const string logFormat =  "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
 Log.Logger = new LoggerConfiguration().Enrich.WithCoretaltionId()
                                              .WriteTo
                                              .Console(outputTemplate: logFormat)
@@ -78,7 +78,7 @@ try
     {
         options.AddPolicy(name: "AllowAll", builder =>
         {
-            builder.WithOrigins("*");
+            builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
         });
     });
 

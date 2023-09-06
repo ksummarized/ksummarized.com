@@ -56,11 +56,14 @@ function LoginForm() {
     data: ValidationSchema
   ) => {
     try {
-      const response = await fetchPlus(`${Constants.BASE_URL}/auth/login`, {
+      console.log(import.meta.env.VITE_API_URL);
+      const response = await fetch(`${Constants.BASE_URL}/auth/login`, {
         body: JSON.stringify({
           email: data.email,
           password: data.password,
         }),
+        headers: {"Content-Type" : "application/json"},
+        method: "POST"
       });
       if (response.status !== StatusCode.OK) {
         const errorMessage = await response.text();
@@ -147,14 +150,16 @@ function LoginForm() {
           />
         </Grid>
         <Grid item>
-          <Box
-            component="img"
-            sx={{
-              height: 40,
-              width: 40,
-            }}
-            src={githubLogo}
-          />
+          <a href="https://github.com/login/oauth/authorize?client_id=b92b25beec92bb9902f7&scope=user:email">
+            <Box
+              component="img"
+              sx={{
+                height: 40,
+                width: 40,
+              }}
+              src={githubLogo}
+            />
+          </a>
         </Grid>
         <Grid item>
           <Box

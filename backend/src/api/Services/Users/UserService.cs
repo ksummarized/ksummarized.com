@@ -1,13 +1,8 @@
 ﻿using api.Data;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Collections.Generic;
 using api.Data.DTO;
 using api.Data.DAO;
 using api.Services.Tokens;
-using System.Security.Claims;
 
 namespace api.Services.Users;
 
@@ -70,6 +65,26 @@ public class UserService : IUserService
         }
     }
 
+    public async Task<(bool IsSuccess, AuthResultDTO AuthResult, string Error)> OAuthLogin(string email)
+    {
+        var existingUser = await _userManager.FindByEmailAsync(email);
+        if (existingUser is null)
+        {
+            var newUser = new UserModel()
+            {
+                Email = email,
+                UserName = email,
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+            await _userManager.CreateAsync(newUser);
+            existingUser = await _userManager.FindByEmailAsync(email);
+        }
+        var (authresult, refreshToken) = _tokenService.Generate(existingUser!);
+        await _usersDbContext.RefreshTokens.AddAsync(refreshToken);
+        await _usersDbContext.SaveChangesAsync();
+        return (true, authresult, string.Empty);
+    }
+
     public async Task<(bool IsSuccess, AuthResultDTO AuthResult, string Error)> RefreshLogin(TokenRequestDTO tokenRequestDTO)
     {
         var storedToken = _usersDbContext.RefreshTokens.FirstOrDefault(t => t.Token.Equals(tokenRequestDTO.RefreshToken));
@@ -101,4 +116,7 @@ public class UserService : IUserService
         _usersDbContext.RefreshTokens.RemoveRange(tokens);
         await _usersDbContext.SaveChangesAsync();
     }
+
+    public Task<(bool IsSuccess, AuthResultDTO AuthResult, string Error)> LoginWithGithub(string email) => throw new NotImplementedException();
+
 }
