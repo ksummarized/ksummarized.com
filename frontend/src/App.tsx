@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 
 import "./App.css";
@@ -9,20 +9,41 @@ import HomePage from "./pages/Home/HomePage";
 import RegisterPage from "./pages/Register/RegisterPage";
 import StartPage from "./pages/Start/StartPage";
 import RequireAuth from "./helpers/RequireAuth";
+import GitHubCallbackPage, { CodeLoader } from "./pages/GitHubCallback/GitHubCallbackPage";
 
 function App(): JSX.Element {
+  const router = createBrowserRouter([
+    {
+      index: true,
+      element: <StartPage />
+    },
+    {
+      element: <RequireAuth />,
+      children: [
+        {
+          path: "home",
+          element: <HomePage />
+        }
+      ]
+    },
+    {
+      path: "login",
+      element: <LoginPage />
+    },
+    {
+      path: "register",
+      element: <RegisterPage />
+    },
+    {
+      path: "github-callback",
+      element: <GitHubCallbackPage />,
+      loader: CodeLoader
+    }
+
+  ]);
   return (
     <ThemeProvider theme={darkTheme}>
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<StartPage />} />
-          <Route element={<RequireAuth />}>
-            <Route path="home" element={<HomePage />} />
-          </Route>
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-        </Routes>
-      </BrowserRouter>
+      <RouterProvider router={router}/>
     </ThemeProvider>
   );
 }
