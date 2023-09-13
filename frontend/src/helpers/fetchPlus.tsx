@@ -7,7 +7,7 @@ function fetchPlus(input: URL | RequestInfo, init: RequestInitPlus = {}) {
   const requestInterceptors = fetchPlus.requestInterceptors.get();
   const responseInterceptors = fetchPlus.responseInterceptors.get();
   const dispatchRequest = async (
-    initModified: RequestInitPlus
+    initModified: RequestInitPlus,
   ): Promise<ResponsePlus> => {
     const request = new Request(input, initModified);
     const originalResponse: ResponsePlus = await fetch(request);
@@ -42,8 +42,8 @@ fetchPlus.requestInterceptors.use(
   },
   () =>
     Promise.reject(
-      Error("An error occurred while setting the required request parameters.")
-    )
+      Error("An error occurred while setting the required request parameters."),
+    ),
 );
 
 export default fetchPlus;

@@ -14,7 +14,7 @@ const useRefreshToken = () => {
             token: user.token,
             refreshToken: user.refreshToken,
           }),
-        }
+        },
       );
       user.token = responseData.token;
       localStorage.setItem("user", JSON.stringify(user));

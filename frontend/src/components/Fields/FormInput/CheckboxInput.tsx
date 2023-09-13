@@ -1,12 +1,13 @@
 import * as React from "react";
 import { useFormContext, Controller } from "react-hook-form";
-import { Checkbox, CheckboxProps } from "@mui/material";
 
 type CheckboxInputProps = {
+  id: string;
   name: string;
-} & CheckboxProps;
+  label: string;
+};
 
-function CheckboxInput({ name, ...otherProps }: CheckboxInputProps) {
+function CheckboxInput({ id, name, label }: CheckboxInputProps) {
   const { control } = useFormContext();
 
   return (
@@ -14,7 +15,17 @@ function CheckboxInput({ name, ...otherProps }: CheckboxInputProps) {
       control={control}
       name={name}
       defaultValue=""
-      render={({ field }) => <Checkbox {...field} {...otherProps} />}
+      render={({ field }) => (
+        <div>
+          <input id={id} type="checkbox" {...field} className="form-control" />
+          <label
+            htmlFor={id}
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            {label}
+          </label>
+        </div>
+      )}
     />
   );
 }
