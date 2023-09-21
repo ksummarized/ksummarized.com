@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import UndrawRelaxingAtHome from "../../assets/images/UndrawRelaxingAtHome.svg";
+import UndrawRelaxingAtHome from "../../assets/images/UndrawRelax.svg";
 import TopBar from "../../components/TopBar/TopBar";
 import SideMenu from "../../components/SideMenu/SideMenu";
 

@@ -20,7 +20,7 @@ function fetchPlus(input: URL | RequestInfo, init: RequestInitPlus = {}) {
     { fulfilled: dispatchRequest, rejected: null },
     ...responseInterceptors,
   ];
-  let promise: any = Promise.resolve(init);
+  let promise: any = Promise.resolve(init); // eslint-disable-line @typescript-eslint/no-explicit-any
   while (chain.length) {
     const chainItem = chain.shift();
     promise = promise.then(chainItem?.fulfilled, chainItem?.rejected);

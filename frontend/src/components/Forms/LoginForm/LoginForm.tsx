@@ -4,10 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import IconGoogleLogo from "../../../assets/logos/IconGoogleLogo.svg";
-import IconGithubLogo from "../../../assets/logos/IconGithubLogo.svg";
-import IconFacebookLogo from "../../../assets/logos/IconFacebookLogo.svg";
-import IconXLogo from "../../../assets/logos/IconXLogo.svg";
+import GoogleLogo from "../../../assets/logos/GoogleLogo.svg";
+import GithubLogo from "../../../assets/logos/GithubLogo.svg";
+import FacebookLogo from "../../../assets/logos/FacebookLogo.svg";
+import XLogo from "../../../assets/logos/XLogo.svg";
 import StatusCode from "../../../helpers/StatusCode";
 import Constants from "../../../helpers/Constants";
 import useFetchPlus from "../../../hooks/useFetchPlus";
@@ -107,10 +107,10 @@ function LoginForm() {
         </button>
       </form>
       <div className="grid grid-cols-4 gap-4 h-52 w-52">
-        <img src={IconGoogleLogo} alt="google logo" />
-        <img src={IconFacebookLogo} alt="facebook logo" />
-        <img src={IconGithubLogo} alt="github logo" />
-        <img src={IconXLogo} alt="x logo" />
+        <img src={GoogleLogo} alt="google logo" />
+        <img src={FacebookLogo} alt="facebook logo" />
+        <img src={GithubLogo} alt="github logo" />
+        <img src={XLogo} alt="x logo" />
       </div>
     </FormProvider>
   );
