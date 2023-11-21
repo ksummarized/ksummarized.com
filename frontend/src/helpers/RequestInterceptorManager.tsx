@@ -12,7 +12,7 @@ export default class RequestInterceptorManager {
 
   use(
     fulfilled: (init: RequestInit) => void,
-    rejected: (init: RequestInit) => void
+    rejected: (init: RequestInit) => void,
   ) {
     return this.handlers.push({ fulfilled, rejected });
   }

@@ -1,64 +1,18 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import Toolbar from "@mui/material/Toolbar";
-import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
-import AddIcon from "@mui/icons-material/Add";
 
-import undrawRelaxingAtHome from "../../assets/images/undrawRelaxingAtHome.svg";
+import UndrawRelaxingAtHome from "../../assets/images/UndrawRelax.svg";
 import TopBar from "../../components/TopBar/TopBar";
 import SideMenu from "../../components/SideMenu/SideMenu";
-import Colors from "../../styles/Colors";
 
 export default function HomePage(): JSX.Element {
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
+    <div className="flex">
       <TopBar />
       <SideMenu />
-      <Box
-        component="main"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          flexGrow: 1,
-          paddingTop: 10,
-          height: "100vh",
-          background: Colors.thirdLayer,
-        }}
-      >
-        <Toolbar />
-        <Box
-          component="img"
-          sx={{
-            opacity: 0.4,
-            height: "auto",
-            maxWidth: "100%",
-            padding: 0,
-            margin: 0,
-          }}
-          src={undrawRelaxingAtHome}
-        />
-        <Typography component="h1" variant="h6" fontSize={36} marginTop="30px">
-          Nothing to do. Time to relax!
-        </Typography>
-      </Box>
-      <Tooltip title="Add">
-        <IconButton
-          size="large"
-          sx={{
-            position: "fixed",
-            bottom: "5%",
-            right: "5%",
-            background: Colors.primary,
-          }}
-        >
-          <AddIcon />
-        </IconButton>
-      </Tooltip>
-    </Box>
+      <div className="flex flex-col p-4 sm:ml-64 sm:mt-16 justify-items-center content-center">
+        <img src={UndrawRelaxingAtHome} alt="Relax" />
+        <h6 className="text-3xl text-center">Nothing to do! Time to relax!</h6>
+      </div>
+    </div>
   );
 }

@@ -25,7 +25,7 @@ const useFetchPlus = () => {
 
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     const responseInterceptorIndex = fetchPlus.responseInterceptors.use(
@@ -50,7 +50,7 @@ const useFetchPlus = () => {
           }
         }
         return Promise.reject(error);
-      }
+      },
     );
 
     return () => {

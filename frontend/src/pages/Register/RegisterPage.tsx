@@ -1,44 +1,18 @@
 import * as React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 
-import logo from "../../assets/logos/logo.png";
-import Colors from "../../styles/Colors";
+import KsummarizedLogo from "../../assets/logos/KsummarizedLogo.png";
 import RegisterForm from "../../components/Forms/RegisterForm/RegisterForm";
 
 export default function RegisterPage(): JSX.Element {
   return (
-    <Container component="main" maxWidth="sm">
-      <CssBaseline />
-      <Box
-        sx={{
-          marginTop: 8,
-          paddingLeft: 8,
-          paddingRight: 8,
-          paddingBottom: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          background: Colors.firstLayer,
-        }}
-      >
-        <Box
-          component="img"
-          sx={{
-            height: 200,
-            width: 200,
-            maxHeight: { xs: 200, md: 167 },
-            maxWidth: { xs: 200, md: 250 },
-          }}
-          src={logo}
-        />
-        <Typography component="h1" variant="h6">
-          Just one step to organized life!
-        </Typography>
+    <div className="container">
+      <div className="flex-col justify-items-center p-8">
+        <div className="w-52 h-52">
+          <img src={KsummarizedLogo} alt="ksummarized logo" />
+        </div>
+        <h6 className="text-1xl">Just one step to organized life!</h6>
         <RegisterForm />
-      </Box>
-    </Container>
+      </div>
+    </div>
   );
 }

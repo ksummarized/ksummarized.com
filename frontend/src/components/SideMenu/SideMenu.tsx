@@ -1,78 +1,48 @@
 import * as React from "react";
-import Grid from "@mui/material/Grid";
-import Drawer, { DrawerProps } from "@mui/material/Drawer";
-import Toolbar from "@mui/material/Toolbar";
-import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
-import ToDoListIcon from "@mui/icons-material/FormatListBulleted";
-import CalendarIcon from "@mui/icons-material/DateRange";
-import OrganizerIcon from "@mui/icons-material/Dashboard";
 
-import Colors from "../../styles/Colors";
+import CalendarIcon from "../../assets/icons/CalendarIcon.svg";
+import OrganizerIcon from "../../assets/icons/OrganizerIcon.svg";
+import ToDoListIcon from "../../assets/icons/ToDoListIcon.svg";
 
-const sideMenuWidth = 64;
-
-function SideMenu({ ...props }: DrawerProps) {
+function SideMenu() {
   return (
-    <Drawer
-      {...props}
-      variant="permanent"
-      PaperProps={{
-        sx: {
-          background: Colors.firstLayer,
-          borderRight: 2,
-          borderColor: "black",
-          boxSizing: "border-box",
-          minWidth: sideMenuWidth,
-        },
-      }}
-      sx={{ flexShrink: 0, minWidth: sideMenuWidth }}
+    <aside
+      id="default-sidebar"
+      className="fixed top-16 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+      aria-label="Sidebar"
     >
-      <Toolbar />
-      <Grid
-        container
-        direction="column"
-        overflow="auto"
-        paddingTop={3}
-        justifyContent="center"
-        alignItems="center"
-        spacing="30px"
-      >
-        <Grid key="toDoList" item>
-          <Tooltip title="ToDoList">
-            <IconButton aria-label="toDoList">
-              <ToDoListIcon
-                sx={{
-                  fill: Colors.primary,
-                }}
-              />
-            </IconButton>
-          </Tooltip>
-        </Grid>
-        <Grid key="calendar" item>
-          <Tooltip title="Calendar">
-            <IconButton aria-label="calendar">
-              <CalendarIcon
-                sx={{
-                  fill: Colors.primary,
-                }}
-              />
-            </IconButton>
-          </Tooltip>
-        </Grid>
-        <Grid key="organizer" item>
-          <Tooltip title="Organizer">
-            <IconButton aria-label="organizer">
-              <OrganizerIcon
-                sx={{
-                  fill: Colors.primary,
-                }}
-              />
-            </IconButton>
-          </Tooltip>
-        </Grid>
-      </Grid>
-    </Drawer>
+      <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50">
+        <ul className="space-y-2 font-medium">
+          <li>
+            <a
+              href="/"
+              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            >
+              <img src={ToDoListIcon} alt="ToDoList icon" />
+              <span className="ml-3">ToDoList</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="/"
+              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            >
+              <img src={CalendarIcon} alt="Calendar icon" />
+              <span className="flex-1 ml-3 whitespace-nowrap">Calendar</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="/"
+              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            >
+              <img src={OrganizerIcon} alt="Organizer icon" />
+              <span className="flex-1 ml-3 whitespace-nowrap">Organizer</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
   );
 }
 

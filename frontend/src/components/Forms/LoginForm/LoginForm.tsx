@@ -2,23 +2,17 @@ import * as React from "react";
 import { SubmitHandler, useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import { Link as ReactLink } from "@mui/material";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import googleLogo from "../../../assets/logos/googleLogo.svg";
-import githubLogo from "../../../assets/logos/githubLogo.svg";
-import facebookLogo from "../../../assets/logos/facebookLogo.svg";
-import twitterLogo from "../../../assets/logos/twitterLogo.svg";
-import TextFieldInput from "../../Fields/FormInput/TextFieldInput";
-import CheckboxInput from "../../Fields/FormInput/CheckboxInput";
+import GoogleLogo from "../../../assets/logos/GoogleLogo.svg";
+import GithubLogo from "../../../assets/logos/GithubLogo.svg";
+import FacebookLogo from "../../../assets/logos/FacebookLogo.svg";
+import XLogo from "../../../assets/logos/XLogo.svg";
 import StatusCode from "../../../helpers/StatusCode";
 import Constants from "../../../helpers/Constants";
 import useFetchPlus from "../../../hooks/useFetchPlus";
+import TextFieldInput from "../../Fields/FormInput/TextFieldInput";
+import CheckboxInput from "../../Fields/FormInput/CheckboxInput";
 
 const validationSchema = z.object({
   email: z
@@ -53,7 +47,7 @@ function LoginForm() {
   });
 
   const onSubmitHandler: SubmitHandler<ValidationSchema> = async (
-    data: ValidationSchema
+    data: ValidationSchema,
   ) => {
     try {
       const response = await fetchPlus(`${Constants.BASE_URL}/auth/login`, {
@@ -71,7 +65,7 @@ function LoginForm() {
       const refreshToken = responseData?.refreshToken;
       localStorage.setItem(
         "user",
-        JSON.stringify({ email: data.email, token, refreshToken })
+        JSON.stringify({ email: data.email, token, refreshToken }),
       );
       navigate(from, { replace: true });
     } catch (error) {
@@ -81,102 +75,43 @@ function LoginForm() {
 
   return (
     <FormProvider {...methods}>
-      <Box
-        component="form"
-        onSubmit={methods.handleSubmit(onSubmitHandler)}
-        noValidate
-        sx={{ mt: 1 }}
-      >
+      <form onSubmit={methods.handleSubmit(onSubmitHandler)} noValidate>
         <TextFieldInput
-          helperText="Please enter your email address"
-          margin="normal"
           required
-          fullWidth
+          placeholder="Please enter your email address"
           id="email"
           label="Email Address"
           name="email"
-          autoComplete="email"
-          autoFocus
-          variant="filled"
+          type="text"
         />
         <TextFieldInput
-          fullWidth
           required
           id="password"
           name="password"
           label="Password"
-          variant="filled"
           type="password"
-          sx={{ mb: 1 }}
+          placeholder="Password"
         />
-        <FormControlLabel
-          control={
-            <CheckboxInput
-              value="remember"
-              name="remember"
-              id="remember"
-              color="primary"
-            />
-          }
-          label="Remember me"
-        />
-        <Typography component="h1" variant="h6" align="center">
+        <CheckboxInput name="remember" id="remember" label="Remember me" />
+        <h6>
           Don&apos;t have an account?&nbsp;
-          <ReactLink href="/register" color="secondary">
-            Sign Up
-          </ReactLink>
-        </Typography>
-        <Button
+          <a href="/register" className="text-blue-600">
+            Sign up
+          </a>
+        </h6>
+        <button
           type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
+          className="w-full px-6 py-3 bg-slate-600 text-white font-medium uppercase rounded shadow-md hover:bg-gray-200 hover:shadow-lg focus:bg-blue-300 focus:outline-none focus:ring-0 active:bg-slate-900"
         >
           LOGIN
-        </Button>
-      </Box>
-      <Grid container spacing={5} paddingTop={2} justifyContent="center">
-        <Grid item>
-          <Box
-            component="img"
-            sx={{
-              height: 40,
-              width: 40,
-            }}
-            src={googleLogo}
-          />
-        </Grid>
-        <Grid item>
-          <Box
-            component="img"
-            sx={{
-              height: 40,
-              width: 40,
-            }}
-            src={githubLogo}
-          />
-        </Grid>
-        <Grid item>
-          <Box
-            component="img"
-            sx={{
-              height: 40,
-              width: 40,
-            }}
-            src={facebookLogo}
-          />
-        </Grid>
-        <Grid item>
-          <Box
-            component="img"
-            sx={{
-              height: 40,
-              width: 40,
-            }}
-            src={twitterLogo}
-          />
-        </Grid>
-      </Grid>
+        </button>
+      </form>
+      <div className="grid grid-cols-4 gap-4 h-52 w-52">
+        <img src={GoogleLogo} alt="google logo" />
+        <img src={FacebookLogo} alt="facebook logo" />
+        <img src={GithubLogo} alt="github logo" />
+        <img src={XLogo} alt="x logo" />
+      </div>
     </FormProvider>
   );
 }

@@ -1,39 +1,16 @@
 import * as React from "react";
-import AppBar, { AppBarProps } from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
-import Toolbar from "@mui/material/Toolbar";
 
-import logo from "../../assets/logos/logo.png";
-import Colors from "../../styles/Colors";
+import KsummarizedLogo from "../../assets/logos/KsummarizedLogo.png";
 
-function TopBar({ ...props }: AppBarProps) {
+function TopBar() {
   return (
-    <Box sx={{ flexGrow: 0 }}>
-      <AppBar
-        {...props}
-        position="fixed"
-        sx={{
-          background: Colors.background,
-          borderBottom: 2,
-          borderColor: "black",
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-        }}
-      >
-        <Toolbar>
-          <Link href="/">
-            <Box
-              component="img"
-              sx={{
-                height: 64,
-                width: 64,
-              }}
-              src={logo}
-            />
-          </Link>
-        </Toolbar>
-      </AppBar>
-    </Box>
+    <nav className="bg-gray-500 fixed w-full z-20 top-0 left-0 border-b border-gray-200">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <a href="/home" className="flex items-center">
+          <img src={KsummarizedLogo} className="h-8" alt="Ksummarized logo" />
+        </a>
+      </div>
+    </nav>
   );
 }
 

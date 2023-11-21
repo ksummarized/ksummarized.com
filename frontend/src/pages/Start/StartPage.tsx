@@ -1,34 +1,29 @@
 import * as React from "react";
-import Container from "@mui/material/Container";
-import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
 
 export default function HomePage(): JSX.Element {
   return (
-    <Container component="main" maxWidth="sm">
-      <CssBaseline />
-      <Typography component="h1" variant="h6">
-        Welcome to ksummarized!
-      </Typography>
-      <Typography component="h1" variant="h6">
+    <div className="xl:container mx-auto mb-32 bg-gray-200">
+      <div className="flex justify-center">
+        <h1 className="text-5xl">Welcome to ksummarized!</h1>
+      </div>
+      <h2 className="text-3xl">
         Log in:&nbsp;
-        <Link href="/login" color="secondary">
+        <a className="text-blue-700" href="/login">
           here
-        </Link>
-      </Typography>
-      <Typography component="h1" variant="h6">
+        </a>
+      </h2>
+      <h2 className="text-3xl">
         Register:&nbsp;
-        <Link href="/register" color="secondary">
+        <a className="text-blue-700" href="/register">
           here
-        </Link>
-      </Typography>
-      <Typography component="h1" variant="h6">
+        </a>
+      </h2>
+      <h2 className="text-3xl">
         Home:&nbsp;
-        <Link href="/home" color="secondary">
+        <a className="text-blue-700" href="/home">
           here
-        </Link>
-      </Typography>
-    </Container>
+        </a>
+      </h2>
+    </div>
   );
 }

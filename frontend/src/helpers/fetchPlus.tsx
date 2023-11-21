@@ -7,7 +7,7 @@ function fetchPlus(input: URL | RequestInfo, init: RequestInitPlus = {}) {
   const requestInterceptors = fetchPlus.requestInterceptors.get();
   const responseInterceptors = fetchPlus.responseInterceptors.get();
   const dispatchRequest = async (
-    initModified: RequestInitPlus
+    initModified: RequestInitPlus,
   ): Promise<ResponsePlus> => {
     const request = new Request(input, initModified);
     const originalResponse: ResponsePlus = await fetch(request);
@@ -20,7 +20,7 @@ function fetchPlus(input: URL | RequestInfo, init: RequestInitPlus = {}) {
     { fulfilled: dispatchRequest, rejected: null },
     ...responseInterceptors,
   ];
-  let promise: any = Promise.resolve(init);
+  let promise: any = Promise.resolve(init); // eslint-disable-line @typescript-eslint/no-explicit-any
   while (chain.length) {
     const chainItem = chain.shift();
     promise = promise.then(chainItem?.fulfilled, chainItem?.rejected);
@@ -42,8 +42,8 @@ fetchPlus.requestInterceptors.use(
   },
   () =>
     Promise.reject(
-      Error("An error occurred while setting the required request parameters.")
-    )
+      Error("An error occurred while setting the required request parameters."),
+    ),
 );
 
 export default fetchPlus;

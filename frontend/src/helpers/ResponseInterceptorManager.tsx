@@ -12,7 +12,7 @@ export default class ResponseInterceptorManager {
 
   use(
     fulfilled: (response: Response) => void,
-    rejected: (response: Response) => void
+    rejected: (response: Response) => void,
   ) {
     return this.handlers.push({ fulfilled, rejected });
   }

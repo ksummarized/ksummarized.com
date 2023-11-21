@@ -2,8 +2,6 @@ import * as React from "react";
 import { SubmitHandler, useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 
 import TextFieldInput from "../../Fields/FormInput/TextFieldInput";
@@ -47,7 +45,7 @@ function RegisterForm() {
   });
 
   const onSubmitHandler: SubmitHandler<ValidationSchema> = async (
-    data: ValidationSchema
+    data: ValidationSchema,
   ) => {
     try {
       const response = await fetchPlus(`${Constants.BASE_URL}/auth/register`, {
@@ -73,56 +71,45 @@ function RegisterForm() {
 
   return (
     <FormProvider {...methods}>
-      <Box
-        component="form"
-        onSubmit={methods.handleSubmit(onSubmitHandler)}
-        noValidate
-        sx={{ mt: 1 }}
-      >
+      <form onSubmit={methods.handleSubmit(onSubmitHandler)} noValidate>
         <TextFieldInput
-          helperText="Please enter your email address"
-          margin="normal"
+          placeholder="Please enter your email address"
           required
-          fullWidth
+          type="text"
           id="email"
           label="Email Address"
           name="email"
-          autoComplete="email"
-          autoFocus
-          variant="filled"
         />
         <TextFieldInput
-          fullWidth
           required
+          placeholder="Password"
           id="password"
           name="password"
           label="Password"
-          variant="filled"
           type="password"
-          sx={{ mb: 1 }}
         />
         <TextFieldInput
-          fullWidth
           required
           id="confirmPassword"
           name="confirmPassword"
           label="Confirm password"
-          variant="filled"
+          placeholder="Confirm password"
           type="password"
         />
-        <Button type="submit" fullWidth variant="contained" sx={{ mt: 6 }}>
+        <button
+          type="submit"
+          className="w-full px-6 py-3 bg-slate-600 text-white font-medium uppercase rounded shadow-md hover:bg-gray-200 hover:shadow-lg focus:bg-blue-300 focus:outline-none focus:ring-0 active:bg-slate-900"
+        >
           REGISTER
-        </Button>
-        <Button
+        </button>
+        <button
           type="button"
           onClick={onCancelHandler}
-          fullWidth
-          variant="outlined"
-          sx={{ mt: 1, mb: 3 }}
+          className="w-full px-6 py-3 bg-slate-300 text-white font-medium uppercase rounded shadow-md hover:bg-gray-200 hover:shadow-lg focus:bg-blue-300 focus:outline-none focus:ring-0 active:bg-slate-900"
         >
           CANCEL
-        </Button>
-      </Box>
+        </button>
+      </form>
     </FormProvider>
   );
 }
