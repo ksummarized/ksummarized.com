@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace api.Data.DTO;
+﻿namespace api.Data.DTO;
 
 public class AuthResultDTO
 {
