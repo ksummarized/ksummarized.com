@@ -1,4 +1,3 @@
-using api.Data.DAO;
 using api.Data;
 using api.Services.Tokens;
 using api.Services.Users;
@@ -8,10 +7,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using api.Data.DAO.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Users")));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Users")));
 
 var jwtOptions = new JwtOptions();
 builder.Configuration.Bind("Jwt", jwtOptions);
@@ -33,7 +33,7 @@ var tokenValidationParameters = new TokenValidationParameters()
 builder.Services.AddSingleton(tokenValidationParameters);
 builder.Services.AddSingleton(jwtOptions);
 
-builder.Services.AddIdentity<UserModel, IdentityRole>().AddEntityFrameworkStores<UsersDbContext>().AddDefaultTokenProviders();
+builder.Services.AddIdentity<UserModel, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequiredLength = 8;

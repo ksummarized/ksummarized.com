@@ -22,4 +22,9 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data/DAO/Identity/" />
+    <Folder Include="Migrations/" />
+  </ItemGroup>
+
 </Project>

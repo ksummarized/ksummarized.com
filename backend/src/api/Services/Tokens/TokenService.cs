@@ -1,5 +1,5 @@
 ﻿using api.Data;
-using api.Data.DAO;
+using api.Data.DAO.Identity;
 using api.Data.DTO;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,11 +22,11 @@ namespace api.Services.Tokens
         {
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Name, user.Email!),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email!),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new(ClaimTypes.Name, user.Email!),
+                new(ClaimTypes.NameIdentifier, user.Id),
+                new(JwtRegisteredClaimNames.Email, user.Email!),
+                new(JwtRegisteredClaimNames.Sub, user.Email!),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
             var token = new JwtSecurityToken(
                 issuer: _jwtOptions.Issuer,

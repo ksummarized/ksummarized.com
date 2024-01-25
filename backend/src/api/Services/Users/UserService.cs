@@ -1,13 +1,8 @@
 ﻿using api.Data;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Collections.Generic;
 using api.Data.DTO;
-using api.Data.DAO;
+using api.Data.DAO.Identity;
 using api.Services.Tokens;
-using System.Security.Claims;
 
 namespace api.Services.Users;
 
@@ -15,10 +10,10 @@ public class UserService : IUserService
 {
     private readonly UserManager<UserModel> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly UsersDbContext _usersDbContext;
+    private readonly ApplicationDbContext _usersDbContext;
     private readonly ITokenService _tokenService;
 
-    public UserService(UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, UsersDbContext usersDbContext, ITokenService tokenService)
+    public UserService(UserManager<UserModel> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext usersDbContext, ITokenService tokenService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -97,7 +92,7 @@ public class UserService : IUserService
     public async Task Logout(string username)
     {
         var dbUser = await _userManager.FindByNameAsync(username);
-        var tokens = _usersDbContext.RefreshTokens.Where(token => token.UserId == dbUser.Id);
+        var tokens = _usersDbContext.RefreshTokens.Where(token => token.UserId == dbUser!.Id);
         _usersDbContext.RefreshTokens.RemoveRange(tokens);
         await _usersDbContext.SaveChangesAsync();
     }
