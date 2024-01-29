@@ -1,0 +1,23 @@
+meta {
+  name: Create
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://localhost:5000/api/todo/lists
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  "ToDo"
+}
+
+vars:post-response {
+  listId: res.body.id
+}
