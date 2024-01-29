@@ -96,4 +96,9 @@ public class UserService : IUserService
         _usersDbContext.RefreshTokens.RemoveRange(tokens);
         await _usersDbContext.SaveChangesAsync();
     }
+    
+    public async Task<string?> GetUserId(string name){
+        var user = await _userManager.FindByNameAsync(name);
+        return user?.Id;
+    }
 }

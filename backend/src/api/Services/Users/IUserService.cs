@@ -11,4 +11,5 @@ public interface IUserService
     Task<(bool IsSuccess, AuthResultDTO AuthResult, string Error)> RefreshLogin(TokenRequestDTO tokenRequestDTO);
     Task<(bool IsSuccess, IEnumerable<string> Error)> Register(UserDTO user);
     Task Logout(string username);
+    Task<string?> GetUserId(string name);
 }

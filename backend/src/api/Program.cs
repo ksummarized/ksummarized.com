@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using api.Data.DAO.Identity;
 using Serilog;
 using api;
+using api.Services.ToDo;
 
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}]{CorelationId} {Message:lj}{NewLine}{Exception}";
 Log.Logger = new LoggerConfiguration().Enrich.WithCoretaltionId()
@@ -74,6 +75,7 @@ try
     });
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<ITokenService, TokenService>();
+    builder.Services.AddScoped<IToDoListService, ToDoListService>();
 
     builder.Services.AddCors(options =>
     {
