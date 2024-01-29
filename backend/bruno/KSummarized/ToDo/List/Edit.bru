@@ -1,0 +1,19 @@
+meta {
+  name: Edit
+  type: http
+  seq: 3
+}
+
+post {
+  url: https://localhost:5000/api/todo/lists/{{listId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  "ToDo2"
+}
