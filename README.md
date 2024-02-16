@@ -14,6 +14,23 @@ To run this application locally it is recommended to have the following installe
 - dotnet sdk
 - entity framework tools
 
+Firstly there is a need to configure environment variables:
+
+1. Copy `.env.example` as `.env` and populate the environment variables.
+1. Copy `appsettings.json` as `appsettings.Development.json` and populate the variables.
+
+Next install dev-certs to use https in powershell
+
+```powershell
+dotnet dev-certs https -ep ".aspnet\https\aspnetapp.pfx"  -p devcertpasswd --trust
+```
+
+or in bash/zsh
+
+```bash
+dotnet dev-certs https -ep .aspnet/https/aspnetapp.pfx -p devcertpasswd --trust
+```
+
 Next go to the `scripts` directory and run `apply_migrations.ps1`
 Next You should go back to the main directory and run `docker compose up --build`
 This can be done with the following snippet.

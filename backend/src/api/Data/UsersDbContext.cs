@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Data;
 
-public class UsersDbContext : IdentityDbContext<UserModel>
+public class UsersDbContext : DbContext
 {
     public UsersDbContext(DbContextOptions<UsersDbContext> options) : base(options)
     {
     }
-    public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<UserModel> Users { get; set; }
 }

@@ -1,5 +1,5 @@
 ﻿namespace api.Data;
-public class JwtOptions
+public class KeycloakJwtOptions
 {
     public string? Issuer { get; set; }
     public string? Audience { get; set; }
