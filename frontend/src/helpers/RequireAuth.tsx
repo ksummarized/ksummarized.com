@@ -1,20 +1,30 @@
 import React from "react";
-import { useLocation, Navigate, Outlet } from "react-router-dom";
-import { UserType } from "./CustomTypes";
+import { Outlet, useOutletContext } from "react-router-dom";
+import Keycloak from "keycloak-js";
 
-function RequireAuth() {
-  const localStorageUser = localStorage.getItem("user");
-  let user: UserType | null = null;
-  if (localStorageUser) {
-    user = JSON.parse(localStorageUser);
+import useAuth from "../hooks/useAuth";
+import Constants from "./Constants";
+
+export default function RequireAuth() {
+  const { isLogin, keycloak } = useAuth();
+
+  const createUserInBackend = async () => {
+    const response = await fetch(`${Constants.BASE_URL}/auth/create-user`, {
+      headers: { Authorization: `Bearer ${keycloak!.token}` },
+    });
+    if (response.status !== 200) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+  };
+
+  if (isLogin) {
+    createUserInBackend();
   }
-  const location = useLocation();
 
-  return user?.email ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/login" state={{ from: location }} replace />
-  );
+  return isLogin ? <Outlet context={keycloak} /> : <p>Authenticating...</p>;
 }
 
-export default RequireAuth;
+export function useKeycloak() {
+  return useOutletContext<Keycloak>();
+}
