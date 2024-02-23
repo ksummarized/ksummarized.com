@@ -7,16 +7,16 @@ namespace api.Services.Users;
 
 public class UserService : IUserService
 {
-    private readonly UsersDbContext _usersDbContext;
+    private readonly ApplicationDbContext _applicationDbContext;
 
-    public UserService(UsersDbContext usersDbContext)
+    public UserService(ApplicationDbContext applicationDbContext)
     {
-        _usersDbContext = usersDbContext;
+        _applicationDbContext = applicationDbContext;
     }
 
-    public async Task<(bool isSuccess, string? error)> CreateKeycloakUser(UserDto user)
+    public async Task<(bool isSuccess, string? error)> CreateKeycloakUser(UserDTO user)
     {
-        var userInstance = _usersDbContext.Users.FirstOrDefault(userInstance => userInstance.KeycloakUuid.Equals(user.KeycloakUuid));
+        var userInstance = _applicationDbContext.Users.FirstOrDefault(userInstance => userInstance.KeycloakUuid.Equals(user.KeycloakUuid));
         if (userInstance != null)
         {
             return (false, ErrorMessages.UserAlreadyExists);
@@ -26,8 +26,8 @@ public class UserService : IUserService
             KeycloakUuid = user.KeycloakUuid,
             Email = user.Email
         };
-        await _usersDbContext.Users.AddAsync(newUser);
-        await _usersDbContext.SaveChangesAsync();
+        await _applicationDbContext.Users.AddAsync(newUser);
+        await _applicationDbContext.SaveChangesAsync();
         return (true, null);
     }
 }

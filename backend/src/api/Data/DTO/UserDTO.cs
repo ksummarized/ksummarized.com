@@ -2,7 +2,7 @@
 
 namespace api.Data.DTO;
 
-public class UserDto
+public class UserDTO
 {
     [Required]
     public required string KeycloakUuid { get; set; }

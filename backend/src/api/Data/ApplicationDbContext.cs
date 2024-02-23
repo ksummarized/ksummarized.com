@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Data;
 
-public class UsersDbContext : DbContext
+public class ApplicationDbContext : DbContext
 {
-    public UsersDbContext(DbContextOptions<UsersDbContext> options) : base(options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
     public DbSet<UserModel> Users { get; set; }

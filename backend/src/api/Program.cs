@@ -19,9 +19,12 @@ try
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddHttpContextAccessor();
     builder.Host.UseSerilog();
-    builder.Services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Users")));
-    var keycloakJwtOptions = new KeycloakJwtOptions();
-    builder.Configuration.Bind("KeycloakJwt", keycloakJwtOptions);
+    builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("KSummarized")));
+    var keycloakJwtOptions = new KeycloakJwtOptions(
+        builder.Configuration.GetValue<string>("KeycloakJwt:Issuer")!,
+        builder.Configuration.GetValue<string>("KeycloakJwt:Audience")!,
+        builder.Configuration.GetValue<string>("KeycloakJwt:Secret")!
+    );
     if(keycloakJwtOptions.Secret is null || keycloakJwtOptions.Issuer is null || keycloakJwtOptions.Audience is null)
     {
         throw new Exception("Can't start application without JWT options");

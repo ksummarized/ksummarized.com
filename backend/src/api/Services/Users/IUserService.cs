@@ -4,5 +4,5 @@ namespace api.Services.Users;
 
 public interface IUserService
 {
-    Task<(bool isSuccess, string? error)> CreateKeycloakUser(UserDto user);
+    Task<(bool isSuccess, string? error)> CreateKeycloakUser(UserDTO user);
 }

@@ -38,7 +38,7 @@ public class AuthenticationController : ControllerBase
         }
 
         var (isSuccess, error) = await _userService.CreateKeycloakUser(
-            new UserDto
+            new UserDTO
             {
                 KeycloakUuid = keycloakUuid,
                 Email = userEmail
