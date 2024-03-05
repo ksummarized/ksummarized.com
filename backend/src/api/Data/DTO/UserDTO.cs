@@ -5,9 +5,8 @@ namespace api.Data.DTO;
 public class UserDTO
 {
     [Required]
-    [EmailAddress]
-    public string Email { get; set; }
-
+    public required string KeycloakUuid { get; set; }
     [Required]
-    public string Password { get; set; }
+    [EmailAddress]
+    public required string Email { get; set; }
 }

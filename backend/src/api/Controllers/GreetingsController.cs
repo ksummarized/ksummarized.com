@@ -9,7 +9,7 @@ public class GreetingsController : ControllerBase
 {
     [HttpGet]
     [Authorize]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [Route("user")]
     public IActionResult Greet()
     {
@@ -17,7 +17,7 @@ public class GreetingsController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [Route("HelloWorld")]
     public IActionResult HelloWorld()
     {

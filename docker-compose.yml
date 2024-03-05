@@ -1,12 +1,14 @@
 version: "3.9"
 services:
   frontend:
+    container_name: ks-frontend
     build:
       context: ./frontend
     ports:
       - "8888:8888"
 
   backend:
+    container_name: ks-backend
     build:
       context: ./backend
     ports:
@@ -14,7 +16,12 @@ services:
       - "5000:443"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ConnectionStrings__Users: "Host=db;Database=users;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      ConnectionStrings__KSummarized: "Host=db;Database=ksummarized;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "devcertpasswd"
+      ASPNETCORE_URLS: "https://+:443;http://+:80"
+    volumes:
+      - .aspnet/https:/https/
     depends_on:
       db:
         condition: service_healthy
@@ -27,14 +34,45 @@ services:
     volumes:
       - ks_postgresql:/var/lib/postgresql/data
       - ./scripts/seed.sql:/docker-entrypoint-initdb.d/seed.sql
-    environment:
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    env_file: .env
     healthcheck:
       test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER}'"]
       interval: 10s
       timeout: 5s
       retries: 3
 
+  keycloak:
+    build:
+      context: ./keycloak
+    container_name: ks-keycloak
+    command: start-dev --import-realm
+    env_file: .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak/imports/realms/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # fake SMTP server to send emails
+  smtp4dev:
+    image: rnwood/smtp4dev:v3.1
+    container_name: ks-smtp4dev
+    ports:
+      - "5050:80"
+      - "25:25"
+      - "143:143"
+    volumes:
+      - smtp4dev-data:/smtp4dev
+    environment:
+      - ServerOptions__HostName=smtp4dev
+
 volumes:
   ks_postgresql:
+  smtp4dev-data:

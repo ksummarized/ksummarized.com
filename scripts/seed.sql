@@ -1,1 +1,2 @@
-CREATE DATABASE users;
+CREATE DATABASE ksummarized;
+CREATE DATABASE keycloak;
