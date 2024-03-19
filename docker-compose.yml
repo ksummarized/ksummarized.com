@@ -51,6 +51,8 @@ services:
       - "8080:8080"
     volumes:
       - ./keycloak/imports/realms/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ./keycloak/imports/providers:/opt/keycloak/providers/
+      - ./keycloak/themes/ksummarized:/opt/keycloak/themes/ksummarized/
     depends_on:
       db:
         condition: service_healthy
