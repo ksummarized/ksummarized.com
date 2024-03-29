@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 $branches = (git branch -l)
 foreach ($branch in $branches) {
     $branch_name = $branch.Trim()
