@@ -20,15 +20,7 @@ try
     builder.Services.AddHttpContextAccessor();
     builder.Host.UseSerilog();
     builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("KSummarized")));
-    var keycloakJwtOptions = new KeycloakJwtOptions(
-        builder.Configuration.GetValue<string>("KeycloakJwt:Issuer")!,
-        builder.Configuration.GetValue<string>("KeycloakJwt:Audience")!,
-        builder.Configuration.GetValue<string>("KeycloakJwt:Secret")!
-    );
-    if(keycloakJwtOptions.Secret is null || keycloakJwtOptions.Issuer is null || keycloakJwtOptions.Audience is null)
-    {
-        throw new Exception("Can't start application without JWT options");
-    }
+    var keycloakJwtOptions = builder.Configuration.GetRequiredSection("KeycloakJwt").Get<KeycloakJwtOptions>()!;
 
     // Create RSA key for offline validation of Keycloak token
     RSA rsa = RSA.Create();
