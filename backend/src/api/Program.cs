@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using api;
 using System.Security.Cryptography;
+using api.Services;
 
 const string logFormat =  "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
 Log.Logger = new LoggerConfiguration().Enrich.WithCorrelationId()
@@ -57,6 +58,7 @@ try
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
     });
+    builder.Services.AddScoped<ITodoService, TodoService>();
 
     builder.Services.AddCors(options =>
     {
