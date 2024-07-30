@@ -70,7 +70,7 @@
 	<#elseif section = "socialProviders" >
         <#if realm.password && social.providers??>
             <div id="kc-social-providers" class="${properties.kcFormSocialAccountSectionClass!}">
-                <span>${msg("identity-provider-register-label")}</span>
+                <span>${msg("identityProviderRegisterLabel")}</span>
 
                 <ul class="${properties.kcFormSocialAccountListClass!} <#if social.providers?size gt 3>${properties.kcFormSocialAccountListGridClass!}</#if>">
                     <#list social.providers as p>

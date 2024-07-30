@@ -459,3 +459,6 @@ dist-ssr
 # Environment files
 .env
 appsettings.Development.json
+
+# Java
+target/
