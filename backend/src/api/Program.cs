@@ -41,8 +41,6 @@ try
         ValidateIssuer = true,
         ValidateLifetime = true
     };
-    builder.Services.AddSingleton(tokenValidationParameters);
-    builder.Services.AddSingleton(keycloakJwtOptions);
 
     builder.Services.AddAuthentication(options =>
     {
@@ -61,7 +59,6 @@ try
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
     });
-    builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<ITodoService, TodoService>();
 
     builder.Services.AddCors(options =>
