@@ -34,7 +34,7 @@ public class TodoController : ControllerBase
     public IActionResult GetList([FromRoute] int id)
     {
         var userId = Request.UserId();
-        _logger.LogDebug("User: {user} requested his lists", userId);
+        _logger.LogDebug("User: {user} requested his list: {id}", userId, id);
         if (userId is null) { return Unauthorized(); }
         var list = _service.GetList(userId, id);
         return list switch
@@ -42,6 +42,20 @@ public class TodoController : ControllerBase
             null => NotFound(),
             var user => Ok(list),
         };
+    }
+
+    [HttpDelete("lists/{id}")]
+    public IActionResult DeleteList([FromRoute] int id)
+    {
+        var userId = Request.UserId();
+        _logger.LogDebug("User: {user} deleted his list: {id}", userId, id);
+        if (userId is null) { return Unauthorized(); }
+        var success = _service.DeleteList(userId, id);
+        if (success)
+        {
+            return Ok();
+        }
+        return BadRequest();
     }
 
     [HttpPost("lists")]
@@ -54,8 +68,10 @@ public class TodoController : ControllerBase
             null => Unauthorized(),
             var user => await Create(user, name),
         };
+
         async Task<IActionResult> Create(string user, string name)
         {
+            //TODO: return DTO instead of DAO
             var list = await _service.CreateList(user, name);
             return Created(HttpContext.Request.Path.Add(new PathString($"/{list.Id}")), list);
         }

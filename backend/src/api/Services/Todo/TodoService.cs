@@ -27,6 +27,7 @@ public class TodoService : ITodoService
     {
         var list = _context.TodoLists.AsNoTracking()
                                  .SingleOrDefault(l => l.Owner.Equals(Guid.Parse(userId)) && l.Id == id);
+        //TODO: Consider creating a mapper instead of this manual new
         if (list is not null) { return new(list.Id, list.Name); }
         return null;
     }
@@ -37,5 +38,15 @@ public class TodoService : ITodoService
         _context.TodoLists.Add(newList);
         await _context.SaveChangesAsync();
         return newList;
+    }
+
+    public bool DeleteList(string userId, int id)
+    {
+        var list = _context.TodoLists.AsNoTracking()
+                             .SingleOrDefault(l => l.Owner.Equals(Guid.Parse(userId)) && l.Id == id);
+        if (list is null) { return false; }
+        _context.TodoLists.Remove(list);
+        _context.SaveChanges();
+        return true;
     }
 }
