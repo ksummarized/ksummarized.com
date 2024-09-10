@@ -1,4 +1,4 @@
-﻿using api.Services;
+using api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +12,8 @@ public class TodoController : ControllerBase
     private readonly ITodoService _service;
     private readonly ILogger<TodoController> _logger;
 
-    public TodoController(ITodoService service, ILogger<TodoController> logger){
+    public TodoController(ITodoService service, ILogger<TodoController> logger)
+    {
         _service = service;
         _logger = logger;
     }
@@ -29,6 +30,20 @@ public class TodoController : ControllerBase
         };
     }
 
+    [HttpGet("lists/{id}")]
+    public IActionResult GetList([FromRoute] int id)
+    {
+        var userId = Request.UserId();
+        _logger.LogDebug("User: {user} requested his lists", userId);
+        if (userId is null) { return Unauthorized(); }
+        var list = _service.GetList(userId, id);
+        return list switch
+        {
+            null => NotFound(),
+            var user => Ok(list),
+        };
+    }
+
     [HttpPost("lists")]
     public async Task<IActionResult> CreateLists([FromQuery] string name)
     {
@@ -39,7 +54,8 @@ public class TodoController : ControllerBase
             null => Unauthorized(),
             var user => await Create(user, name),
         };
-        async Task<IActionResult> Create(string user, string name){
+        async Task<IActionResult> Create(string user, string name)
+        {
             var list = await _service.CreateList(user, name);
             return Created(HttpContext.Request.Path.Add(new PathString($"/{list.Id}")), list);
         }

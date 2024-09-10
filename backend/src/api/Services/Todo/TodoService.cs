@@ -1,4 +1,4 @@
-﻿using api.Data;
+using api.Data;
 using api.Data.DAO;
 using api.Data.DTO;
 using Microsoft.EntityFrameworkCore;
@@ -23,8 +23,17 @@ public class TodoService : ITodoService
                                  .AsEnumerable();
     }
 
-    public async Task<TodoListModel> CreateList(string user, string name){
-        var newList = new TodoListModel(){Name = name, Owner = Guid.Parse(user)};
+    public TodoListDTO? GetList(string userId, int id)
+    {
+        var list = _context.TodoLists.AsNoTracking()
+                                 .SingleOrDefault(l => l.Owner.Equals(Guid.Parse(userId)) && l.Id == id);
+        if (list is not null) { return new(list.Id, list.Name); }
+        return null;
+    }
+
+    public async Task<TodoListModel> CreateList(string user, string name)
+    {
+        var newList = new TodoListModel() { Name = name, Owner = Guid.Parse(user) };
         _context.TodoLists.Add(newList);
         await _context.SaveChangesAsync();
         return newList;
