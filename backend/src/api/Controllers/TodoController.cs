@@ -18,10 +18,10 @@ public class TodoController : ControllerBase
     }
 
     [HttpGet("lists")]
-    public IActionResult List()
+    public IActionResult GetLists()
     {
         var userId = Request.UserId();
-        _logger.LogInformation("User: {user} requested his lists", userId);
+        _logger.LogDebug("User: {user} requested his lists", userId);
         return userId switch
         {
             null => Unauthorized(),
@@ -29,4 +29,19 @@ public class TodoController : ControllerBase
         };
     }
 
+    [HttpPost("lists")]
+    public async Task<IActionResult> CreateLists([FromQuery] string name)
+    {
+        var userId = Request.UserId();
+        _logger.LogDebug("User: {user} created: {list}", userId, name);
+        return userId switch
+        {
+            null => Unauthorized(),
+            var user => await Create(user, name),
+        };
+        async Task<IActionResult> Create(string user, string name){
+            var list = await _service.CreateList(user, name);
+            return Created(HttpContext.Request.Path.Add(new PathString($"/{list.Id}")), list);
+        }
+    }
 }
