@@ -13,7 +13,7 @@ docker compose up db -d 2>&1 > $null
 Write-Output "Generateing migration script"
 Set-Location ../backend/src/api
 mkdir migration_scripts 2>&1 > $null
-dotnet ef migrations script --idempotent -o ./migration_scripts/migration.sql 2>&1 > $null
+dotnet ef migrations script --idempotent -o ./migration_scripts/migration.sql
 
 Write-Output "Applying.."
 $passwd = "PGPASSWORD=" + $Env:POSTGRES_PASSWORD
