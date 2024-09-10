@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace api.Data;
+namespace infrastructure.Keycloak;
 public class KeycloakJwtOptions
 {
     public required string Issuer { get; init; }

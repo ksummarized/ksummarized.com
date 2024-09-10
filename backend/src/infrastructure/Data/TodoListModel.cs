@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace api.Data.DAO;
+namespace infrastructure.Data;
 
 [Table("todo_lists")]
 public class TodoListModel

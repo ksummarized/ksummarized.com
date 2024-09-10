@@ -1,12 +1,13 @@
-using api.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
-using api;
 using System.Security.Cryptography;
-using api.Services;
+using api;
+using infrastructure.Data;
+using infrastructure.Keycloak;
+using core.Ports;
 
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
 Log.Logger = new LoggerConfiguration().Enrich.WithCorrelationId()
@@ -19,7 +20,10 @@ try
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddHttpContextAccessor();
     builder.Host.UseSerilog();
-    builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("KSummarized")));
+    builder.Services.AddDbContext<ApplicationDbContext>(
+        options => options.UseNpgsql(builder.Configuration.GetConnectionString("KSummarized"),
+        x => x.MigrationsAssembly("infrastructure")
+    ));
     var keycloakJwtOptions = builder.Configuration.GetRequiredSection("KeycloakJwt").Get<KeycloakJwtOptions>()!;
 
     // Create RSA key for offline validation of Keycloak token

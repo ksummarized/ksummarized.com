@@ -1,9 +1,8 @@
-using api.Data;
-using api.Data.DAO;
-using api.Data.DTO;
 using Microsoft.EntityFrameworkCore;
+using core.Ports;
+using core;
 
-namespace api.Services;
+namespace infrastructure.Data;
 
 public class TodoService : ITodoService
 {
@@ -15,29 +14,29 @@ public class TodoService : ITodoService
         _context = context;
     }
 
-    public IEnumerable<TodoListDTO> GetLists(string userId)
+    public IEnumerable<TodoList> GetLists(string userId)
     {
         return _context.TodoLists.AsNoTracking()
                                  .Where(list => list.Owner.Equals(Guid.Parse(userId)))
-                                 .Select(list => new TodoListDTO(list.Id, list.Name))
+                                 .Select(list => new TodoList { Id = list.Id, Name = list.Name, Owner = list.Owner })
                                  .AsEnumerable();
     }
 
-    public TodoListDTO? GetList(string userId, int id)
+    public TodoList? GetList(string userId, int id)
     {
         var list = _context.TodoLists.AsNoTracking()
                                  .SingleOrDefault(l => l.Owner.Equals(Guid.Parse(userId)) && l.Id == id);
         //TODO: Consider creating a mapper instead of this manual new
-        if (list is not null) { return new(list.Id, list.Name); }
+        if (list is not null) { return new() { Id = list.Id, Name = list.Name, Owner = list.Owner }; }
         return null;
     }
 
-    public async Task<TodoListModel> CreateList(string user, string name)
+    public async Task<TodoList> CreateList(string user, string name)
     {
         var newList = new TodoListModel() { Name = name, Owner = Guid.Parse(user) };
         _context.TodoLists.Add(newList);
         await _context.SaveChangesAsync();
-        return newList;
+        return new TodoList() { Id = newList.Id, Name = newList.Name, Owner = newList.Owner };
     }
 
     public bool DeleteList(string userId, int id)

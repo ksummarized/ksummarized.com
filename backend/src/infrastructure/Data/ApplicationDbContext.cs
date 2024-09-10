@@ -1,7 +1,6 @@
-﻿using api.Data.DAO;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Data;
+namespace infrastructure.Data;
 
 public class ApplicationDbContext : DbContext
 {
