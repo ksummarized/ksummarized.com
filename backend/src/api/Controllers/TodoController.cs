@@ -59,14 +59,14 @@ public class TodoController : ControllerBase
     }
 
     [HttpPost("lists")]
-    public async Task<IActionResult> CreateLists([FromQuery] string name)
+    public async Task<IActionResult> CreateLists([FromQuery] Request request)
     {
         var userId = Request.UserId();
-        _logger.LogDebug("User: {user} created: {list}", userId, name);
+        _logger.LogDebug("User: {user} created: {list}", userId, request.Name);
         return userId switch
         {
             null => Unauthorized(),
-            var user => await Create(user, name),
+            var user => await Create(user, request.Name),
         };
 
         async Task<IActionResult> Create(string user, string name)
@@ -76,4 +76,32 @@ public class TodoController : ControllerBase
             return Created(HttpContext.Request.Path.Add(new PathString($"/{list.Id}")), list);
         }
     }
+
+    [HttpPut("lists/{id}")]
+    public async Task<IActionResult> RenameList([FromRoute] int id, [FromBody] Request request)
+    {
+        var userId = Request.UserId();
+        _logger.LogDebug("User: {user} created: {list}", userId, request.Name);
+        return userId switch
+        {
+            null => Unauthorized(),
+            var user => await Rename(user, id, request.Name),
+        };
+
+        async Task<IActionResult> Rename(string user, int id, string name)
+        {
+            //TODO: return DTO instead of DAO
+            var list = await _service.RenameList(user, id, name);
+            if (list)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+    }
+}
+
+public class Request
+{
+    public required string Name { get; set; }
 }

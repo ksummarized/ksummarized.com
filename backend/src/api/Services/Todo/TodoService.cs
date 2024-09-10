@@ -42,11 +42,22 @@ public class TodoService : ITodoService
 
     public bool DeleteList(string userId, int id)
     {
-        var list = _context.TodoLists.AsNoTracking()
+        var list = _context.TodoLists
                              .SingleOrDefault(l => l.Owner.Equals(Guid.Parse(userId)) && l.Id == id);
         if (list is null) { return false; }
         _context.TodoLists.Remove(list);
         _context.SaveChanges();
+        return true;
+    }
+
+    public async Task<bool> RenameList(string userId, int id, string name)
+    {
+        var list = _context.TodoLists
+                         .SingleOrDefault(l => l.Owner.Equals(Guid.Parse(userId)) && l.Id == id);
+
+        if (list is null) { return false; }
+        list.Name = name;
+        await _context.SaveChangesAsync();
         return true;
     }
 }

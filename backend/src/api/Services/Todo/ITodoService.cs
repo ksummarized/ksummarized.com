@@ -9,4 +9,5 @@ public interface ITodoService
     IEnumerable<TodoListDTO> GetLists(string userId);
     TodoListDTO? GetList(string userId, int id);
     bool DeleteList(string userId, int id);
+    Task<bool> RenameList(string user, int id, string name);
 }

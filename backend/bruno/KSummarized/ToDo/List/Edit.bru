@@ -4,8 +4,8 @@ meta {
   seq: 3
 }
 
-post {
-  url: https://localhost:5000/api/todo/lists/{{listId}}
+put {
+  url: https://localhost:5000/api/todo/lists/5
   body: json
   auth: bearer
 }
@@ -15,5 +15,7 @@ auth:bearer {
 }
 
 body:json {
-  "ToDo2"
+  {
+    "name":"Vax"
+  }
 }
