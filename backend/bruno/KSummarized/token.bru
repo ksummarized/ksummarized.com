@@ -1,0 +1,23 @@
+meta {
+  name: Get access token
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{keycloak_url}}/realms/{{keycloak_realm}}/protocol/openid-connect/token
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  client_id: {{keycloak_client_id}}
+  grant_type: password
+  client_secret: {{keycloak_client_secret}}
+  username: {{keycloak_username}}
+  password: {{keycloak_password}}
+}
+
+vars:post-response {
+  token: res.body.access_token
+}
