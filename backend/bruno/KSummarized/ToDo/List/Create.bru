@@ -5,13 +5,13 @@ meta {
 }
 
 post {
-  url: https://localhost:5000/api/todo/lists?name=kenobi
+  url: https://localhost:5000/api/todo/lists?name=demo
   body: none
   auth: bearer
 }
 
 params:query {
-  name: kenobi
+  name: demo
 }
 
 auth:bearer {
@@ -20,4 +20,8 @@ auth:bearer {
 
 body:json {
   "ToDo"
+}
+
+vars:post-response {
+  listId: res.body.id
 }
