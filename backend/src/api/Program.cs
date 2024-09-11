@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Security.Cryptography;
-using api;
+using infrastructure.Logging;
 using infrastructure.Data;
 using infrastructure.Keycloak;
 using core.Ports;
