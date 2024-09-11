@@ -1,14 +1,15 @@
-using api.Data;
-using api.Services.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
-using api;
 using System.Security.Cryptography;
+using api;
+using infrastructure.Data;
+using infrastructure.Keycloak;
+using core.Ports;
 
-const string logFormat =  "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
+const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
 Log.Logger = new LoggerConfiguration().Enrich.WithCorrelationId()
                                              .WriteTo
                                              .Console(outputTemplate: logFormat)
@@ -19,16 +20,11 @@ try
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddHttpContextAccessor();
     builder.Host.UseSerilog();
-    builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("KSummarized")));
-    var keycloakJwtOptions = new KeycloakJwtOptions(
-        builder.Configuration.GetValue<string>("KeycloakJwt:Issuer")!,
-        builder.Configuration.GetValue<string>("KeycloakJwt:Audience")!,
-        builder.Configuration.GetValue<string>("KeycloakJwt:Secret")!
-    );
-    if(keycloakJwtOptions.Secret is null || keycloakJwtOptions.Issuer is null || keycloakJwtOptions.Audience is null)
-    {
-        throw new Exception("Can't start application without JWT options");
-    }
+    builder.Services.AddDbContext<ApplicationDbContext>(
+        options => options.UseNpgsql(builder.Configuration.GetConnectionString("KSummarized"),
+        x => x.MigrationsAssembly("infrastructure")
+    ));
+    var keycloakJwtOptions = builder.Configuration.GetRequiredSection("KeycloakJwt").Get<KeycloakJwtOptions>()!;
 
     // Create RSA key for offline validation of Keycloak token
     RSA rsa = RSA.Create();
@@ -48,8 +44,6 @@ try
         ValidateIssuer = true,
         ValidateLifetime = true
     };
-    builder.Services.AddSingleton(tokenValidationParameters);
-    builder.Services.AddSingleton(keycloakJwtOptions);
 
     builder.Services.AddAuthentication(options =>
     {
@@ -68,7 +62,7 @@ try
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
     });
-    builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<ITodoService, TodoService>();
 
     builder.Services.AddCors(options =>
     {

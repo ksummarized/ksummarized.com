@@ -1,0 +1,15 @@
+meta {
+  name: Get
+  type: http
+  seq: 5
+}
+
+get {
+  url: https://{{api_base_url}}/api/todo/lists/{{listId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
