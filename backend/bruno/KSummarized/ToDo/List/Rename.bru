@@ -1,11 +1,11 @@
 meta {
-  name: Edit
+  name: Rename
   type: http
   seq: 3
 }
 
 put {
-  url: https://localhost:5000/api/todo/lists/{{listId}}
+  url: https://{{api_base_url}}/api/todo/lists/{{listId}}
   body: json
   auth: bearer
 }

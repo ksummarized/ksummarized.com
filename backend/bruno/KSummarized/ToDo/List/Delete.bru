@@ -5,7 +5,7 @@ meta {
 }
 
 delete {
-  url: https://localhost:5000/api/todo/lists/{{listId}}
+  url: https://{{api_base_url}}/api/todo/lists/{{listId}}
   body: json
   auth: bearer
 }

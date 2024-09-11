@@ -59,7 +59,7 @@ public class TodoController : ControllerBase
     }
 
     [HttpPost("lists")]
-    public async Task<IActionResult> CreateLists([FromQuery] Request request)
+    public async Task<IActionResult> CreateLists([FromBody] Request request)
     {
         var userId = Request.UserId();
         _logger.LogDebug("User: {user} created: {list}", userId, request.Name);
@@ -81,7 +81,7 @@ public class TodoController : ControllerBase
     public async Task<IActionResult> RenameList([FromRoute] int id, [FromBody] Request request)
     {
         var userId = Request.UserId();
-        _logger.LogDebug("User: {user} created: {list}", userId, request.Name);
+        _logger.LogDebug("User: {user} renamed: {id} to: {list}", userId, id, request.Name);
         return userId switch
         {
             null => Unauthorized(),
