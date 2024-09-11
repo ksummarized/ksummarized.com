@@ -78,14 +78,14 @@ public class TodoController : ControllerBase
     }
 
     [HttpPut("lists/{id}")]
-    public async Task<IActionResult> RenameList([FromRoute] int id, [FromBody] Request request)
+    public async Task<IActionResult> RenameList(RenameRequest request)
     {
         var userId = Request.UserId();
-        _logger.LogDebug("User: {user} renamed: {id} to: {list}", userId, id, request.Name);
+        _logger.LogDebug("User: {user} renamed: {id} to: {list}", userId, request.Id, request.Body.Name);
         return userId switch
         {
             null => Unauthorized(),
-            var user => await Rename(user, id, request.Name),
+            var user => await Rename(user, request.Id, request.Body.Name),
         };
 
         async Task<IActionResult> Rename(string user, int id, string name)
@@ -104,4 +104,17 @@ public class TodoController : ControllerBase
 public class Request
 {
     public required string Name { get; set; }
+}
+
+public class RenameRequest
+{
+    [FromRoute]
+    public required int Id { get; set; }
+    [FromBody]
+    public required Payload Body { get; set; }
+
+    public class Payload
+    {
+        public required string Name { get; set; }
+    }
 }
