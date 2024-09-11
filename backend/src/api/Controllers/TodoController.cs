@@ -1,6 +1,7 @@
 using core.Ports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using api.Resonses;
 
 namespace api.Controllers;
 
@@ -26,7 +27,7 @@ public class TodoController : ControllerBase
         return userId switch
         {
             null => Unauthorized(),
-            var user => Ok(_service.GetLists(user)),
+            var user => Ok(_service.GetLists(user).Select(l => l.ToResponse())),
         };
     }
 
@@ -36,7 +37,7 @@ public class TodoController : ControllerBase
         var userId = Request.UserId();
         _logger.LogDebug("User: {user} requested his list: {id}", userId, id);
         if (userId is null) { return Unauthorized(); }
-        var list = _service.GetList(userId, id);
+        var list = _service.GetList(userId, id)?.ToResponse();
         return list switch
         {
             null => NotFound(),
@@ -73,7 +74,7 @@ public class TodoController : ControllerBase
         {
             //TODO: return DTO instead of DAO
             var list = await _service.CreateList(user, name);
-            return Created(HttpContext.Request.Path.Add(new PathString($"/{list.Id}")), list);
+            return Created(HttpContext.Request.Path.Add(new PathString($"/{list.Id}")), list.ToResponse());
         }
     }
 
