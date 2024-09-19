@@ -32,14 +32,14 @@ dotnet dev-certs https -ep .aspnet/https/aspnetapp.pfx -p devcertpasswd --trust
 ```
 
 Next go to the `scripts` directory and run `apply_migrations.ps1`
-Next You should go back to the main directory and run `docker compose up --build`
+Next You should go back to the main directory and run `docker compose up --build --watch`
 This can be done with the following snippet.
 
 ```powershell
 cd scripts
 .\apply_migrations.ps1
 cd ..\
-docker compose up --build
+docker compose up --build --watch
 ```
 
 You can now visit the site at: <http://localhost:8888/>
