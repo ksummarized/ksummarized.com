@@ -32,7 +32,7 @@ dotnet dev-certs https -ep .aspnet/https/aspnetapp.pfx -p devcertpasswd --trust
 ```
 
 Next go to the `scripts` directory and run `apply_migrations.ps1`
-Next You should go back to the main directory and run `docker compose up --build --watch`
+Next You should go back to the main directory and run `docker compose --profile hot-reload up --build --watch`
 This can be done with the following snippet.
 
 ```powershell
@@ -53,7 +53,13 @@ Directory `scripts` contains some helpful scripts which automate some parts of w
 The application is started using the following command:
 
 ```bash
-docker compose up --build --watch
+docker compose --profile hot-reload up --build --watch
+```
+
+or without the hot-reload feature:
+
+```bash
+docker compose --profile without-hot-reload up --build --watch
 ```
 
 The `--watch` parameter starts containers with the `hot-reload` feature. This enables the auto-reload functionality, meaning that the container will be automatically reloaded when the code for either the frontend or backend changes.

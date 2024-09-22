@@ -1,11 +1,19 @@
 services:
-  frontend:
+  frontend: &frontend-base
     container_name: ks-frontend
+    profiles:
+      - without-hot-reload
     build:
       context: ./frontend
-    command: ["npm", "run", "dev"]
     ports:
       - "8888:8888"
+
+  frontend-hot-reload:
+    <<: *frontend-base
+    container_name: ks-frontend-hot-reload
+    profiles:
+      - hot-reload
+    command: ["npm", "run", "dev"]
     develop:
       watch:
         - action: sync
@@ -16,11 +24,12 @@ services:
         - action: rebuild
           path: package.json
 
-  backend:
+  backend: &backend-base
     container_name: ks-backend
     build:
       context: ./backend
-      target: development
+    profiles:
+      - without-hot-reload
     ports:
       - "5001:80"
       - "5000:443"
@@ -36,6 +45,15 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  backend-hot-reload:
+    <<: *backend-base
+    container_name: ks-backend-hot-reload
+    build:
+      context: ./backend
+      target: development
+    profiles:
+      - hot-reload
     develop:
       watch:
         - action: sync
