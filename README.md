@@ -39,7 +39,7 @@ This can be done with the following snippet.
 cd scripts
 .\apply_migrations.ps1
 cd ..\
-docker compose up --build --watch
+docker compose --profile hot-reload up --build --watch
 ```
 
 You can now visit the site at: <http://localhost:8888/>
