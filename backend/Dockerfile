@@ -5,6 +5,11 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS development
+COPY . /src
+WORKDIR /src
+CMD ["dotnet", "watch", "--verbose", "--non-interactive", "--no-launch-profile", "--project", "src/api/"]
+
 #Todo: clean it up for multiproject build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src

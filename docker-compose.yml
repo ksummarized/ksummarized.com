@@ -1,16 +1,35 @@
-version: "3.9"
 services:
-  frontend:
+  frontend: &frontend-base
     container_name: ks-frontend
+    profiles:
+      - without-hot-reload
     build:
       context: ./frontend
     ports:
       - "8888:8888"
 
-  backend:
+  frontend-hot-reload:
+    <<: *frontend-base
+    container_name: ks-frontend-hot-reload
+    profiles:
+      - hot-reload
+    command: ["npm", "run", "dev"]
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /src
+          ignore:
+            - node_modules
+        - action: rebuild
+          path: package.json
+
+  backend: &backend-base
     container_name: ks-backend
     build:
       context: ./backend
+    profiles:
+      - without-hot-reload
     ports:
       - "5001:80"
       - "5000:443"
@@ -20,11 +39,26 @@ services:
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
       ASPNETCORE_Kestrel__Certificates__Default__Password: "devcertpasswd"
       ASPNETCORE_URLS: "https://+:443;http://+:80"
+      DOTNET_USE_POLLING_FILE_WATCHER: true  # dotnet watch uses a a polling file watcher. Required for running it in docker.
     volumes:
-      - .aspnet/https:/https/
+      - .aspnet/https:/https/:ro  # read-only on the container
     depends_on:
       db:
         condition: service_healthy
+
+  backend-hot-reload:
+    <<: *backend-base
+    container_name: ks-backend-hot-reload
+    build:
+      context: ./backend
+      target: development
+    profiles:
+      - hot-reload
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /src
 
   db:
     image: postgres:14.0-alpine
