@@ -7,4 +7,9 @@ public interface ITodoService
     TodoList? GetList(string userId, int id);
     bool DeleteList(string userId, int id);
     Task<bool> RenameList(string user, int id, string name);
+    Task<TodoItem> CreateItem(string user, TodoItem item);
+    Task<TodoItem?> GetItem(string user, int id);
+    IEnumerable<TodoItem> ListItems(string user);
+    Task<bool> DeleteItem(string user, int id);
+    Task<bool> UpdateItem(string user, TodoItem item);
 }

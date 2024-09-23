@@ -1,0 +1,53 @@
+meta {
+  name: Create
+  type: http
+  seq: 1
+}
+
+post {
+  url: https://{{api_base_url}}/api/todo/items
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "id": 1,
+    "name": "Demo",
+    "compleated": false,
+    "deadline": "2024-09-20T18:27:39.149Z",
+    "notes": "hello there",
+    "tags": [{
+      "id":1,
+      "name": "star wars"
+    }],
+    "subtasks": [
+      {
+        "id": 2,
+        "name": "Demo",
+        "compleated": false,
+        "deadline": "2024-09-20T18:27:39.149Z",
+        "notes": "hello there2",
+        "tags": [],
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "name": "Demo3",
+        "compleated": false,
+        "deadline": "2024-09-20T18:27:39.149Z",
+        "notes": "hello there 3",
+        "tags": [],
+        "subtasks": []
+      }
+    ]
+  }
+}
+
+vars:post-response {
+  itemId: res.body.id
+}

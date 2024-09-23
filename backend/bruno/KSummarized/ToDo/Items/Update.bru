@@ -1,0 +1,46 @@
+meta {
+  name: Update
+  type: http
+  seq: 2
+}
+
+put {
+  url: https://{{api_base_url}}/api/todo/items/{{itemId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "id": {{itemId}},
+    "name": "Demo-Updated",
+    "compleated": false,
+    "deadline": "2024-09-20T18:27:39.149Z",
+    "notes": "hello there",
+    "tags": [],
+    "subtasks": [
+      {
+        "id": 2,
+        "name": "Demo2",
+        "compleated": true,
+        "deadline": "2024-09-20T18:27:39.149Z",
+        "notes": "hello there2",
+        "tags": [],
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "name": "Demo22",
+        "compleated": false,
+        "deadline": "2024-09-20T18:27:39.149Z",
+        "notes": "hello there 3",
+        "tags": [],
+        "subtasks": []
+      }
+    ]
+  }
+}

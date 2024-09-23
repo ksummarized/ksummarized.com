@@ -2,22 +2,17 @@ using core.Ports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using api.Resonses;
+using core;
 
 namespace api.Controllers;
 
 [Authorize]
 [Route("/api/todo")]
 [ApiController]
-public class TodoController : ControllerBase
+public class TodoController(ITodoService service, ILogger<TodoController> logger) : ControllerBase
 {
-    private readonly ITodoService _service;
-    private readonly ILogger<TodoController> _logger;
-
-    public TodoController(ITodoService service, ILogger<TodoController> logger)
-    {
-        _service = service;
-        _logger = logger;
-    }
+    private readonly ITodoService _service = service;
+    private readonly ILogger<TodoController> _logger = logger;
 
     [HttpGet("lists")]
     public IActionResult GetLists()
@@ -99,6 +94,72 @@ public class TodoController : ControllerBase
             }
             return BadRequest();
         }
+    }
+
+    [HttpPost("items")]
+    public async Task<IActionResult> CreateItem([FromBody] TodoItem request)
+    {
+        var userId = Request.UserId();
+        _logger.LogDebug("User: {user} created: {item}", userId, request.Name);
+        return userId switch
+        {
+            null => Unauthorized(),
+            var user => await Create(user, request),
+        };
+
+        async Task<IActionResult> Create(string user, TodoItem item)
+        {
+            var newItem = await _service.CreateItem(user, item);
+            return Created(HttpContext.Request.Path.Add(new PathString($"/{newItem.Id}")), newItem);
+        }
+    }
+
+    [HttpGet("items")]
+    public IActionResult ListItems()
+    {
+        var userId = Request.UserId();
+        _logger.LogDebug("User: {user} requested his items", userId);
+        return userId switch
+        {
+            null => Unauthorized(),
+            var user => Ok(_service.ListItems(user)),
+        };
+    }
+
+    [HttpGet("items/{id}")]
+    public async Task<IActionResult> GetItem([FromRoute] int id)
+    {
+        var userId = Request.UserId();
+        _logger.LogDebug("User: {user} requested his item: {id}", userId, id);
+        return userId switch
+        {
+            null => Unauthorized(),
+            var user => Ok(await _service.GetItem(user, id)),
+        };
+    }
+
+    [HttpDelete("items/{id}")]
+    public async Task<IActionResult> DeleteItem([FromRoute] int id)
+    {
+        var userId = Request.UserId();
+        _logger.LogDebug("User: {user} deleted his item: {id}", userId, id);
+        return userId switch
+        {
+            null => Unauthorized(),
+            var user => Ok(await _service.DeleteItem(user, id)),
+        };
+    }
+
+    [HttpPut("items/{id}")]
+    public async Task<IActionResult> UpdateItem([FromRoute] int id, [FromBody] TodoItem request)
+    {
+        var userId = Request.UserId();
+        _logger.LogDebug("User: {user} updated his item: {id}", userId, id);
+        return userId switch
+        {
+            null => Unauthorized(),
+            var user => Ok(await _service.UpdateItem(user, request)),
+        };
     }
 }
 
