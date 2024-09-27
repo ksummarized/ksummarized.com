@@ -15,6 +15,8 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
 {
     private readonly ITodoService _service = service;
     private readonly ILogger<TodoController> _logger = logger;
+
+    //We are sure that this is not null because of the [UserIdFilter]
     private Guid UserId => (Guid)HttpContext.Items["UserId"]!;
 
     [HttpGet("lists")]
@@ -49,7 +51,7 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     }
 
     [HttpPost("lists")]
-    public async Task<IActionResult> CreateLists([FromBody] Request request)
+    public async Task<IActionResult> CreateLists([FromBody] ListCreationRequest request)
     {
         _logger.LogDebug("User: {user} created: {list}", UserId, request.Name);
         var list = await _service.CreateList(UserId, request.Name);
@@ -57,7 +59,7 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     }
 
     [HttpPut("lists/{id}")]
-    public async Task<IActionResult> RenameList(RenameRequest request)
+    public async Task<IActionResult> RenameList(ListRenameRequest request)
     {
         _logger.LogDebug("User: {user} renamed: {id} to: {list}", UserId, request.Id, request.Body.Name);
         var list = await _service.RenameList(UserId, request.Id, request.Body.Name);
@@ -122,22 +124,22 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
         }
         return BadRequest();
     }
-}
 
-public class Request
-{
-    public required string Name { get; set; }
-}
-
-public class RenameRequest
-{
-    [FromRoute]
-    public required int Id { get; set; }
-    [FromBody]
-    public required Payload Body { get; set; }
-
-    public class Payload
+    public class ListCreationRequest
     {
         public required string Name { get; set; }
+    }
+
+    public class ListRenameRequest
+    {
+        [FromRoute]
+        public required int Id { get; set; }
+        [FromBody]
+        public required Payload Body { get; set; }
+
+        public class Payload
+        {
+            public required string Name { get; set; }
+        }
     }
 }
