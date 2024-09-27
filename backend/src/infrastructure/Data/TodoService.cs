@@ -175,6 +175,7 @@ public class TodoService : ITodoService
         existingItem.Deadline = item.Deadline;
         existingItem.Notes = item.Notes;
         existingItem.Compleated = item.Compleated;
+        existingItem.ListId = item.ListId;
         foreach (var st in item.Subtasks)
         {
             var existingSubtask = existingItem.Subtasks.FirstOrDefault(st => st.Id == st.Id);
@@ -188,7 +189,8 @@ public class TodoService : ITodoService
                     Deadline = st.Deadline,
                     Notes = st.Notes,
                     Tags = [],
-                    Subtasks = []
+                    Subtasks = [],
+                    ListId = item.ListId
                 };
                 existingItem.Subtasks.Add(newSubtask);
             }
@@ -198,6 +200,7 @@ public class TodoService : ITodoService
                 existingSubtask.Deadline = st.Deadline;
                 existingSubtask.Notes = st.Notes;
                 existingSubtask.Compleated = st.Compleated;
+                existingSubtask.ListId = item.ListId;
             }
         }
         var existingTags = existingItem.Tags.ToList();
@@ -229,7 +232,9 @@ public class TodoService : ITodoService
             Deadline = item.Deadline,
             Notes = item.Notes,
             Subtasks = item.Subtasks?.Select(st => MapSubtask(st)).ToList() ?? [],
-            Tags = item.Tags?.Select(t => new core.Tag() { Id = t.Id, Name = t.Name }).ToList() ?? []
+            Tags = item.Tags?.Select(t => new core.Tag() { Id = t.Id, Name = t.Name }).ToList() ?? [],
+            ListId = item.ListId,
+            Compleated = item.Compleated
         };
     }
 
@@ -242,7 +247,9 @@ public class TodoService : ITodoService
             Deadline = subtask.Deadline,
             Notes = subtask.Notes,
             Subtasks = [],
-            Tags = subtask.Tags?.Select(t => new core.Tag() { Id = t.Id, Name = t.Name }).ToList() ?? []
+            Tags = subtask.Tags?.Select(t => new core.Tag() { Id = t.Id, Name = t.Name }).ToList() ?? [],
+            ListId = subtask.ListId,
+            Compleated = subtask.Compleated
         };
     }
 }
