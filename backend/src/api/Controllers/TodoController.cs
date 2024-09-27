@@ -104,12 +104,16 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
         return userId switch
         {
             null => Unauthorized(),
-            var user => await Create(user, request),
+            var user => await Handle(user, request),
         };
 
-        async Task<IActionResult> Create(string user, TodoItem item)
+        async Task<IActionResult> Handle(string user, TodoItem item)
         {
             var newItem = await _service.CreateItem(user, item);
+            if (newItem is null)
+            {
+                return BadRequest();
+            }
             return Created(HttpContext.Request.Path.Add(new PathString($"/{newItem.Id}")), newItem);
         }
     }
@@ -134,8 +138,18 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
         return userId switch
         {
             null => Unauthorized(),
-            var user => Ok(await _service.GetItem(user, id)),
+            var user => await Handle(user, id),
         };
+
+        async Task<IActionResult> Handle(string user, int id)
+        {
+            var item = await _service.GetItem(user, id);
+            if (item is null)
+            {
+                return NotFound();
+            }
+            return Ok(item);
+        }
     }
 
     [HttpDelete("items/{id}")]
@@ -146,8 +160,18 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
         return userId switch
         {
             null => Unauthorized(),
-            var user => Ok(await _service.DeleteItem(user, id)),
+            var user => await Handle(user, id),
         };
+
+        async Task<IActionResult> Handle(string user, int id)
+        {
+            var success = await _service.DeleteItem(user, id);
+            if (success)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
     }
 
     [HttpPut("items/{id}")]
@@ -158,8 +182,18 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
         return userId switch
         {
             null => Unauthorized(),
-            var user => Ok(await _service.UpdateItem(user, request)),
+            var user => await Handle(user, id),
         };
+
+        async Task<IActionResult> Handle(string user, int id)
+        {
+            var success = await _service.UpdateItem(user, request);
+            if (success)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
     }
 }
 
