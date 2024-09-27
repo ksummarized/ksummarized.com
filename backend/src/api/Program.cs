@@ -4,10 +4,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Security.Cryptography;
-using infrastructure.Logging;
+using api.Filters;
+using core.Ports;
 using infrastructure.Data;
 using infrastructure.Keycloak;
-using core.Ports;
+using infrastructure.Logging;
 
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
 Log.Logger = new LoggerConfiguration().Enrich.WithCorrelationId()
@@ -57,7 +58,7 @@ try
         options.TokenValidationParameters = tokenValidationParameters;
     });
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers(o => o.Filters.Add(typeof(UserIdFilter)));
     builder.Services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });

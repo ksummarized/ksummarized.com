@@ -1,4 +1,4 @@
-﻿using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace api;
 

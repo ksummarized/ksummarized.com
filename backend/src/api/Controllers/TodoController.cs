@@ -2,17 +2,20 @@ using core.Ports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using api.Resonses;
+using api.Filters;
 using core;
 
 namespace api.Controllers;
 
 [Authorize]
+[UserIdFilter]
 [Route("/api/todo")]
 [ApiController]
 public class TodoController(ITodoService service, ILogger<TodoController> logger) : ControllerBase
 {
     private readonly ITodoService _service = service;
     private readonly ILogger<TodoController> _logger = logger;
+    private Guid UserId => (Guid)HttpContext.Items["UserId"]!;
 
     [HttpGet("lists")]
     public IActionResult GetLists()
