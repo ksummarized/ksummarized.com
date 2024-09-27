@@ -17,45 +17,45 @@ public class TodoService : ITodoService
         _context = context;
     }
 
-    public IEnumerable<TodoList> GetLists(string userId)
+    public IEnumerable<TodoList> GetLists(Guid user)
     {
         return _context.TodoLists.AsNoTracking()
-                                 .Where(list => list.Owner.Equals(Guid.Parse(userId)))
+                                 .Where(list => list.Owner.Equals(user))
                                  .Select(list => new TodoList { Id = list.Id, Name = list.Name, Owner = list.Owner })
                                  .AsEnumerable();
     }
 
-    public TodoList? GetList(string userId, int id)
+    public TodoList? GetList(Guid user, int id)
     {
         var list = _context.TodoLists.AsNoTracking()
-                                 .SingleOrDefault(l => l.Owner.Equals(Guid.Parse(userId)) && l.Id == id);
+                                 .SingleOrDefault(l => l.Owner.Equals(user) && l.Id == id);
         //TODO: Consider creating a mapper instead of this manual new
         if (list is not null) { return new() { Id = list.Id, Name = list.Name, Owner = list.Owner }; }
         return null;
     }
 
-    public async Task<TodoList> CreateList(string user, string name)
+    public async Task<TodoList> CreateList(Guid user, string name)
     {
-        var newList = new TodoListModel() { Name = name, Owner = Guid.Parse(user) };
+        var newList = new TodoListModel() { Name = name, Owner = user };
         _context.TodoLists.Add(newList);
         await _context.SaveChangesAsync();
         return new TodoList() { Id = newList.Id, Name = newList.Name, Owner = newList.Owner };
     }
 
-    public bool DeleteList(string userId, int id)
+    public bool DeleteList(Guid user, int id)
     {
         var list = _context.TodoLists
-                             .SingleOrDefault(l => l.Owner.Equals(Guid.Parse(userId)) && l.Id == id);
+                             .SingleOrDefault(l => l.Owner.Equals(user) && l.Id == id);
         if (list is null) { return false; }
         _context.TodoLists.Remove(list);
         _context.SaveChanges();
         return true;
     }
 
-    public async Task<bool> RenameList(string userId, int id, string name)
+    public async Task<bool> RenameList(Guid user, int id, string name)
     {
         var list = _context.TodoLists
-                         .SingleOrDefault(l => l.Owner.Equals(Guid.Parse(userId)) && l.Id == id);
+                         .SingleOrDefault(l => l.Owner.Equals(user) && l.Id == id);
 
         if (list is null) { return false; }
         list.Name = name;
@@ -63,12 +63,12 @@ public class TodoService : ITodoService
         return true;
     }
 
-    public async Task<TodoItem> CreateItem(string user, TodoItem item)
+    public async Task<TodoItem> CreateItem(Guid user, TodoItem item)
     {
         var newItem = new TodoItemModel()
         {
             Name = item.Name,
-            Owner = Guid.Parse(user),
+            Owner = user,
             Compleated = false,
             Deadline = item.Deadline,
             Notes = item.Notes,
@@ -80,7 +80,7 @@ public class TodoService : ITodoService
             var newSubtask = new TodoItemModel()
             {
                 Name = st.Name,
-                Owner = Guid.Parse(user),
+                Owner = user,
                 Compleated = false,
                 Deadline = st.Deadline,
                 Notes = st.Notes,
@@ -91,10 +91,10 @@ public class TodoService : ITodoService
         }
         foreach (var tag in item.Tags)
         {
-            var t = _context.Tags.FirstOrDefault(t => t.Id == tag.Id && t.Owner.Equals(Guid.Parse(user)));
+            var t = _context.Tags.FirstOrDefault(t => t.Id == tag.Id && t.Owner.Equals(user));
             if (t is null)
             {
-                newItem.Tags.Add(new() { Id = tag.Id, Name = tag.Name, Owner = Guid.Parse(user) });
+                newItem.Tags.Add(new() { Id = tag.Id, Name = tag.Name, Owner = user });
             }
             else
             {
@@ -106,36 +106,36 @@ public class TodoService : ITodoService
         return item with { Id = newItem.Id };
     }
 
-    public async Task<TodoItem?> GetItem(string user, int id)
+    public async Task<TodoItem?> GetItem(Guid user, int id)
     {
         var item = await _context.Todos
                             .AsNoTracking()
                             .Include(i => i.Subtasks)
                             .Include(i => i.Tags)
                             .AsSplitQuery()
-                            .SingleOrDefaultAsync(i => i.Owner.Equals(Guid.Parse(user)) && i.Id == id);
+                            .SingleOrDefaultAsync(i => i.Owner.Equals(user) && i.Id == id);
         if (item is null) { return null; }
 
         return MapTodoItem(item);
     }
 
-    public IEnumerable<TodoItem> ListItems(string user)
+    public IEnumerable<TodoItem> ListItems(Guid user)
     {
         return _context.Todos
                     .AsNoTracking()
                     .Include(i => i.Subtasks)
                     .Include(i => i.Tags)
-                    .Where(i => i.Owner.Equals(Guid.Parse(user)) && i.MainTaskId == null)
+                    .Where(i => i.Owner.Equals(user) && i.MainTaskId == null)
                     .AsSplitQuery()
                     .Select(i => MapTodoItem(i))
                     .AsEnumerable();
     }
 
-    public async Task<bool> DeleteItem(string user, int id)
+    public async Task<bool> DeleteItem(Guid user, int id)
     {
         var item = _context.Todos
                                 .Include(i => i.Subtasks)
-                                .SingleOrDefault(i => i.Owner.Equals(Guid.Parse(user)) && i.Id == id);
+                                .SingleOrDefault(i => i.Owner.Equals(user) && i.Id == id);
         if (item is null) { return false; }
         if (item.Subtasks.Any())
         {
@@ -146,13 +146,13 @@ public class TodoService : ITodoService
         return true;
     }
 
-    public async Task<bool> UpdateItem(string user, TodoItem item)
+    public async Task<bool> UpdateItem(Guid user, TodoItem item)
     {
         var existingItem = _context.Todos
                                 .Include(i => i.Subtasks)
                                 .Include(i => i.Tags)
                                 .AsSplitQuery()
-                                .SingleOrDefault(i => i.Owner.Equals(Guid.Parse(user)) && i.Id == item.Id);
+                                .SingleOrDefault(i => i.Owner.Equals(user) && i.Id == item.Id);
         if (existingItem is null) { return false; }
         existingItem.Name = item.Name;
         existingItem.Deadline = item.Deadline;
@@ -166,7 +166,7 @@ public class TodoService : ITodoService
                 var newSubtask = new TodoItemModel()
                 {
                     Name = st.Name,
-                    Owner = Guid.Parse(user),
+                    Owner = user,
                     Compleated = st.Compleated,
                     Deadline = st.Deadline,
                     Notes = st.Notes,
@@ -189,7 +189,7 @@ public class TodoService : ITodoService
             var t = existingTags.FirstOrDefault(t => t.Id == tag.Id);
             if (t is null)
             {
-                existingTags.Add(new() { Id = tag.Id, Name = tag.Name, Owner = Guid.Parse(user) });
+                existingTags.Add(new() { Id = tag.Id, Name = tag.Name, Owner = user });
             }
             else
             {

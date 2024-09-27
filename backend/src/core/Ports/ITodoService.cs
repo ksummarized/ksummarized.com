@@ -2,14 +2,14 @@ namespace core.Ports;
 
 public interface ITodoService
 {
-    Task<TodoList> CreateList(string user, string name);
-    IEnumerable<TodoList> GetLists(string userId);
-    TodoList? GetList(string userId, int id);
-    bool DeleteList(string userId, int id);
-    Task<bool> RenameList(string user, int id, string name);
-    Task<TodoItem> CreateItem(string user, TodoItem item);
-    Task<TodoItem?> GetItem(string user, int id);
-    IEnumerable<TodoItem> ListItems(string user);
-    Task<bool> DeleteItem(string user, int id);
-    Task<bool> UpdateItem(string user, TodoItem item);
+    Task<TodoList> CreateList(Guid user, string name);
+    IEnumerable<TodoList> GetLists(Guid user);
+    TodoList? GetList(Guid user, int id);
+    bool DeleteList(Guid user, int id);
+    Task<bool> RenameList(Guid user, int id, string name);
+    Task<TodoItem> CreateItem(Guid user, TodoItem item);
+    Task<TodoItem?> GetItem(Guid user, int id);
+    IEnumerable<TodoItem> ListItems(Guid user);
+    Task<bool> DeleteItem(Guid user, int id);
+    Task<bool> UpdateItem(Guid user, TodoItem item);
 }
