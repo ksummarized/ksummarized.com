@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace infrastructure.Data;
 
 [Table("Tags")]
-public class Tag
+public class TagModel
 {
     [Key]
     public int Id { get; set; }

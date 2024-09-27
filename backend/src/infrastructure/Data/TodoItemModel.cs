@@ -13,8 +13,10 @@ public class TodoItemModel
     public DateTime Deadline { get; set; }
     [MaxLength(4096)]
     public string Notes { get; set; } = null!;
-    public required ICollection<Tag> Tags { get; set; }
+    public required ICollection<TagModel> Tags { get; set; }
     public required ICollection<TodoItemModel> Subtasks { get; set; }
     public int? MainTaskId { get; set; }
     public TodoItemModel? MainTask { get; set; }
+    public int ListId { get; set; }
+    public TodoListModel? List { get; set; }
 }

@@ -6,5 +6,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public required DbSet<TodoListModel> TodoLists { get; set; }
     public required DbSet<TodoItemModel> Todos { get; set; }
-    public required DbSet<Tag> Tags { get; set; }
+    public required DbSet<TagModel> Tags { get; set; }
 }

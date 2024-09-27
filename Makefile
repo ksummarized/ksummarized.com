@@ -4,5 +4,8 @@ dev:
 no-reload:
 	docker compose --profile without-hot-reload up --build
 
-.PHONY: dev no-reload
+db:
+	docker compose up db -d
+
+.PHONY: dev no-reload db
 .DEFAULT_GOAL := dev

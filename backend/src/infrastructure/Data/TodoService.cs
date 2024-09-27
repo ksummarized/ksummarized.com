@@ -21,25 +21,40 @@ public class TodoService : ITodoService
     {
         return _context.TodoLists.AsNoTracking()
                                  .Where(list => list.Owner.Equals(user))
-                                 .Select(list => new TodoList { Id = list.Id, Name = list.Name, Owner = list.Owner })
+                                 .Select(list => new TodoList
+                                 {
+                                     Id = list.Id,
+                                     Name = list.Name,
+                                     Owner = list.Owner,
+                                     Items = Enumerable.Empty<TodoItem>()
+                                 })
                                  .AsEnumerable();
     }
 
     public TodoList? GetList(Guid user, int id)
     {
         var list = _context.TodoLists.AsNoTracking()
+                                 .Include(l => l.Items)
                                  .SingleOrDefault(l => l.Owner.Equals(user) && l.Id == id);
-        //TODO: Consider creating a mapper instead of this manual new
-        if (list is not null) { return new() { Id = list.Id, Name = list.Name, Owner = list.Owner }; }
+        if (list is not null)
+        {
+            return new()
+            {
+                Id = list.Id,
+                Name = list.Name,
+                Owner = list.Owner,
+                Items = list.Items.Select(i => MapTodoItem(i)).ToList()
+            };
+        };
         return null;
     }
 
     public async Task<TodoList> CreateList(Guid user, string name)
     {
-        var newList = new TodoListModel() { Name = name, Owner = user };
+        var newList = new TodoListModel() { Name = name, Owner = user, Items = [] };
         _context.TodoLists.Add(newList);
         await _context.SaveChangesAsync();
-        return new TodoList() { Id = newList.Id, Name = newList.Name, Owner = newList.Owner };
+        return new TodoList() { Id = newList.Id, Name = newList.Name, Owner = newList.Owner, Items = [] };
     }
 
     public bool DeleteList(Guid user, int id)
@@ -73,7 +88,8 @@ public class TodoService : ITodoService
             Deadline = item.Deadline,
             Notes = item.Notes,
             Subtasks = [],
-            Tags = []
+            Tags = [],
+            ListId = item.ListId
         };
         foreach (var st in item.Subtasks)
         {
@@ -85,7 +101,8 @@ public class TodoService : ITodoService
                 Deadline = st.Deadline,
                 Notes = st.Notes,
                 Tags = [],
-                Subtasks = []
+                Subtasks = [],
+                ListId = item.ListId
             };
             newItem.Subtasks.Add(newSubtask);
         }
@@ -204,7 +221,7 @@ public class TodoService : ITodoService
 
     private static TodoItem MapTodoItem(infrastructure.Data.TodoItemModel item)
     {
-        Log.Information("Mapped {item}", JsonSerializer.Serialize(item, new JsonSerializerOptions() { ReferenceHandler = ReferenceHandler.Preserve }));
+        Log.Debug("Mapped {item}", JsonSerializer.Serialize(item, new JsonSerializerOptions() { ReferenceHandler = ReferenceHandler.Preserve }));
         return new TodoItem()
         {
             Id = item.Id,
