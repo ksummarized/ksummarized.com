@@ -50,8 +50,16 @@ Directory `scripts` contains some helpful scripts which automate some parts of w
 
 ## Development
 
-The application is started using the following command:
+The application is started using the following command (with hot-reload feature):
+```bash
+make
+```
+or with the hot-reload feature:
+```bash
+make no-reload
+```
 
+If you want to run the application manually you can use the following command:
 ```bash
 docker compose --profile hot-reload up --build --watch
 ```
