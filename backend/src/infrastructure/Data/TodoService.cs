@@ -178,7 +178,7 @@ public class TodoService : ITodoService
         existingItem.ListId = item.ListId;
         foreach (var st in item.Subtasks)
         {
-            var existingSubtask = existingItem.Subtasks.FirstOrDefault(st => st.Id == st.Id);
+            var existingSubtask = existingItem.Subtasks.FirstOrDefault(t => t.Id == st.Id);
             if (existingSubtask is null)
             {
                 var newSubtask = new TodoItemModel()
