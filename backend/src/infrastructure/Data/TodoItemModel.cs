@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace infrastructure.Data;
 
+[Table("TodoItems")]
 public class TodoItemModel
 {
     [Key]
@@ -9,7 +11,7 @@ public class TodoItemModel
     [MaxLength(512)]
     public required string Name { get; set; }
     public required Guid Owner { get; set; }
-    public bool Compleated { get; set; }
+    public bool Completed { get; set; }
     public DateTime Deadline { get; set; }
     [MaxLength(4096)]
     public string Notes { get; set; } = null!;

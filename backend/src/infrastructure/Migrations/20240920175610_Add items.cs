@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -27,14 +27,14 @@ namespace infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Todos",
+                name: "TodoItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
                     Owner = table.Column<Guid>(type: "uuid", nullable: false),
-                    Compleated = table.Column<bool>(type: "boolean", nullable: false),
+                    Completed = table.Column<bool>(type: "boolean", nullable: false),
                     Deadline = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Notes = table.Column<string>(type: "character varying(4096)", maxLength: 4096, nullable: false),
                     MainTaskId = table.Column<int>(type: "integer", nullable: true)
@@ -45,7 +45,7 @@ namespace infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Todos_Todos_MainTaskId",
                         column: x => x.MainTaskId,
-                        principalTable: "Todos",
+                        principalTable: "TodoItems",
                         principalColumn: "Id");
                 });
 
@@ -68,7 +68,7 @@ namespace infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_TagTodoItemModel_Todos_ItemsId",
                         column: x => x.ItemsId,
-                        principalTable: "Todos",
+                        principalTable: "TodoItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -80,7 +80,7 @@ namespace infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Todos_MainTaskId",
-                table: "Todos",
+                table: "TodoItems",
                 column: "MainTaskId");
         }
 
@@ -94,7 +94,7 @@ namespace infrastructure.Migrations
                 name: "Tags");
 
             migrationBuilder.DropTable(
-                name: "Todos");
+                name: "TodoItems");
         }
     }
 }

@@ -54,7 +54,7 @@ The application is started using the following command (with hot-reload feature)
 ```bash
 make
 ```
-or with the hot-reload feature:
+or without the hot-reload feature:
 ```bash
 make no-reload
 ```

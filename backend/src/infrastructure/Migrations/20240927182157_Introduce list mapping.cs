@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -15,7 +15,7 @@ namespace infrastructure.Migrations
 
             migrationBuilder.AddColumn<int>(
                 name: "ListId",
-                table: "Todos",
+                table: "TodoItems",
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
@@ -39,14 +39,14 @@ namespace infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_TagModelTodoItemModel_Todos_ItemsId",
                         column: x => x.ItemsId,
-                        principalTable: "Todos",
+                        principalTable: "TodoItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Todos_ListId",
-                table: "Todos",
+                table: "TodoItems",
                 column: "ListId");
 
             migrationBuilder.CreateIndex(
@@ -55,10 +55,10 @@ namespace infrastructure.Migrations
                 column: "TagsId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Todos_todo_lists_ListId",
-                table: "Todos",
+                name: "FK_Todos_TodoLists_ListId",
+                table: "TodoItems",
                 column: "ListId",
-                principalTable: "todo_lists",
+                principalTable: "TodoLists",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
@@ -67,19 +67,19 @@ namespace infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Todos_todo_lists_ListId",
-                table: "Todos");
+                name: "FK_Todos_TodoLists_ListId",
+                table: "TodoItems");
 
             migrationBuilder.DropTable(
                 name: "TagModelTodoItemModel");
 
             migrationBuilder.DropIndex(
                 name: "IX_Todos_ListId",
-                table: "Todos");
+                table: "TodoItems");
 
             migrationBuilder.DropColumn(
                 name: "ListId",
-                table: "Todos");
+                table: "TodoItems");
 
             migrationBuilder.CreateTable(
                 name: "TagTodoItemModel",
@@ -100,7 +100,7 @@ namespace infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_TagTodoItemModel_Todos_ItemsId",
                         column: x => x.ItemsId,
-                        principalTable: "Todos",
+                        principalTable: "TodoItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });

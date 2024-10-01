@@ -1,6 +1,6 @@
 using core;
 
-namespace api.Resonses;
+namespace api.Responses;
 
 public record TodoList(int Id, string Name, IEnumerable<TodoItem> Items);
 

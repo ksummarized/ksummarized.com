@@ -13,7 +13,7 @@ namespace infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "todo_lists",
+                name: "TodoLists",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -23,7 +23,7 @@ namespace infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_todo_lists", x => x.Id);
+                    table.PrimaryKey("PK_TodoLists", x => x.Id);
                 });
         }
 
@@ -31,7 +31,7 @@ namespace infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "todo_lists");
+                name: "TodoLists");
         }
     }
 }

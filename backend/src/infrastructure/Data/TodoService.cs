@@ -19,6 +19,7 @@ public class TodoService : ITodoService
 
     public IEnumerable<TodoList> GetLists(Guid user)
     {
+        var empty = Enumerable.Empty<TodoItem>();
         return _context.TodoLists.AsNoTracking()
                                  .Where(list => list.Owner.Equals(user))
                                  .Select(list => new TodoList
@@ -26,7 +27,7 @@ public class TodoService : ITodoService
                                      Id = list.Id,
                                      Name = list.Name,
                                      Owner = list.Owner,
-                                     Items = Enumerable.Empty<TodoItem>()
+                                     Items = empty
                                  })
                                  .AsEnumerable();
     }
@@ -84,7 +85,7 @@ public class TodoService : ITodoService
         {
             Name = item.Name,
             Owner = user,
-            Compleated = false,
+            Completed = false,
             Deadline = item.Deadline,
             Notes = item.Notes,
             Subtasks = [],
@@ -97,7 +98,7 @@ public class TodoService : ITodoService
             {
                 Name = st.Name,
                 Owner = user,
-                Compleated = false,
+                Completed = false,
                 Deadline = st.Deadline,
                 Notes = st.Notes,
                 Tags = [],
@@ -118,14 +119,14 @@ public class TodoService : ITodoService
                 t.Name = tag.Name;
             }
         }
-        await _context.Todos.AddAsync(newItem);
+        await _context.TodoItems.AddAsync(newItem);
         await _context.SaveChangesAsync();
         return item with { Id = newItem.Id };
     }
 
     public async Task<TodoItem?> GetItem(Guid user, int id)
     {
-        var item = await _context.Todos
+        var item = await _context.TodoItems
                             .AsNoTracking()
                             .Include(i => i.Subtasks)
                             .Include(i => i.Tags)
@@ -138,7 +139,7 @@ public class TodoService : ITodoService
 
     public IEnumerable<TodoItem> ListItems(Guid user)
     {
-        return _context.Todos
+        return _context.TodoItems
                     .AsNoTracking()
                     .Include(i => i.Subtasks)
                     .Include(i => i.Tags)
@@ -150,22 +151,22 @@ public class TodoService : ITodoService
 
     public async Task<bool> DeleteItem(Guid user, int id)
     {
-        var item = _context.Todos
+        var item = _context.TodoItems
                                 .Include(i => i.Subtasks)
                                 .SingleOrDefault(i => i.Owner.Equals(user) && i.Id == id);
         if (item is null) { return false; }
         if (item.Subtasks.Any())
         {
-            _context.Todos.RemoveRange(item.Subtasks);
+            _context.TodoItems.RemoveRange(item.Subtasks);
         }
-        _context.Todos.Remove(item);
+        _context.TodoItems.Remove(item);
         await _context.SaveChangesAsync();
         return true;
     }
 
     public async Task<bool> UpdateItem(Guid user, TodoItem item)
     {
-        var existingItem = _context.Todos
+        var existingItem = _context.TodoItems
                                 .Include(i => i.Subtasks)
                                 .Include(i => i.Tags)
                                 .AsSplitQuery()
@@ -174,7 +175,7 @@ public class TodoService : ITodoService
         existingItem.Name = item.Name;
         existingItem.Deadline = item.Deadline;
         existingItem.Notes = item.Notes;
-        existingItem.Compleated = item.Compleated;
+        existingItem.Completed = item.Completed;
         existingItem.ListId = item.ListId;
         foreach (var st in item.Subtasks)
         {
@@ -185,7 +186,7 @@ public class TodoService : ITodoService
                 {
                     Name = st.Name,
                     Owner = user,
-                    Compleated = st.Compleated,
+                    Completed = st.Completed,
                     Deadline = st.Deadline,
                     Notes = st.Notes,
                     Tags = [],
@@ -199,7 +200,7 @@ public class TodoService : ITodoService
                 existingSubtask.Name = st.Name;
                 existingSubtask.Deadline = st.Deadline;
                 existingSubtask.Notes = st.Notes;
-                existingSubtask.Compleated = st.Compleated;
+                existingSubtask.Completed = st.Completed;
                 existingSubtask.ListId = item.ListId;
             }
         }
@@ -234,7 +235,7 @@ public class TodoService : ITodoService
             Subtasks = item.Subtasks?.Select(st => MapSubtask(st)).ToList() ?? [],
             Tags = item.Tags?.Select(t => new core.Tag() { Id = t.Id, Name = t.Name }).ToList() ?? [],
             ListId = item.ListId,
-            Compleated = item.Compleated
+            Completed = item.Completed
         };
     }
 
@@ -249,7 +250,7 @@ public class TodoService : ITodoService
             Subtasks = [],
             Tags = subtask.Tags?.Select(t => new core.Tag() { Id = t.Id, Name = t.Name }).ToList() ?? [],
             ListId = subtask.ListId,
-            Compleated = subtask.Compleated
+            Completed = subtask.Completed
         };
     }
 }

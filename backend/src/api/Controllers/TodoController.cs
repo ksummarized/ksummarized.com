@@ -1,7 +1,7 @@
 using core.Ports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using api.Resonses;
+using api.Responses;
 using api.Filters;
 using core;
 
