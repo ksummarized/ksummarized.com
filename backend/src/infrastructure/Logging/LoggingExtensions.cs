@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Http;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
 using Serilog.Events;
 
-namespace api;
+namespace infrastructure.Logging;
 
 public static class LoggingExtensions
 {

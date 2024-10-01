@@ -2,10 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace infrastructure.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-    {
-    }
-    public DbSet<TodoListModel> TodoLists { get; set; }
+    public required DbSet<TodoListModel> TodoLists { get; set; }
+    public required DbSet<TodoItemModel> TodoItems { get; set; }
+    public required DbSet<TagModel> Tags { get; set; }
 }

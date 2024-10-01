@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using infrastructure.Data;
@@ -11,9 +12,11 @@ using infrastructure.Data;
 namespace infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240920175610_Add items")]
+    partial class Additems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("TagModelTodoItemModel", b =>
+            modelBuilder.Entity("TagTodoItemModel", b =>
                 {
                     b.Property<int>("ItemsId")
                         .HasColumnType("integer");
@@ -34,10 +37,10 @@ namespace infrastructure.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("TagModelTodoItemModel");
+                    b.ToTable("TagTodoItemModel");
                 });
 
-            modelBuilder.Entity("infrastructure.Data.TagModel", b =>
+            modelBuilder.Entity("infrastructure.Data.Tag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,9 +75,6 @@ namespace infrastructure.Migrations
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("ListId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("MainTaskId")
                         .HasColumnType("integer");
 
@@ -92,8 +92,6 @@ namespace infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ListId");
 
                     b.HasIndex("MainTaskId");
 
@@ -121,7 +119,7 @@ namespace infrastructure.Migrations
                     b.ToTable("TodoLists");
                 });
 
-            modelBuilder.Entity("TagModelTodoItemModel", b =>
+            modelBuilder.Entity("TagTodoItemModel", b =>
                 {
                     b.HasOne("infrastructure.Data.TodoItemModel", null)
                         .WithMany()
@@ -129,7 +127,7 @@ namespace infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("infrastructure.Data.TagModel", null)
+                    b.HasOne("infrastructure.Data.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -138,17 +136,9 @@ namespace infrastructure.Migrations
 
             modelBuilder.Entity("infrastructure.Data.TodoItemModel", b =>
                 {
-                    b.HasOne("infrastructure.Data.TodoListModel", "List")
-                        .WithMany("Items")
-                        .HasForeignKey("ListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("infrastructure.Data.TodoItemModel", "MainTask")
                         .WithMany("Subtasks")
                         .HasForeignKey("MainTaskId");
-
-                    b.Navigation("List");
 
                     b.Navigation("MainTask");
                 });
@@ -156,11 +146,6 @@ namespace infrastructure.Migrations
             modelBuilder.Entity("infrastructure.Data.TodoItemModel", b =>
                 {
                     b.Navigation("Subtasks");
-                });
-
-            modelBuilder.Entity("infrastructure.Data.TodoListModel", b =>
-                {
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

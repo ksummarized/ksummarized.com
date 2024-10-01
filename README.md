@@ -50,8 +50,16 @@ Directory `scripts` contains some helpful scripts which automate some parts of w
 
 ## Development
 
-The application is started using the following command:
+The application is started using the following command (with hot-reload feature):
+```bash
+make
+```
+or without the hot-reload feature:
+```bash
+make no-reload
+```
 
+If you want to run the application manually you can use the following command:
 ```bash
 docker compose --profile hot-reload up --build --watch
 ```
@@ -65,3 +73,8 @@ docker compose --profile without-hot-reload up --build --watch
 The `--watch` parameter starts containers with the `hot-reload` feature. This enables the auto-reload functionality, meaning that the container will be automatically reloaded when the code for either the frontend or backend changes.
 
 > The `hot-reload` feature for backend applications uses `dotnet watch`, which only detects changes to existing files. It will not restart the container if new files are added (dotnet watch [issue](https://github.com/dotnet/aspnetcore/issues/8321)).
+
+### DB Migrations
+When working with migrations remember to add parameter for project and startup project.
+For example when generating a new migration while in backend directory:
+`dotnet ef migrations add -p ./src/infrastructure -s ./src/api "Example"`

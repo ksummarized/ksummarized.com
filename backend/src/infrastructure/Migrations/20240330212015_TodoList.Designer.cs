@@ -43,7 +43,7 @@ namespace infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("todo_lists");
+                    b.ToTable("TodoLists");
                 });
 #pragma warning restore 612, 618
         }
