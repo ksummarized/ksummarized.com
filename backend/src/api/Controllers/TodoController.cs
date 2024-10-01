@@ -34,7 +34,7 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
         return list switch
         {
             null => NotFound(),
-            var user => Ok(list),
+            var l => Ok(l),
         };
     }
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Filters;
 
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class UserIdFilter : Attribute, IAuthorizationFilter
 {
     public void OnAuthorization(AuthorizationFilterContext context)
