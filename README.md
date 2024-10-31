@@ -31,16 +31,11 @@ or in bash/zsh
 dotnet dev-certs https -ep .aspnet/https/aspnetapp.pfx -p devcertpasswd --trust
 ```
 
-Next go to the `scripts` directory and run `apply_migrations.ps1`
-Next You should go back to the main directory and run `docker compose --profile hot-reload up --build --watch`
-This can be done with the following snippet.
+Database migrations will be automatically applied when executing docker-compose via the `migrations` service.
 
-```powershell
-cd scripts
-.\apply_migrations.ps1
-cd ..\
-docker compose --profile hot-reload up --build --watch
-```
+> In order to run them manually go to the `scripts` directory and run `apply_migrations.ps1`.
+
+Next You should go back to the main directory and run `docker compose --profile hot-reload up --build --watch`
 
 You can now visit the site at: <http://localhost:8888/>
 
@@ -51,15 +46,19 @@ Directory `scripts` contains some helpful scripts which automate some parts of w
 ## Development
 
 The application is started using the following command (with hot-reload feature):
+
 ```bash
 make
 ```
+
 or without the hot-reload feature:
+
 ```bash
 make no-reload
 ```
 
 If you want to run the application manually you can use the following command:
+
 ```bash
 docker compose --profile hot-reload up --build --watch
 ```
@@ -75,6 +74,10 @@ The `--watch` parameter starts containers with the `hot-reload` feature. This en
 > The `hot-reload` feature for backend applications uses `dotnet watch`, which only detects changes to existing files. It will not restart the container if new files are added (dotnet watch [issue](https://github.com/dotnet/aspnetcore/issues/8321)).
 
 ### DB Migrations
+
 When working with migrations remember to add parameter for project and startup project.
 For example when generating a new migration while in backend directory:
-`dotnet ef migrations add -p ./src/infrastructure -s ./src/api "Example"`
+
+```bash
+dotnet ef migrations add -p ./src/infrastructure -s ./src/api "Example"
+```

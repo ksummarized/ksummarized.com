@@ -1,12 +1,30 @@
+# Common configuration between services
+x-frontend: &frontend-base
+  build:
+    context: ./frontend
+  ports:
+    - "8888:8888"
+
+x-backend: &backend-base
+  ports:
+    - "5001:80"
+    - "5000:443"
+  environment:
+    ASPNETCORE_ENVIRONMENT: "Development"
+    ConnectionStrings__KSummarized: "Host=db;Database=ksummarized;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+    ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+    ASPNETCORE_Kestrel__Certificates__Default__Password: "devcertpasswd"
+    ASPNETCORE_URLS: "https://+:443;http://+:80"
+    DOTNET_USE_POLLING_FILE_WATCHER: true  # dotnet watch uses a a polling file watcher. Required for running it in docker.
+  volumes:
+    - .aspnet/https:/https/:ro  # read-only on the container
+
 services:
-  frontend: &frontend-base
+  frontend:
+    <<: *frontend-base
     container_name: ks-frontend
     profiles:
       - without-hot-reload
-    build:
-      context: ./frontend
-    ports:
-      - "8888:8888"
 
   frontend-hot-reload:
     <<: *frontend-base
@@ -24,27 +42,18 @@ services:
         - action: rebuild
           path: package.json
 
-  backend: &backend-base
+  backend:
+    <<: *backend-base
     container_name: ks-backend
     build:
       context: ./backend
     profiles:
       - without-hot-reload
-    ports:
-      - "5001:80"
-      - "5000:443"
-    environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
-      ConnectionStrings__KSummarized: "Host=db;Database=ksummarized;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
-      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
-      ASPNETCORE_Kestrel__Certificates__Default__Password: "devcertpasswd"
-      ASPNETCORE_URLS: "https://+:443;http://+:80"
-      DOTNET_USE_POLLING_FILE_WATCHER: true  # dotnet watch uses a a polling file watcher. Required for running it in docker.
-    volumes:
-      - .aspnet/https:/https/:ro  # read-only on the container
     depends_on:
       db:
         condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
 
   backend-hot-reload:
     <<: *backend-base
@@ -54,11 +63,27 @@ services:
       target: development
     profiles:
       - hot-reload
+    depends_on:
+      db:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
     develop:
       watch:
         - action: sync
           path: ./backend
           target: /src
+
+  migrations:
+    <<: *backend-base
+    container_name: ks-migrations
+    restart: no
+    build:
+      context: ./backend
+      target: migrations
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     image: postgres:14.0-alpine
