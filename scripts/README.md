@@ -6,7 +6,6 @@ Right now there are this scripts:
 - `create_branch.ps1`
 - `clean_branches.ps1`
 - `create_pr.ps1`
-- `apply_migrations.ps1`
 
 Two out of those (`create_branch.ps1` and `create_pr.ps1`) require user to have GitHub CLI installed and to be logged in.
 
@@ -33,5 +32,3 @@ Two out of those (`create_branch.ps1` and `create_pr.ps1`) require user to have 
     - `.\scripts\create_branch.ps1 -Assignee sojusan`
 
 - `clean_branches.ps1` - clears all of the local branches except for master and the current one.
-
-- `apply_migrations.ps1` - runs a project database in a docker container and performs migrations in the database.

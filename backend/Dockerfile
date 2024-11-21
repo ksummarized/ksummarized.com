@@ -1,17 +1,28 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+ARG DOTNET_RUNTIME=mcr.microsoft.com/dotnet/aspnet
+ARG DOTNET_SDK=mcr.microsoft.com/dotnet/sdk
+ARG DOTNET_VERSION=8.0
+
+FROM ${DOTNET_RUNTIME}:${DOTNET_VERSION} AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS development
+FROM ${DOTNET_SDK}:${DOTNET_VERSION} AS development
 COPY . /src
 WORKDIR /src
 CMD ["dotnet", "watch", "--verbose", "--non-interactive", "--no-launch-profile", "--project", "src/api/"]
 
+FROM ${DOTNET_SDK}:${DOTNET_VERSION} AS migrations
+COPY . /src
+WORKDIR /src
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
+ENTRYPOINT [ "dotnet", "ef", "database", "update", "-p", "src/infrastructure", "-s", "src/api" ]
+
 #Todo: clean it up for multiproject build
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM ${DOTNET_SDK}:${DOTNET_VERSION} AS build
 WORKDIR /src
 COPY src/api/api.csproj src/api/
 RUN dotnet restore "src/api/api.csproj"
