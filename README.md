@@ -33,8 +33,6 @@ dotnet dev-certs https -ep .aspnet/https/aspnetapp.pfx -p devcertpasswd --trust
 
 Database migrations will be automatically applied when executing docker-compose via the `migrations` service.
 
-> In order to run them manually go to the `scripts` directory and run `apply_migrations.ps1`.
-
 Next You should go back to the main directory and run `docker compose --profile hot-reload up --build --watch`
 
 You can now visit the site at: <http://localhost:8888/>
