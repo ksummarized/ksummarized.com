@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: https://{{api_base_url}}/api/todo/lists/{{listId}}
+  url: https://{{api_base_url}}/api/todo/lists/{{listId}}?tag=1
   body: none
   auth: bearer
+}
+
+params:query {
+  tag: 1
 }
 
 auth:bearer {

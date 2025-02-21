@@ -31,10 +31,11 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     [HttpGet("lists/{id}")]
     [ProducesResponseType(typeof(Responses.TodoList), StatusCodes.Status200OK)]
     [Produces("application/json")]
-    public IActionResult GetList([FromRoute] int id)
+    public IActionResult GetList(GetListRequest request)
     {
         _logger.LogDebug("User: {UserId} requested his list: {ListId}", UserId, id);
-        var list = _service.GetList(UserId, id)?.ToResponse();
+        _logger.LogDebug("User: {user} requested his list: {id}", UserId, request.Id);
+        var list = _service.GetList(UserId, request.Id, request.Tag, request.Compleated)?.ToResponse();
         return list switch
         {
             null => NotFound(),
@@ -93,10 +94,10 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     [HttpGet("items")]
     [ProducesResponseType(typeof(IEnumerable<TodoItem>), StatusCodes.Status200OK)]
     [Produces("application/json")]
-    public IActionResult ListItems()
+    public IActionResult ListItems([FromQuery]ListItemsRequest? request)
     {
         _logger.LogDebug("User: {UserId} requested his items", UserId);
-        return Ok(_service.ListItems(UserId));
+        return Ok(_service.ListItems(UserId, request?.Tag, request?.Compleated));
     }
 
     [HttpGet("items/{id}")]
@@ -155,3 +156,15 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
         }
     }
 }
+
+public class GetListRequest
+{
+    [FromRoute]
+    public int Id { get; set; }
+    [FromQuery]
+    public int? Tag { get; set; }
+    [FromQuery]
+    public bool? Compleated { get; set; }
+}
+
+public record ListItemsRequest(int? Tag, bool? Compleated);
