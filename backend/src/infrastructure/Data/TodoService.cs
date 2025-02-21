@@ -11,6 +11,7 @@ public class TodoService : ITodoService
 {
 
     private readonly ApplicationDbContext _context;
+    private static readonly JsonSerializerOptions _jsonSerializerOptions = new() { ReferenceHandler = ReferenceHandler.Preserve };
 
     public TodoService(ApplicationDbContext context)
     {
@@ -192,7 +193,7 @@ public class TodoService : ITodoService
                                 .AsSplitQuery()
                                 .SingleOrDefault(i => i.Owner.Equals(user) && i.Id == item.Id);
         if (existingItem is null) { return false; }
-        Log.Debug("Updating item {item}", JsonSerializer.Serialize(item));
+        Log.Debug("Updating item {item}", JsonSerializer.Serialize(item, _jsonSerializerOptions));
         existingItem.Name = item.Name;
         existingItem.Deadline = item.Deadline;
         existingItem.Notes = item.Notes;
@@ -244,9 +245,9 @@ public class TodoService : ITodoService
         return true;
     }
 
-    private static TodoItem MapTodoItem(infrastructure.Data.TodoItemModel item)
+    private static TodoItem MapTodoItem(TodoItemModel item)
     {
-        Log.Debug("Mapped {item}", JsonSerializer.Serialize(item, new JsonSerializerOptions() { ReferenceHandler = ReferenceHandler.Preserve }));
+        Log.Debug("Mapped {item}", JsonSerializer.Serialize(item, _jsonSerializerOptions));
         return new TodoItem()
         {
             Id = item.Id,
@@ -260,7 +261,7 @@ public class TodoService : ITodoService
         };
     }
 
-    private static TodoItem MapSubtask(infrastructure.Data.TodoItemModel subtask)
+    private static TodoItem MapSubtask(TodoItemModel subtask)
     {
         return new TodoItem()
         {
