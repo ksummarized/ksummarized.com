@@ -32,21 +32,33 @@ public class TodoService : ITodoService
                                  .AsEnumerable();
     }
 
-    public TodoList? GetList(Guid user, int id)
+    public TodoList? GetList(Guid user, int id, int? tag, bool? completed)
     {
+        Log.Debug("Getting list {id} for user {user} with tag {tag} and completed {completed}", id, user, tag, completed);
         var list = _context.TodoLists.AsNoTracking()
                                  .Include(l => l.Items)
+                                 .ThenInclude(i => i.Tags)
                                  .SingleOrDefault(l => l.Owner.Equals(user) && l.Id == id);
         if (list is not null)
         {
+            var items = list.Items.AsQueryable();
+            if (tag is not null)
+            {
+                items = items?.Where(i => i.Tags.Any(t => t.Id == tag));
+            }
+            if (completed is not null)
+            {
+                items = items?.Where(i => i.Completed == completed);
+            }
             return new()
             {
                 Id = list.Id,
                 Name = list.Name,
                 Owner = list.Owner,
-                Items = list.Items.Select(i => MapTodoItem(i)).ToList()
+                Items = items?.Select(i => MapTodoItem(i)).ToList() ?? []
             };
-        };
+        }
+        ;
         return null;
     }
 
@@ -137,16 +149,24 @@ public class TodoService : ITodoService
         return MapTodoItem(item);
     }
 
-    public IEnumerable<TodoItem> ListItems(Guid user)
+    public IEnumerable<TodoItem> ListItems(Guid user, int? tag, bool? compleated)
     {
-        return _context.TodoItems
+        var baseQuery = _context.TodoItems
                     .AsNoTracking()
                     .Include(i => i.Subtasks)
                     .Include(i => i.Tags)
                     .Where(i => i.Owner.Equals(user) && i.MainTaskId == null)
-                    .AsSplitQuery()
-                    .Select(i => MapTodoItem(i))
-                    .AsEnumerable();
+                    .AsSplitQuery();
+
+        if (tag is not null)
+        {
+            baseQuery = baseQuery.Where(i => i.Tags.Any(t => t.Id == tag));
+        }
+        if (compleated is not null)
+        {
+            baseQuery = baseQuery.Where(i => i.Completed == compleated);
+        }
+        return baseQuery.Select(i => MapTodoItem(i)).AsEnumerable();;
     }
 
     public async Task<bool> DeleteItem(Guid user, int id)
@@ -172,6 +192,7 @@ public class TodoService : ITodoService
                                 .AsSplitQuery()
                                 .SingleOrDefault(i => i.Owner.Equals(user) && i.Id == item.Id);
         if (existingItem is null) { return false; }
+        Log.Debug("Updating item {item}", JsonSerializer.Serialize(item));
         existingItem.Name = item.Name;
         existingItem.Deadline = item.Deadline;
         existingItem.Notes = item.Notes;

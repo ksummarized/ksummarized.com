@@ -11,14 +11,18 @@ using infrastructure.Keycloak;
 using infrastructure.Logging;
 
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
-Log.Logger = new LoggerConfiguration().Enrich.WithCorrelationId()
+var baseLogConfig = new LoggerConfiguration().Enrich.WithCorrelationId()
                                              .WriteTo
-                                             .Console(outputTemplate: logFormat)
-                                             .CreateLogger();
+                                             .Console(outputTemplate: logFormat);
+Log.Logger = baseLogConfig.CreateLogger();
 
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    if(builder.Environment.IsDevelopment()){
+        baseLogConfig.MinimumLevel.Debug();
+        Log.Logger = baseLogConfig.CreateLogger();
+    }
     builder.Services.AddHttpContextAccessor();
     builder.Host.UseSerilog();
     builder.Services.AddDbContext<ApplicationDbContext>(
