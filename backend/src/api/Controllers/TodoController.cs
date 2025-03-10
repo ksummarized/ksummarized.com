@@ -1,17 +1,16 @@
 using core.Ports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using api.Responses;
-using api.Filters;
 using core;
+using api.Mapers;
+using api.Authorization;
 
 namespace api.Controllers;
 
 [Authorize]
-[UserIdFilter]
 [Route("/api/todo")]
 [ApiController]
-public class TodoController(ITodoService service, ILogger<TodoController> logger) : ControllerBase
+public partial class TodoController(ITodoService service, ILogger<TodoController> logger) : ControllerBase
 {
     private readonly ITodoService _service = service;
     private readonly ILogger<TodoController> _logger = logger;
@@ -24,18 +23,6 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     {
         _logger.LogDebug("User: {user} requested his lists", UserId);
         return Ok(_service.GetLists(UserId).Select(l => l.ToResponse()));
-    }
-
-    [HttpGet("lists/{id}")]
-    public IActionResult GetList(GetListRequest request)
-    {
-        _logger.LogDebug("User: {user} requested his list: {id}", UserId, request.Id);
-        var list = _service.GetList(UserId, request.Id, request.Tag, request.Compleated)?.ToResponse();
-        return list switch
-        {
-            null => NotFound(),
-            var l => Ok(l),
-        };
     }
 
     [HttpDelete("lists/{id}")]
@@ -51,6 +38,7 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     }
 
     [HttpPost("lists")]
+    [Authorize(Policy = "UserIdPolicy")]
     public async Task<IActionResult> CreateLists([FromBody] ListCreationRequest request)
     {
         _logger.LogDebug("User: {user} created: {list}", UserId, request.Name);
@@ -124,34 +112,4 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
         }
         return BadRequest();
     }
-
-    public class ListCreationRequest
-    {
-        public required string Name { get; set; }
-    }
-
-    public class ListRenameRequest
-    {
-        [FromRoute]
-        public required int Id { get; set; }
-        [FromBody]
-        public required Payload Body { get; set; }
-
-        public class Payload
-        {
-            public required string Name { get; set; }
-        }
-    }
 }
-
-public class GetListRequest
-{
-    [FromRoute]
-    public int Id { get; set; }
-    [FromQuery]
-    public int? Tag { get; set; }
-    [FromQuery]
-    public bool? Compleated { get; set; }
-}
-
-public record ListItemsRequest(int? Tag, bool? Compleated);

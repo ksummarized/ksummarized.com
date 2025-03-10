@@ -1,28 +1,26 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Security.Cryptography;
-using api.Filters;
 using core.Ports;
 using infrastructure.Data;
 using infrastructure.Keycloak;
 using infrastructure.Logging;
+using api.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using api;
+using api.Endpoints;
 
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
-var baseLogConfig = new LoggerConfiguration().Enrich.WithCorrelationId()
+var logConfig = new LoggerConfiguration().Enrich.WithCorrelationId()
                                              .WriteTo
                                              .Console(outputTemplate: logFormat);
-Log.Logger = baseLogConfig.CreateLogger();
+Log.Logger = logConfig.CreateLogger();
 
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-    if(builder.Environment.IsDevelopment()){
-        baseLogConfig.MinimumLevel.Debug();
-        Log.Logger = baseLogConfig.CreateLogger();
-    }
     builder.Services.AddHttpContextAccessor();
     builder.Host.UseSerilog();
     builder.Services.AddDbContext<ApplicationDbContext>(
@@ -62,11 +60,11 @@ try
         options.TokenValidationParameters = tokenValidationParameters;
     });
 
-    builder.Services.AddControllers(o => o.Filters.Add(typeof(UserIdFilter)));
-    builder.Services.AddSwaggerGen(c =>
-    {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
-    });
+    builder.Services.AddControllers();
+    builder.Services.AddSingleton<IAuthorizationHandler, UserIdRequirementHandler>();
+    builder.Services.AddAuthorizationBuilder()
+        .AddPolicy(UserIdRequirement.PolicyName, p => p.AddRequirements(new UserIdRequirement()));
+
     builder.Services.AddScoped<ITodoService, TodoService>();
 
     builder.Services.AddCors(options =>
@@ -82,8 +80,6 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseDeveloperExceptionPage();
-        app.UseSwagger();
-        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "api v1"));
     }
 
     app.UseCors("AllowAll");
@@ -95,8 +91,8 @@ try
     app.UseSerilogRequestLogging();
     app.UseRouting();
     app.UseAuthorization();
-
     app.MapControllers();
+    app.MapEndpoints();
 
     app.Run();
 }
