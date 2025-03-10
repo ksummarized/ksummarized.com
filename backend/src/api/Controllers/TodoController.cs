@@ -18,24 +18,6 @@ public partial class TodoController(ITodoService service, ILogger<TodoController
     //We are sure that this is not null because of the [UserIdFilter]
     private Guid UserId => (Guid)HttpContext.Items["UserId"]!;
 
-    [HttpPost("lists")]
-    [Authorize(Policy = "UserIdPolicy")]
-    public async Task<IActionResult> CreateLists([FromBody] ListCreationRequest request)
-    {
-    }
-
-    [HttpPut("lists/{id}")]
-    public async Task<IActionResult> RenameList(ListRenameRequest request)
-    {
-        _logger.LogDebug("User: {user} renamed: {id} to: {list}", UserId, request.Id, request.Body.Name);
-        var list = await _service.RenameList(UserId, request.Id, request.Body.Name);
-        if (list)
-        {
-            return Ok();
-        }
-        return BadRequest();
-    }
-
     [HttpPost("items")]
     public async Task<IActionResult> CreateItem([FromBody] TodoItem request)
     {
