@@ -10,7 +10,7 @@ namespace api.Endpoints.Lists;
 public static class GetListEndpoint
 {
     public const string Name = "GetList";
-    public static void MapGetListEndpoint(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapGetListEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapGet(ApiEndpoints.Todo.Lists.Get, (HttpContext ctx, [FromRoute] int Id, [AsParameters] GetListRequest request, [FromServices]ITodoService service) =>
         {
@@ -27,6 +27,7 @@ public static class GetListEndpoint
         .Produces<GetListResponse>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound)
         .RequireAuthorization(UserIdRequirement.PolicyName);
+        return app;
     }
 
 

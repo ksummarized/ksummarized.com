@@ -18,13 +18,6 @@ public partial class TodoController(ITodoService service, ILogger<TodoController
     //We are sure that this is not null because of the [UserIdFilter]
     private Guid UserId => (Guid)HttpContext.Items["UserId"]!;
 
-    [HttpGet("lists")]
-    public IActionResult GetLists()
-    {
-        _logger.LogDebug("User: {user} requested his lists", UserId);
-        return Ok(_service.GetLists(UserId).Select(l => l.ToResponse()));
-    }
-
     [HttpDelete("lists/{id}")]
     public IActionResult DeleteList([FromRoute] int id)
     {
