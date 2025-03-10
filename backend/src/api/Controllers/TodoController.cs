@@ -18,25 +18,10 @@ public partial class TodoController(ITodoService service, ILogger<TodoController
     //We are sure that this is not null because of the [UserIdFilter]
     private Guid UserId => (Guid)HttpContext.Items["UserId"]!;
 
-    [HttpDelete("lists/{id}")]
-    public IActionResult DeleteList([FromRoute] int id)
-    {
-        _logger.LogDebug("User: {user} deleted his list: {id}", UserId, id);
-        var success = _service.DeleteList(UserId, id);
-        if (success)
-        {
-            return Ok();
-        }
-        return BadRequest();
-    }
-
     [HttpPost("lists")]
     [Authorize(Policy = "UserIdPolicy")]
     public async Task<IActionResult> CreateLists([FromBody] ListCreationRequest request)
     {
-        _logger.LogDebug("User: {user} created: {list}", UserId, request.Name);
-        var list = await _service.CreateList(UserId, request.Name);
-        return Created(HttpContext.Request.Path.Add(new PathString($"/{list.Id}")), list.ToResponse());
     }
 
     [HttpPut("lists/{id}")]
