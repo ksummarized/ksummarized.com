@@ -33,33 +33,49 @@ public class TodoService : ITodoService
                                  .AsEnumerable();
     }
 
-    public TodoList? GetList(Guid user, int id, int? tag, bool? completed)
+    public TodoList? GetList(GetListOptions options)
     {
-        Log.Debug("Getting list {id} for user {user} with tag {tag} and completed {completed}", id, user, tag, completed);
-        var list = _context.TodoLists.AsNoTracking()
-                                 .Include(l => l.Items)
-                                 .ThenInclude(i => i.Tags)
-                                 .SingleOrDefault(l => l.Owner.Equals(user) && l.Id == id);
+        Log.Debug("Getting list {id} for user {user} with tag {tag} and completed {completed}", 
+            options.ListId, options.UserId, options.Tag, options.Completed);
+        
+        var query = _context.TodoLists.AsNoTracking();
+        
+        if (options.IncludeSubtasks)
+        {
+            query = query.Include(l => l.Items)
+                        .ThenInclude(i => i.Tags);
+        }
+        else
+        {
+            query = query.Include(l => l.Items.Where(i => i.MainTaskId == null))
+                        .ThenInclude(i => i.Tags);
+        }
+
+        var list = query.SingleOrDefault(l => l.Owner.Equals(options.UserId) && l.Id == options.ListId);
+        
         if (list is not null)
         {
             var items = list.Items.AsQueryable();
-            if (tag is not null)
+            if (options.Tag is not null)
             {
-                items = items?.Where(i => i.Tags.Any(t => t.Id == tag));
+                items = items?.Where(i => i.Tags.Any(t => t.Id == options.Tag));
             }
-            if (completed is not null)
+            if (options.Completed is not null)
             {
-                items = items?.Where(i => i.Completed == completed);
+                items = items?.Where(i => i.Completed == options.Completed);
             }
+
+            // Apply pagination
+            items = items?.Skip((options.Page - 1) * options.PageSize).Take(options.PageSize);
+
             return new()
             {
                 Id = list.Id,
                 Name = list.Name,
                 Owner = list.Owner,
-                Items = items?.Select(i => MapTodoItem(i)).ToList() ?? []
+                Items = items?.Select(i => MapTodoItem(i, options.IncludeSubtasks)).ToList() ?? []
             };
         }
-        ;
         return null;
     }
 
@@ -147,7 +163,7 @@ public class TodoService : ITodoService
                             .SingleOrDefaultAsync(i => i.Owner.Equals(user) && i.Id == id);
         if (item is null) { return null; }
 
-        return MapTodoItem(item);
+        return MapTodoItem(item, true);
     }
 
     public IEnumerable<TodoItem> ListItems(Guid user, int? tag, bool? compleated)
@@ -167,7 +183,7 @@ public class TodoService : ITodoService
         {
             baseQuery = baseQuery.Where(i => i.Completed == compleated);
         }
-        return baseQuery.Select(i => MapTodoItem(i)).AsEnumerable();;
+        return baseQuery.Select(i => MapTodoItem(i, true)).AsEnumerable();;
     }
 
     public async Task<bool> DeleteItem(Guid user, int id)
@@ -245,7 +261,7 @@ public class TodoService : ITodoService
         return true;
     }
 
-    private static TodoItem MapTodoItem(TodoItemModel item)
+    private static TodoItem MapTodoItem(TodoItemModel item, bool includeSubtasks)
     {
         Log.Debug("Mapped {item}", JsonSerializer.Serialize(item, _jsonSerializerOptions));
         return new TodoItem()
@@ -254,7 +270,7 @@ public class TodoService : ITodoService
             Name = item.Name,
             Deadline = item.Deadline,
             Notes = item.Notes,
-            Subtasks = item.Subtasks?.Select(st => MapSubtask(st)).ToList() ?? [],
+            Subtasks = includeSubtasks ? (item.Subtasks?.Select(st => MapSubtask(st)).ToList() ?? []) : [],
             Tags = item.Tags?.Select(t => new core.Tag() { Id = t.Id, Name = t.Name }).ToList() ?? [],
             ListId = item.ListId,
             Completed = item.Completed

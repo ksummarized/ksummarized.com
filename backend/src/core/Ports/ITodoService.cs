@@ -4,7 +4,7 @@ public interface ITodoService
 {
     Task<TodoList> CreateList(Guid user, string name);
     IEnumerable<TodoList> GetLists(Guid user);
-    TodoList? GetList(Guid user, int id, int? tag, bool? completed);
+    TodoList? GetList(GetListOptions options);
     bool DeleteList(Guid user, int id);
     Task<bool> RenameList(Guid user, int id, string name);
     Task<TodoItem> CreateItem(Guid user, TodoItem item);
