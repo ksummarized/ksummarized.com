@@ -5,6 +5,8 @@ public static class ListsEndpointsExtensions {
         return app
         .MapGetAllListsEndpoint()
         .MapGetListEndpoint()
-        .MapDeleteListEndpoint();
+        .MapDeleteListEndpoint()
+        .MapCreateListEndpoint()
+        .MapRenameListEndpoint();
     }
 }

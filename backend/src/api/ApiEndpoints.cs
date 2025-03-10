@@ -12,7 +12,7 @@ public static class ApiEndpoints
             public static string Get => $"{Base}/{{Id}}";
             public static string GetAll => $"{Base}";
             public static string Create => $"{Base}";
-            public static string Update => $"{Base}/{{id}}";
+            public static string Rename => $"{Base}/{{id}}";
             public static string Delete => $"{Base}/{{id}}";
         }
 
