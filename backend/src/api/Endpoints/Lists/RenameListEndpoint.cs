@@ -9,7 +9,11 @@ public static class RenameListEndpoint
     public const string Name = "RenameList";
     public static IEndpointRouteBuilder MapRenameListEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapPut(ApiEndpoints.Todo.Lists.Rename, async (HttpContext ctx, [FromRoute] int Id, [FromBody] ListRenameRequest request, [FromServices] ITodoService service) =>
+        app.MapPut(ApiEndpoints.Todo.Lists.Rename, async (
+            HttpContext ctx,
+            [FromRoute] int Id,
+            [FromBody] ListRenameRequest request,
+            [FromServices] ITodoService service) =>
         {
             var UserId = (Guid)ctx.Items["UserId"]!;
             Log.Debug("User: {user} renamed: {id} to: {list}", UserId, Id, request.Name);

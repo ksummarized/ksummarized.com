@@ -12,9 +12,9 @@ public static class GetTaskEndpoint
     public static IEndpointRouteBuilder MapGetTaskEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapGet(ApiEndpoints.Todo.Tasks.Get, async (
-            [FromRoute] int Id,
-            [FromServices] ITodoService service,
-            HttpContext ctx) =>
+            HttpContext ctx,
+            int Id,
+            [FromServices] ITodoService service) =>
         {
             var userId = (Guid)ctx.Items["UserId"]!;
             Log.Debug("User: {user} requested his item: {id}", userId, Id);

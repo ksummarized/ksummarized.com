@@ -12,9 +12,9 @@ public static class UpdateTaskEndpoint
     public static IEndpointRouteBuilder MapUpdateTaskEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapPut(ApiEndpoints.Todo.Tasks.Update, async (
-            [FromServices] ITodoService service,
-            [FromBody] TodoItem request,
-            HttpContext ctx) =>
+            HttpContext ctx,
+            TodoItem request,
+            [FromServices] ITodoService service) =>
         {
             var userId = (Guid)ctx.Items["UserId"]!;
             Log.Debug("User: {user} updated his item: {id}", userId, request.Id);

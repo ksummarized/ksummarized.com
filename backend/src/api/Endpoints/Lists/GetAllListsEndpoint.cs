@@ -12,7 +12,8 @@ public static class GetAllListsEndpoint
     public const string Name = "GetAllLists";
     public static IEndpointRouteBuilder MapGetAllListsEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapGet(ApiEndpoints.Todo.Lists.GetAll, (HttpContext ctx, [FromServices] ITodoService service) =>
+        app.MapGet(ApiEndpoints.Todo.Lists.GetAll,
+        (HttpContext ctx, [FromServices] ITodoService service) =>
         {
             var UserId = (Guid)ctx.Items["UserId"]!;
             Log.Debug("User: {user} requested his lists", UserId);
