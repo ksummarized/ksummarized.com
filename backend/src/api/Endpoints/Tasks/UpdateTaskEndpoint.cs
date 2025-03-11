@@ -24,7 +24,7 @@ public static class UpdateTaskEndpoint
         })
         .WithName(Name)
         .Produces(StatusCodes.Status200OK)
-        .ProducesProblem(StatusCodes.Status400BadRequest)
+        .ProducesProblem(StatusCodes.Status404NotFound)
         .RequireAuthorization(UserIdRequirement.PolicyName);
 
         return app;
