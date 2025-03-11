@@ -34,17 +34,12 @@ public static class GetListEndpoint
         return app;
     }
 
-
-    public class GetListRequest
+    public class GetListRequest : PaginatedRequest
     {
-        public const int DefaultPage = 1;
-        public const int DefaultPageSize = 10;
         public const bool DefaultIncludeSubtasks = true;
 
         public int? Tag { get; init; }
         public bool? Compleated { get; init; }
-        public int? Page { get; init; } = DefaultPage;
-        public int? PageSize { get; init; } = DefaultPageSize;
         public bool? IncludeSubtasks { get; init; } = DefaultIncludeSubtasks;
     }
 

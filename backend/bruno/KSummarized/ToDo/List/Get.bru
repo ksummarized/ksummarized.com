@@ -5,13 +5,15 @@ meta {
 }
 
 get {
-  url: https://{{api_base_url}}/api/todo/lists/{{listId}}?tag=1
+  url: https://{{api_base_url}}/api/todo/lists/{{listId}}?page=1&pageSize=2
   body: none
   auth: bearer
 }
 
 params:query {
-  tag: 1
+  page: 1
+  pageSize: 2
+  ~tag: 1
 }
 
 auth:bearer {
