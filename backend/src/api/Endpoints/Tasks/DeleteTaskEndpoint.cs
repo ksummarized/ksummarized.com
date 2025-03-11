@@ -11,8 +11,8 @@ public static class DeleteTaskEndpoint
     public static IEndpointRouteBuilder MapDeleteTaskEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapDelete(ApiEndpoints.Todo.Tasks.Delete, async (
-            [FromRoute] int Id,
             HttpContext ctx,
+            int Id,
             [FromServices] ITodoService service) =>
         {
             var userId = (Guid)ctx.Items["UserId"]!;

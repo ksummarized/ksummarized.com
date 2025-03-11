@@ -12,7 +12,11 @@ public static class GetListEndpoint
     public const string Name = "GetList";
     public static IEndpointRouteBuilder MapGetListEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapGet(ApiEndpoints.Todo.Lists.Get, (HttpContext ctx, [FromRoute] int Id, [AsParameters] GetListRequest request, [FromServices]ITodoService service) =>
+        app.MapGet(ApiEndpoints.Todo.Lists.Get, (
+            HttpContext ctx,
+            [FromRoute] int Id,
+            [AsParameters] GetListRequest request,
+            [FromServices] ITodoService service) =>
         {
             var UserId = (Guid)ctx.Items["UserId"]!;
             Log.Debug("User: {user} requested his list: {id}", UserId, Id);
