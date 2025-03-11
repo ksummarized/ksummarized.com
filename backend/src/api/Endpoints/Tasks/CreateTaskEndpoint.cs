@@ -1,6 +1,8 @@
 using core;
 using core.Ports;
 using Serilog;
+using api.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace api.Endpoints.Tasks;
 
@@ -10,11 +12,11 @@ public static class CreateTaskEndpoint
     public static IEndpointRouteBuilder MapCreateTaskEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapPost(ApiEndpoints.Todo.Tasks.Create, async (
-            ITodoService service,
-            TodoItem request,
-            HttpContext context) =>
+            HttpContext ctx,
+            [FromServices] ITodoService service,
+            [FromBody] TodoItem request) =>
         {
-            var userId = (Guid)context.Items["UserId"]!;
+            var userId = (Guid)ctx.Items["UserId"]!;
             Log.Debug("User: {user} created: {item}", userId, request.Name);
             
             var newItem = await service.CreateItem(userId, request);
@@ -22,12 +24,12 @@ public static class CreateTaskEndpoint
             {
                 return Results.BadRequest();
             }
-            return Results.Created($"{context.Request.Path}/{newItem.Id}", newItem);
+            return TypedResults.CreatedAtRoute(newItem, GetTaskEndpoint.Name, new { Id = newItem.Id! });
         })
         .WithName(Name)
         .Produces<TodoItem>(StatusCodes.Status201Created)
         .ProducesProblem(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization(UserIdRequirement.PolicyName);
 
         return app;
     }

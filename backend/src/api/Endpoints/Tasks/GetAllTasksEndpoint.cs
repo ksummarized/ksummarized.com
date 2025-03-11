@@ -1,6 +1,8 @@
 using core;
 using core.Ports;
+using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using api.Authorization;
 
 namespace api.Endpoints.Tasks;
 
@@ -10,19 +12,24 @@ public static class GetAllTasksEndpoint
     public static IEndpointRouteBuilder MapGetAllTasksEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapGet(ApiEndpoints.Todo.Tasks.GetAll, (
-            ITodoService service,
-            HttpContext context,
-            int? tag,
-            bool? completed) =>
+            HttpContext ctx,
+            [FromServices] ITodoService service,
+            [AsParameters] GetAllTasksRequest request) =>
         {
-            var userId = (Guid)context.Items["UserId"]!;
+            var userId = (Guid)ctx.Items["UserId"]!;
             Log.Debug("User: {user} requested his items", userId);
-            return Results.Ok(service.ListItems(userId, tag, completed));
+            return Results.Ok(service.ListItems(userId, request.Tag, request.Completed));
         })
         .WithName(Name)
         .Produces<IEnumerable<TodoItem>>(StatusCodes.Status200OK)
-        .RequireAuthorization();
+        .RequireAuthorization(UserIdRequirement.PolicyName);
 
         return app;
+    }
+
+    public class GetAllTasksRequest
+    {
+        public int? Tag { get; init; }
+        public bool? Completed { get; init; }
     }
 }

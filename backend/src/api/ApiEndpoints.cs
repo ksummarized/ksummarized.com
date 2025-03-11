@@ -12,17 +12,17 @@ public static class ApiEndpoints
             public static string Get => $"{Base}/{{Id}}";
             public static string GetAll => $"{Base}";
             public static string Create => $"{Base}";
-            public static string Rename => $"{Base}/{{id}}";
-            public static string Delete => $"{Base}/{{id}}";
+            public static string Rename => $"{Base}/{{Id}}";
+            public static string Delete => $"{Base}/{{Id}}";
         }
 
         public static class Tasks {
-            public static string Base => $"{Todo.Base}/tasks";
-            public static string Get => $"{Base}/{{id}}";
+            public static string Base => $"{Todo.Base}/items";
+            public static string Get => $"{Base}/{{Id}}";
             public static string GetAll => $"{Base}";
             public static string Create => $"{Base}";
-            public static string Update => $"{Base}/{{id}}";
-            public static string Delete => $"{Base}/{{id}}";
+            public static string Update => $"{Base}/{{Id}}";
+            public static string Delete => $"{Base}/{{Id}}";
         }
     }
 }

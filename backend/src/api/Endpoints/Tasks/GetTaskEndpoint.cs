@@ -1,6 +1,8 @@
 using core;
 using core.Ports;
 using Serilog;
+using api.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace api.Endpoints.Tasks;
 
@@ -10,20 +12,20 @@ public static class GetTaskEndpoint
     public static IEndpointRouteBuilder MapGetTaskEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapGet(ApiEndpoints.Todo.Tasks.Get, async (
-            ITodoService service,
-            HttpContext context,
-            int id) =>
+            [FromRoute] int Id,
+            [FromServices] ITodoService service,
+            HttpContext ctx) =>
         {
-            var userId = (Guid)context.Items["UserId"]!;
-            Log.Debug("User: {user} requested his item: {id}", userId, id);
+            var userId = (Guid)ctx.Items["UserId"]!;
+            Log.Debug("User: {user} requested his item: {id}", userId, Id);
             
-            var item = await service.GetItem(userId, id);
+            var item = await service.GetItem(userId, Id);
             return item is null ? Results.NotFound() : Results.Ok(item);
         })
         .WithName(Name)
         .Produces<TodoItem>(StatusCodes.Status200OK)
         .ProducesProblem(StatusCodes.Status404NotFound)
-        .RequireAuthorization();
+        .RequireAuthorization(UserIdRequirement.PolicyName);
 
         return app;
     }
