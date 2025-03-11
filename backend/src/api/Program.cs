@@ -9,7 +9,6 @@ using infrastructure.Keycloak;
 using infrastructure.Logging;
 using api.Authorization;
 using Microsoft.AspNetCore.Authorization;
-using api;
 using api.Endpoints;
 
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
