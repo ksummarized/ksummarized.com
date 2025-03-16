@@ -38,9 +38,7 @@ jobs:
         working-directory: ./backend
         run: |
           dotnet tool install --global nuget-license --version 3.1.2
-          nuget-license -i src/api/api.csproj --allowed-license-types allowed-licenses.json
-          nuget-license -i src/core/core.csproj --allowed-license-types allowed-licenses.json
-          nuget-license -i src/infrastructure/infrastructure.csproj --allowed-license-types allowed-licenses.json
+          nuget-license -i ksummarized.sln -a allowed-licenses.json -o JsonPretty -ignore licenses-checker-package-ignore.json --error-only
 
       - name: Build
         working-directory: ./backend
