@@ -37,6 +37,10 @@ jobs:
         working-directory: ./frontend
         run: npm run license-checker-linux
 
+      - name: Generate API client from OpenAPI schema
+        working-directory: ./frontend
+        run: npm run openapi-ts
+
       - name: Lint
         working-directory: ./frontend
         run: npm run lint
