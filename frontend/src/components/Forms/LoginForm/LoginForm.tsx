@@ -94,7 +94,7 @@ function LoginForm() {
         />
         <CheckboxInput name="remember" id="remember" label="Remember me" />
         <h6>
-          Don&apos;t have an account?&nbsp;
+          Don&apos;t have an account?{" "}
           <a href="/register" className="text-blue-600">
             Sign up
           </a>

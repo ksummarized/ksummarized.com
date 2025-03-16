@@ -4,7 +4,7 @@ import KsummarizedLogo from "../../assets/logos/KsummarizedLogo.png";
 
 import LoginForm from "../../components/Forms/LoginForm/LoginForm";
 
-export default function LoginPage(): JSX.Element {
+export default function LoginPage(): React.JSX.Element {
   return (
     <div className="container">
       <div className="flex-col justify-items-center p-8">

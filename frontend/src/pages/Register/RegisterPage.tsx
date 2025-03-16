@@ -3,7 +3,7 @@ import * as React from "react";
 import KsummarizedLogo from "../../assets/logos/KsummarizedLogo.png";
 import RegisterForm from "../../components/Forms/RegisterForm/RegisterForm";
 
-export default function RegisterPage(): JSX.Element {
+export default function RegisterPage(): React.JSX.Element {
   return (
     <div className="container">
       <div className="flex-col justify-items-center p-8">

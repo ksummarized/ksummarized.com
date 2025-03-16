@@ -7,7 +7,7 @@ import StartPage from "./pages/Start/StartPage";
 import RequireAuth from "./helpers/RequireAuth";
 import NotFound from "./pages/NotFound/NotFound";
 
-function App(): JSX.Element {
+function App(): React.JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
