@@ -62,6 +62,16 @@ try
     builder.Services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT"
+        });
+        c.OperationFilter<SwaggerAuthOperationFilter>();
     });
     builder.Services.AddScoped<ITodoService, TodoService>();
 
@@ -83,24 +93,24 @@ try
     }
 
     app.UseCors("AllowAll");
-    app.UseAuthentication();
 
     app.UseHttpsRedirection();
     app.UseHsts();
 
     app.UseSerilogRequestLogging();
     app.UseRouting();
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();
 
-    app.Run();
+    await app.RunAsync();
 }
 catch (Exception ex)
 {
-    Log.Fatal("Error starting the application: {Exception}", ex);
+    Log.Fatal(ex, "Error starting the application: {Exception}", ex);
 }
 finally
 {
-    Log.CloseAndFlush();
+    await Log.CloseAndFlushAsync();
 }

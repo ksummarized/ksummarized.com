@@ -20,16 +20,20 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     private Guid UserId => (Guid)HttpContext.Items["UserId"]!;
 
     [HttpGet("lists")]
+    [ProducesResponseType(typeof(IEnumerable<Responses.TodoList>), StatusCodes.Status200OK)]
+    [Produces("application/json")]
     public IActionResult GetLists()
     {
-        _logger.LogDebug("User: {user} requested his lists", UserId);
+        _logger.LogDebug("User: {UserId} requested his lists", UserId);
         return Ok(_service.GetLists(UserId).Select(l => l.ToResponse()));
     }
 
     [HttpGet("lists/{id}")]
+    [ProducesResponseType(typeof(Responses.TodoList), StatusCodes.Status200OK)]
+    [Produces("application/json")]
     public IActionResult GetList([FromRoute] int id)
     {
-        _logger.LogDebug("User: {user} requested his list: {id}", UserId, id);
+        _logger.LogDebug("User: {UserId} requested his list: {ListId}", UserId, id);
         var list = _service.GetList(UserId, id)?.ToResponse();
         return list switch
         {
@@ -41,7 +45,7 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     [HttpDelete("lists/{id}")]
     public IActionResult DeleteList([FromRoute] int id)
     {
-        _logger.LogDebug("User: {user} deleted his list: {id}", UserId, id);
+        _logger.LogDebug("User: {UserId} deleted his list: {ListId}", UserId, id);
         var success = _service.DeleteList(UserId, id);
         if (success)
         {
@@ -51,9 +55,11 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     }
 
     [HttpPost("lists")]
+    [ProducesResponseType(typeof(Responses.TodoList), StatusCodes.Status201Created)]
+    [Produces("application/json")]
     public async Task<IActionResult> CreateLists([FromBody] ListCreationRequest request)
     {
-        _logger.LogDebug("User: {user} created: {list}", UserId, request.Name);
+        _logger.LogDebug("User: {UserId} created: {ListName}", UserId, request.Name);
         var list = await _service.CreateList(UserId, request.Name);
         return Created(HttpContext.Request.Path.Add(new PathString($"/{list.Id}")), list.ToResponse());
     }
@@ -61,7 +67,7 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     [HttpPut("lists/{id}")]
     public async Task<IActionResult> RenameList(ListRenameRequest request)
     {
-        _logger.LogDebug("User: {user} renamed: {id} to: {list}", UserId, request.Id, request.Body.Name);
+        _logger.LogDebug("User: {UserId} renamed: {ListId} to: {NewListName}", UserId, request.Id, request.Body.Name);
         var list = await _service.RenameList(UserId, request.Id, request.Body.Name);
         if (list)
         {
@@ -71,9 +77,11 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     }
 
     [HttpPost("items")]
+    [ProducesResponseType(typeof(TodoItem), StatusCodes.Status201Created)]
+    [Produces("application/json")]
     public async Task<IActionResult> CreateItem([FromBody] TodoItem request)
     {
-        _logger.LogDebug("User: {user} created: {item}", UserId, request.Name);
+        _logger.LogDebug("User: {UserId} created: {ItemName}", UserId, request.Name);
         var newItem = await _service.CreateItem(UserId, request);
         if (newItem is null)
         {
@@ -83,16 +91,20 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     }
 
     [HttpGet("items")]
+    [ProducesResponseType(typeof(IEnumerable<TodoItem>), StatusCodes.Status200OK)]
+    [Produces("application/json")]
     public IActionResult ListItems()
     {
-        _logger.LogDebug("User: {user} requested his items", UserId);
+        _logger.LogDebug("User: {UserId} requested his items", UserId);
         return Ok(_service.ListItems(UserId));
     }
 
     [HttpGet("items/{id}")]
+    [ProducesResponseType(typeof(TodoItem), StatusCodes.Status200OK)]
+    [Produces("application/json")]
     public async Task<IActionResult> GetItem([FromRoute] int id)
     {
-        _logger.LogDebug("User: {user} requested his item: {id}", UserId, id);
+        _logger.LogDebug("User: {UserId} requested his item: {ItemId}", UserId, id);
         var item = await _service.GetItem(UserId, id);
         if (item is null)
         {
@@ -104,7 +116,7 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     [HttpDelete("items/{id}")]
     public async Task<IActionResult> DeleteItem([FromRoute] int id)
     {
-        _logger.LogDebug("User: {user} deleted his item: {id}", UserId, id);
+        _logger.LogDebug("User: {UserId} deleted his item: {ItemId}", UserId, id);
         var success = await _service.DeleteItem(UserId, id);
         if (success)
         {
@@ -116,7 +128,7 @@ public class TodoController(ITodoService service, ILogger<TodoController> logger
     [HttpPut("items/{id}")]
     public async Task<IActionResult> UpdateItem([FromRoute] int id, [FromBody] TodoItem request)
     {
-        _logger.LogDebug("User: {user} updated his item: {id}", UserId, id);
+        _logger.LogDebug("User: {UserId} updated his item: {ItemId}", UserId, id);
         var success = await _service.UpdateItem(UserId, request);
         if (success)
         {
