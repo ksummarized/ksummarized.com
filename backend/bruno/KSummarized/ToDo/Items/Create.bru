@@ -16,33 +16,20 @@ auth:bearer {
 
 body:json {
   {
-    "id": 1,
-    "name": "Demo5",
-    "completed": true,
-    "deadline": "2024-09-20T18:27:39.149Z",
+    "name": "NewDemo",
     "notes": "hello there",
-    "tags": [{
-      "id":2,
-      "name": "star wars"
-    }],
+    "tags": ["star", "wars", "apple"],
     "subtasks": [
       {
-        "id": 2,
-        "name": "Demo",
-        "completed": false,
+        "name": "DemoSub",
         "deadline": "2024-09-20T18:27:39.149Z",
         "notes": "hello there2",
-        "tags": [],
-        "subtasks": []
+        "tags": ["star"]
       },
       {
-        "id": 3,
-        "name": "Demo3",
-        "completed": false,
-        "deadline": "2024-09-20T18:27:39.149Z",
+        "name": "DemoSub2",
         "notes": "hello there 3",
-        "tags": [],
-        "subtasks": []
+        "tags": ["wars"]
       }
     ],
     "listId": {{listId}}

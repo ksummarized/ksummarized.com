@@ -2,7 +2,7 @@
 
 ARG DOTNET_RUNTIME=mcr.microsoft.com/dotnet/aspnet
 ARG DOTNET_SDK=mcr.microsoft.com/dotnet/sdk
-ARG DOTNET_VERSION=8.0
+ARG DOTNET_VERSION=9.0
 
 FROM ${DOTNET_RUNTIME}:${DOTNET_VERSION} AS base
 WORKDIR /app

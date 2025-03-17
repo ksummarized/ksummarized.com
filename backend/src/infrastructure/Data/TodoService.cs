@@ -35,11 +35,11 @@ public class TodoService : ITodoService
 
     public TodoList? GetList(GetListOptions options)
     {
-        Log.Debug("Getting list {id} for user {user} with tag {tag} and completed {completed}", 
+        Log.Debug("Getting list {id} for user {user} with tag {tag} and completed {completed}",
             options.ListId, options.UserId, options.Tag, options.Completed);
-        
+
         var query = _context.TodoLists.AsNoTracking();
-        
+
         if (options.IncludeSubtasks)
         {
             query = query.Include(l => l.Items)
@@ -52,7 +52,7 @@ public class TodoService : ITodoService
         }
 
         var list = query.SingleOrDefault(l => l.Owner.Equals(options.UserId) && l.Id == options.ListId);
-        
+
         if (list is not null)
         {
             var items = list.Items.AsQueryable();
@@ -114,43 +114,58 @@ public class TodoService : ITodoService
         {
             Name = item.Name,
             Owner = user,
-            Completed = false,
+            Completed = item.Completed,
             Deadline = item.Deadline,
             Notes = item.Notes,
             Subtasks = [],
             Tags = [],
             ListId = item.ListId
         };
-        foreach (var st in item.Subtasks)
+
+        foreach (var tag in item.Tags)
+        {
+            var t = _context.Tags.FirstOrDefault(t => t.Name == tag.Name && t.Owner.Equals(user));
+            if (t is not null)
+            {
+                newItem.Tags.Add(t);
+            }
+            else
+            {
+                newItem.Tags.Add(new() { Name = tag.Name, Owner = user });
+            }
+        }
+
+        foreach (var subtask in item.Subtasks)
         {
             var newSubtask = new TodoItemModel()
             {
-                Name = st.Name,
+                Name = subtask.Name,
                 Owner = user,
-                Completed = false,
-                Deadline = st.Deadline,
-                Notes = st.Notes,
+                Completed = subtask.Completed,
+                Deadline = subtask.Deadline,
+                Notes = subtask.Notes,
                 Tags = [],
                 Subtasks = [],
                 ListId = item.ListId
             };
+            foreach (var tag in subtask.Tags)
+            {
+                var t = _context.Tags.FirstOrDefault(t => t.Name == tag.Name && t.Owner.Equals(user));
+                if (t is not null)
+                {
+                    newSubtask.Tags.Add(t);
+                }
+                else
+                {
+                    newSubtask.Tags.Add(new() { Name = tag.Name, Owner = user });
+                }
+            }
             newItem.Subtasks.Add(newSubtask);
         }
-        foreach (var tag in item.Tags)
-        {
-            var t = _context.Tags.FirstOrDefault(t => t.Id == tag.Id && t.Owner.Equals(user));
-            if (t is null)
-            {
-                newItem.Tags.Add(new() { Id = tag.Id, Name = tag.Name, Owner = user });
-            }
-            else
-            {
-                t.Name = tag.Name;
-            }
-        }
+
         await _context.TodoItems.AddAsync(newItem);
         await _context.SaveChangesAsync();
-        return item with { Id = newItem.Id };
+        return MapTodoItem(newItem, includeSubtasks: true);
     }
 
     public async Task<TodoItem?> GetItem(Guid user, int id)
@@ -183,7 +198,7 @@ public class TodoService : ITodoService
         {
             baseQuery = baseQuery.Where(i => i.Completed == compleated);
         }
-        return baseQuery.Select(i => MapTodoItem(i, true)).AsEnumerable();;
+        return baseQuery.Select(i => MapTodoItem(i, true)).AsEnumerable(); ;
     }
 
     public async Task<bool> DeleteItem(Guid user, int id)
@@ -263,7 +278,6 @@ public class TodoService : ITodoService
 
     private static TodoItem MapTodoItem(TodoItemModel item, bool includeSubtasks)
     {
-        Log.Debug("Mapped {item}", JsonSerializer.Serialize(item, _jsonSerializerOptions));
         return new TodoItem()
         {
             Id = item.Id,
@@ -271,7 +285,7 @@ public class TodoService : ITodoService
             Deadline = item.Deadline,
             Notes = item.Notes,
             Subtasks = includeSubtasks ? (item.Subtasks?.Select(st => MapSubtask(st)).ToList() ?? []) : [],
-            Tags = item.Tags?.Select(t => new core.Tag() { Id = t.Id, Name = t.Name }).ToList() ?? [],
+            Tags = item.Tags.Select(t => new Tag() { Id = t.Id, Name = t.Name }).ToList() ?? [],
             ListId = item.ListId,
             Completed = item.Completed
         };
@@ -286,7 +300,7 @@ public class TodoService : ITodoService
             Deadline = subtask.Deadline,
             Notes = subtask.Notes,
             Subtasks = [],
-            Tags = subtask.Tags?.Select(t => new core.Tag() { Id = t.Id, Name = t.Name }).ToList() ?? [],
+            Tags = subtask.Tags?.Select(t => new Tag() { Id = t.Id, Name = t.Name }).ToList() ?? [],
             ListId = subtask.ListId,
             Completed = subtask.Completed
         };
