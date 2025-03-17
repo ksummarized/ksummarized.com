@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <UserSecretsId>f7cb2e8e-61a4-4a0a-9259-839230fcfe2d</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -29,6 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\infrastructure\infrastructure.csproj" />
     <ProjectReference Include="..\core\core.csproj" />
+    <ProjectReference Include="..\contracts\contracts.csproj" />
   </ItemGroup>
 
 </Project>
