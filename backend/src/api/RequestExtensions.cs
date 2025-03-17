@@ -17,4 +17,9 @@ public static class RequestExtensions
             return null;
         }
     }
+
+    public static Guid UserId(this HttpContext context)
+    {
+        return (Guid)context.Items["UserId"]!;
+    }
 }

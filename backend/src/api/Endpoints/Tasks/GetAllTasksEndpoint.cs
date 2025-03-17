@@ -16,7 +16,7 @@ public static class GetAllTasksEndpoint
             [AsParameters] GetAllTasksRequest request,
             [FromServices] ITodoService service)=>
         {
-            var userId = (Guid)ctx.Items["UserId"]!;
+            var userId = ctx.UserId();
             Log.Debug("User: {user} requested his items", userId);
             return Results.Ok(service.ListItems(userId, request.Tag, request.Completed));
         })

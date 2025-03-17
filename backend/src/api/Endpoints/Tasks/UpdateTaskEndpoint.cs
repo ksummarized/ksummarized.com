@@ -16,7 +16,7 @@ public static class UpdateTaskEndpoint
             TodoItem request,
             [FromServices] ITodoService service) =>
         {
-            var userId = (Guid)ctx.Items["UserId"]!;
+            var userId = ctx.UserId();
             Log.Debug("User: {user} updated his item: {id}", userId, request.Id);
             
             var success = await service.UpdateItem(userId, request);

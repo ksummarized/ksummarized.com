@@ -13,9 +13,9 @@ public static class DeleteListEndpoint
         app.MapDelete(ApiEndpoints.Todo.Lists.Delete,
         (HttpContext ctx, int Id, [FromServices] ITodoService service) =>
         {
-            var UserId = (Guid)ctx.Items["UserId"]!;
-            Log.Debug("User: {user} deleted his list: {id}", UserId, Id);
-            var success = service.DeleteList(UserId, Id);
+            var userId = ctx.UserId();
+            Log.Debug("User: {user} deleted his list: {id}", userId, Id);
+            var success = service.DeleteList(userId, Id);
             if (success)
             {
                 return Results.Ok();

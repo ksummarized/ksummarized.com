@@ -15,9 +15,9 @@ public static class RenameListEndpoint
             [FromBody] ListRenameRequest request,
             [FromServices] ITodoService service) =>
         {
-            var UserId = (Guid)ctx.Items["UserId"]!;
-            Log.Debug("User: {user} renamed: {id} to: {list}", UserId, Id, request.Name);
-            var list = await service.RenameList(UserId, Id, request.Name);
+            var userId = ctx.UserId();
+            Log.Debug("User: {user} renamed: {id} to: {list}", userId, Id, request.Name);
+            var list = await service.RenameList(userId, Id, request.Name);
             if (list)
             {
                 return Results.Ok();
