@@ -15,9 +15,9 @@ public static class GetAllListsEndpoint
         app.MapGet(ApiEndpoints.Todo.Lists.GetAll,
         (HttpContext ctx, [FromServices] ITodoService service) =>
         {
-            var UserId = (Guid)ctx.Items["UserId"]!;
-            Log.Debug("User: {user} requested his lists", UserId);
-            return Results.Ok(service.GetLists(UserId).Select(l => l.ToResponse()));
+            var userId = ctx.UserId();
+            Log.Debug("User: {user} requested his lists", userId);
+            return Results.Ok(service.GetLists(userId).Select(l => l.ToResponse()));
         })
         .WithName(Name)
         .Produces<IEnumerable<GetListResponse>>(StatusCodes.Status200OK)

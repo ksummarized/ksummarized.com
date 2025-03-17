@@ -15,9 +15,9 @@ public static class CreateListEndpoint
         app.MapPost(ApiEndpoints.Todo.Lists.Create,
         async (HttpContext ctx, CreateListRequest request, [FromServices] ITodoService service) =>
         {
-            var UserId = (Guid)ctx.Items["UserId"]!;
-            Log.Debug("User: {user} created: {list}", UserId, request.Name);
-            var list = await service.CreateList(UserId, request.Name);
+            var userId = ctx.UserId();
+            Log.Debug("User: {user} created: {list}", userId, request.Name);
+            var list = await service.CreateList(userId, request.Name);
             return TypedResults.CreatedAtRoute(list.ToResponse(), GetListEndpoint.Name, new { Id = list.Id });
         })
         .Produces<GetListResponse>(StatusCodes.Status201Created)

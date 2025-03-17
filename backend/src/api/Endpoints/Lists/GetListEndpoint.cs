@@ -18,9 +18,9 @@ public static class GetListEndpoint
             [AsParameters] GetListRequest request,
             [FromServices] ITodoService service) =>
         {
-            var UserId = (Guid)ctx.Items["UserId"]!;
-            Log.Debug("User: {user} requested his list: {id}", UserId, Id);
-            var list = service.GetList(request.ToGetListOptions(Id, UserId))?.ToResponse();
+            var userId = ctx.UserId();
+            Log.Debug("User: {user} requested his list: {id}", userId, Id);
+            var list = service.GetList(request.ToGetListOptions(Id, userId))?.ToResponse();
             return list switch
             {
                 null => Results.NotFound(),

@@ -15,7 +15,7 @@ public static class DeleteTaskEndpoint
             int Id,
             [FromServices] ITodoService service) =>
         {
-            var userId = (Guid)ctx.Items["UserId"]!;
+            var userId = ctx.UserId();
             Log.Debug("User: {user} deleted his item: {id}", userId, Id);
             
             var success = await service.DeleteItem(userId, Id);
