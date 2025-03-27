@@ -5,7 +5,7 @@ import TopBar from "../../components/TopBar/TopBar";
 import SideMenu from "../../components/SideMenu/SideMenu";
 import { useKeycloak } from "../../helpers/RequireAuth";
 
-export default function HomePage(): JSX.Element {
+export default function HomePage(): React.JSX.Element {
   const keycloak = useKeycloak();
 
   return (

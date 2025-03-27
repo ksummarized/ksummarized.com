@@ -462,3 +462,6 @@ appsettings.Development.json
 
 # Java
 target/
+
+# auto-generated client code for the API
+frontend/src/client/

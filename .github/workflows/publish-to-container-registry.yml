@@ -7,7 +7,7 @@ on:
       - "backend/**"
 
 env:
-  DOTNET_VERSION: "7.0" # The .NET SDK version to use
+  DOTNET_VERSION: "8.0" # The .NET SDK version to use
 
 jobs:
   build-and-publish-backend:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@v5
         with:
