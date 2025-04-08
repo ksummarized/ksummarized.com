@@ -13,7 +13,7 @@ public static class DeleteTaskEndpoint
         app.MapDelete(ApiEndpoints.Todo.Tasks.Delete, async (
             HttpContext ctx,
             int Id,
-            [FromServices] ITodoService service) =>
+            [FromServices] IItemService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} deleted his item: {id}", userId, Id);

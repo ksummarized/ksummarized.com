@@ -14,7 +14,7 @@ public static class UpdateTagEndpoint
             HttpContext ctx,
             int Id,
             UpdateTagRequest request,
-            [FromServices] ITodoService service) =>
+            [FromServices] ITagService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} updated tag: {id}", userId, Id);

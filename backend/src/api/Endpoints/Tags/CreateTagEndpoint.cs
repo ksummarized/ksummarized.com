@@ -14,7 +14,7 @@ public static class CreateTagEndpoint
         app.MapPost(ApiEndpoints.Todo.Tags.Create, async (
             HttpContext ctx,
             CreateTagRequest request,
-            [FromServices] ITodoService service) =>
+            [FromServices] ITagService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} created tag: {name}", userId, request.Name);

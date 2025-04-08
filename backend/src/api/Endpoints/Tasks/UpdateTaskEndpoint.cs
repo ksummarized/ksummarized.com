@@ -14,7 +14,7 @@ public static class UpdateTaskEndpoint
         app.MapPut(ApiEndpoints.Todo.Tasks.Update, async (
             HttpContext ctx,
             TodoItem request,
-            [FromServices] ITodoService service) =>
+            [FromServices] IItemService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} updated his item: {id}", userId, request.Id);

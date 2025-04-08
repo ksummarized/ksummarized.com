@@ -13,7 +13,7 @@ public static class RenameListEndpoint
             HttpContext ctx,
             [FromRoute] int Id,
             [FromBody] ListRenameRequest request,
-            [FromServices] ITodoService service) =>
+            [FromServices] IListService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} renamed: {id} to: {list}", userId, Id, request.Name);

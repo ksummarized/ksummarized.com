@@ -13,7 +13,7 @@ public static class GetAllTagsEndpoint
     {
         app.MapGet(ApiEndpoints.Todo.Tags.GetAll, (
             HttpContext ctx,
-            [FromServices] ITodoService service) =>
+            [FromServices] ITagService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} requested all tags", userId);

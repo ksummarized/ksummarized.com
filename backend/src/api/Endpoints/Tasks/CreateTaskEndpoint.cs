@@ -16,7 +16,7 @@ public static class CreateTaskEndpoint
         app.MapPost(ApiEndpoints.Todo.Tasks.Create, async (
             HttpContext ctx,
             CreateTaskRequest request,
-            [FromServices] ITodoService service) =>
+            [FromServices] IItemService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} created: {item}", userId, request.Name);

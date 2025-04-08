@@ -16,7 +16,7 @@ public static class GetListEndpoint
             HttpContext ctx,
             [FromRoute] int Id,
             [AsParameters] GetListRequest request,
-            [FromServices] ITodoService service) =>
+            [FromServices] IListService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} requested his list: {id}", userId, Id);

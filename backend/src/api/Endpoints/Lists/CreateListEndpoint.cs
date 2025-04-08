@@ -13,7 +13,7 @@ public static class CreateListEndpoint
     public static IEndpointRouteBuilder MapCreateListEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapPost(ApiEndpoints.Todo.Lists.Create,
-        async (HttpContext ctx, CreateListRequest request, [FromServices] ITodoService service) =>
+        async (HttpContext ctx, CreateListRequest request, [FromServices] IListService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} created: {list}", userId, request.Name);

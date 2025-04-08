@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Cryptography;
-using core.Ports;
 using infrastructure.Data;
 using infrastructure.Keycloak;
 using infrastructure.Logging;
@@ -79,7 +78,7 @@ try
     builder.Services.AddAuthorizationBuilder()
         .AddPolicy(UserIdRequirement.PolicyName, p => p.AddRequirements(new UserIdRequirement()));
 
-    builder.Services.AddScoped<ITodoService, TodoService>();
+    builder.Services.AddTodoServices();
 
     builder.Services.AddCors(options =>
     {

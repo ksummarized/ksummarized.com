@@ -11,7 +11,7 @@ public static class DeleteListEndpoint
     public static IEndpointRouteBuilder MapDeleteListEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapDelete(ApiEndpoints.Todo.Lists.Delete,
-        (HttpContext ctx, int Id, [FromServices] ITodoService service) =>
+        (HttpContext ctx, int Id, [FromServices] IListService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} deleted his list: {id}", userId, Id);

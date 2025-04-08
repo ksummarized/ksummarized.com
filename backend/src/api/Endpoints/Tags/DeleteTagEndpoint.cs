@@ -13,7 +13,7 @@ public static class DeleteTagEndpoint
         app.MapDelete(ApiEndpoints.Todo.Tags.Delete, async (
             HttpContext ctx,
             int Id,
-            [FromServices] ITodoService service) =>
+            [FromServices] ITagService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} deleted tag: {id}", userId, Id);

@@ -14,7 +14,7 @@ public static class GetTagEndpoint
         app.MapGet(ApiEndpoints.Todo.Tags.Get, async (
             HttpContext ctx,
             int Id,
-            [FromServices] ITodoService service) =>
+            [FromServices] ITagService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} requested tag: {id}", userId, Id);

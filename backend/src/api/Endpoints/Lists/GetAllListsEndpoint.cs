@@ -13,7 +13,7 @@ public static class GetAllListsEndpoint
     public static IEndpointRouteBuilder MapGetAllListsEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapGet(ApiEndpoints.Todo.Lists.GetAll,
-        (HttpContext ctx, [FromServices] ITodoService service) =>
+        (HttpContext ctx, [FromServices] IListService service) =>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} requested his lists", userId);

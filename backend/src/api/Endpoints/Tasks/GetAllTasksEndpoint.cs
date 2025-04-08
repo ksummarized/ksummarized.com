@@ -14,7 +14,7 @@ public static class GetAllTasksEndpoint
         app.MapGet(ApiEndpoints.Todo.Tasks.GetAll, (
             HttpContext ctx,
             [AsParameters] GetAllTasksRequest request,
-            [FromServices] ITodoService service)=>
+            [FromServices] IItemService service)=>
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} requested his items", userId);
