@@ -24,5 +24,14 @@ public static class ApiEndpoints
             public static string Update => $"{Base}/{{Id}}";
             public static string Delete => $"{Base}/{{Id}}";
         }
+
+        public static class Tags {
+            public static string Base => $"{Todo.Base}/tags";
+            public static string Get => $"{Base}/{{Id}}";
+            public static string GetAll => $"{Base}";
+            public static string Create => $"{Base}";
+            public static string Update => $"{Base}/{{Id}}";
+            public static string Delete => $"{Base}/{{Id}}";
+        }
     }
 }
