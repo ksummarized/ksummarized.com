@@ -1,5 +1,6 @@
 using api.Authorization;
 using core.Ports;
+using contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -31,10 +32,5 @@ public static class RenameListEndpoint
         .Produces(StatusCodes.Status404NotFound)
         .RequireAuthorization(UserIdRequirement.PolicyName);
         return app;
-    }
-
-    public class ListRenameRequest
-    {
-        public required string Name { get; set; }
     }
 }

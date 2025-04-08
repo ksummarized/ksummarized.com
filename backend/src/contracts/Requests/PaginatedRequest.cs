@@ -1,4 +1,4 @@
-namespace api.Endpoints;
+namespace contracts.Requests;
 
 public abstract class PaginatedRequest
 {

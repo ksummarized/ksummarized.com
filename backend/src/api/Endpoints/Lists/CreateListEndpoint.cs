@@ -1,9 +1,10 @@
 using api.Authorization;
 using api.Mapers;
 using core.Ports;
+using contracts.Requests;
+using contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using static api.Endpoints.Lists.GetListEndpoint;
 
 namespace api.Endpoints.Lists;
 
@@ -24,6 +25,4 @@ public static class CreateListEndpoint
         .RequireAuthorization(UserIdRequirement.PolicyName);
         return app;
     }
-
-    public record CreateListRequest(string Name);
 }

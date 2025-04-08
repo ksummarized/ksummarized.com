@@ -3,7 +3,7 @@ using api.Mapers;
 using core.Ports;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using static api.Endpoints.Lists.GetListEndpoint;
+using contracts.Responses;
 
 namespace api.Endpoints.Lists;
 

@@ -1,7 +1,8 @@
 using api.Authorization;
 using api.Mapers;
-using core;
 using core.Ports;
+using contracts.Requests;
+using contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -33,15 +34,4 @@ public static class GetListEndpoint
         .RequireAuthorization(UserIdRequirement.PolicyName);
         return app;
     }
-
-    public class GetListRequest : PaginatedRequest
-    {
-        public const bool DefaultIncludeSubtasks = true;
-
-        public int? Tag { get; init; }
-        public bool? Compleated { get; init; }
-        public bool? IncludeSubtasks { get; init; } = DefaultIncludeSubtasks;
-    }
-
-    public record GetListResponse(int Id, string Name, IEnumerable<TodoItem> Items);
 }

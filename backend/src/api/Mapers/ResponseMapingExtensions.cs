@@ -1,5 +1,4 @@
-using static api.Endpoints.Lists.GetListEndpoint;
-
+using contracts.Responses;
 namespace api.Mapers;
 
 public static class ResponseMapingExtensions
