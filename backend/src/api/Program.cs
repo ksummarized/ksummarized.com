@@ -10,7 +10,6 @@ using api.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using api.Endpoints;
 using Microsoft.OpenApi.Models;
-using api.Filters;
 
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
 var logConfig = new LoggerConfiguration().Enrich.WithCorrelationId()
@@ -60,6 +59,7 @@ try
         options.TokenValidationParameters = tokenValidationParameters;
     });
 
+    builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
@@ -72,9 +72,20 @@ try
             Scheme = "bearer",
             BearerFormat = "JWT"
         });
-        c.OperationFilter<SwaggerAuthOperationFilter>();
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            { new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>() 
+            }
+        });
     });
-    builder.Services.AddControllers();
     builder.Services.AddSingleton<IAuthorizationHandler, UserIdRequirementHandler>();
     builder.Services.AddAuthorizationBuilder()
         .AddPolicy(UserIdRequirement.PolicyName, p => p.AddRequirements(new UserIdRequirement()));
@@ -105,8 +116,9 @@ try
     app.UseRouting();
     app.UseAuthentication();
     app.UseAuthorization();
-    app.MapControllers();
     app.MapEndpoints();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
     await app.RunAsync();
 }
