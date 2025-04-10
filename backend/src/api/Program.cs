@@ -7,6 +7,7 @@ using infrastructure.Data;
 using infrastructure.Keycloak;
 using infrastructure.Logging;
 using api.Authorization;
+using api.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using api.Endpoints;
 using Microsoft.OpenApi.Models;
@@ -107,6 +108,7 @@ try
         app.UseDeveloperExceptionPage();
     }
 
+    app.UseExceptionHandlers();
     app.UseCors("AllowAll");
 
     app.UseHttpsRedirection();
