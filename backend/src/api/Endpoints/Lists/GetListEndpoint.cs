@@ -21,7 +21,7 @@ public static class GetListEndpoint
         {
             var userId = ctx.UserId();
             Log.Debug("User: {user} requested his list: {id}", userId, Id);
-            var list = service.GetList(request.ToGetListOptions(Id, userId))?.ToResponse();
+            var list = service.GetList(request.MapToGetListOptions(Id, userId))?.ToResponse();
             return list switch
             {
                 null => Results.NotFound(),

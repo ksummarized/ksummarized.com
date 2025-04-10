@@ -46,4 +46,17 @@ public static class ContractMappingExtensions {
             Tags = s.Tags.Select(t => new CreateTaskResponse.Tag { Id = t.Id, Name = t.Name }),
         })
     };
+
+    public static GetListOptions MapToGetListOptions(this GetListRequest request, int Id, Guid userId)
+    {
+        return new GetListOptions(
+            UserId: userId,
+            ListId: Id,
+            Tag: request.Tag,
+            Completed: request.Compleated,
+            Page: request.Page.HasValue ? request.Page!.Value : GetListRequest.DefaultPage,
+            PageSize: request.PageSize.HasValue ? request.PageSize!.Value : GetListRequest.DefaultPageSize,
+            IncludeSubtasks: !request.IncludeSubtasks.HasValue || request.IncludeSubtasks!.Value
+        );
+    }
 }
