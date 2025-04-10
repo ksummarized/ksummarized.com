@@ -9,6 +9,8 @@ using infrastructure.Logging;
 using api.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using api.Endpoints;
+using Microsoft.OpenApi.Models;
+using api.Filters;
 
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
 var logConfig = new LoggerConfiguration().Enrich.WithCorrelationId()
@@ -58,7 +60,6 @@ try
         options.TokenValidationParameters = tokenValidationParameters;
     });
 
-    builder.Services.AddControllers(o => o.Filters.Add(typeof(UserIdFilter)));
     builder.Services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
