@@ -5,14 +5,14 @@ meta {
 }
 
 get {
-  url: https://{{api_base_url}}/api/todo/items
+  url: https://{{api_base_url}}/api/todo/items?completed=true
   body: none
   auth: bearer
 }
 
 params:query {
-  ~compleated: true
-  ~tag: 0
+  completed: true
+  ~tag: 8
 }
 
 auth:bearer {
