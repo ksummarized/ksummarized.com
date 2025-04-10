@@ -1,3 +1,4 @@
+using contracts.Requests;
 using core;
 using core.Ports;
 using Serilog;
@@ -29,5 +30,4 @@ public static class CreateTagEndpoint
         return app;
     }
 
-    public record CreateTagRequest(string Name);
 }

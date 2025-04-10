@@ -1,3 +1,4 @@
+using contracts.Requests;
 using core.Ports;
 using Serilog;
 using api.Authorization;
@@ -30,5 +31,4 @@ public static class UpdateTagEndpoint
         return app;
     }
 
-    public record UpdateTagRequest(string Name);
 }

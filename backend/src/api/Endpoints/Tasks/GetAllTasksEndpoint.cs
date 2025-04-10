@@ -1,3 +1,4 @@
+using contracts.Requests;
 using core;
 using core.Ports;
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +26,5 @@ public static class GetAllTasksEndpoint
         .RequireAuthorization(UserIdRequirement.PolicyName);
 
         return app;
-    }
-
-    public class GetAllTasksRequest
-    {
-        public int? Tag { get; init; }
-        public bool? Completed { get; init; }
     }
 }
