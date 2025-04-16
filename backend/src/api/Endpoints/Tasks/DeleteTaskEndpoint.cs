@@ -16,13 +16,13 @@ public static class DeleteTaskEndpoint
             [FromServices] IItemService service) =>
         {
             var userId = ctx.UserId();
-            Log.Debug("User: {user} deleted his item: {id}", userId, Id);
+            Log.Debug("User: {User} deleted his item: {Id}", userId, Id);
             
             var success = await service.DeleteItem(userId, Id);
-            return success ? Results.Ok() : Results.NotFound();
+            return success ? Results.NoContent() : Results.NotFound();
         })
         .WithName(Name)
-        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status204NoContent)
         .ProducesProblem(StatusCodes.Status404NotFound)
         .RequireAuthorization(UserIdRequirement.PolicyName);
 

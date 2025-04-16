@@ -80,7 +80,7 @@
             }
           },
           {
-            "name": "Compleated",
+            "name": "Completed",
             "in": "query",
             "schema": {
               "type": "boolean"
@@ -143,8 +143,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Not Found"
@@ -322,8 +322,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Not Found",
@@ -519,8 +519,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Not Found",
@@ -651,7 +651,7 @@
             "nullable": true
           }
         },
-        "additionalProperties": { }
+        "additionalProperties": {}
       },
       "Subtask": {
         "type": "object",
@@ -760,7 +760,7 @@
   },
   "security": [
     {
-      "Bearer": [ ]
+      "Bearer": []
     }
   ]
 }

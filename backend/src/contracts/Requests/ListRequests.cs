@@ -6,7 +6,7 @@ public class GetListRequest : PaginatedRequest
     public const bool DefaultIncludeSubtasks = true;
 
     public int? Tag { get; init; }
-    public bool? Compleated { get; init; }
+    public bool? Completed { get; init; }
     public bool? IncludeSubtasks { get; init; } = DefaultIncludeSubtasks;
 }
 

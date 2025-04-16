@@ -14,16 +14,16 @@ public static class DeleteListEndpoint
         (HttpContext ctx, int Id, [FromServices] IListService service) =>
         {
             var userId = ctx.UserId();
-            Log.Debug("User: {user} deleted his list: {id}", userId, Id);
+            Log.Debug("User: {User} deleted his list: {Id}", userId, Id);
             var success = service.DeleteList(userId, Id);
             if (success)
             {
-                return Results.Ok();
+                return Results.NoContent();
             }
             return Results.NotFound();
         })
         .WithName(Name)
-        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status404NotFound)
         .RequireAuthorization(UserIdRequirement.PolicyName);
         return app;
