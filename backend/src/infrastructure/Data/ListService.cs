@@ -54,21 +54,21 @@ public class ListService : IListService
             var items = list.Items.AsQueryable();
             if (options.Tag is not null)
             {
-                items = items?.Where(i => i.Tags.Any(t => t.Id == options.Tag));
+                items = items.Where(i => i.Tags.Any(t => t.Id == options.Tag));
             }
             if (options.Completed is not null)
             {
-                items = items?.Where(i => i.Completed == options.Completed);
+                items = items.Where(i => i.Completed == options.Completed);
             }
 
-            items = items?.Skip((options.Page - 1) * options.PageSize).Take(options.PageSize);
+            items = items.Skip((options.Page - 1) * options.PageSize).Take(options.PageSize);
 
             return new()
             {
                 Id = list.Id,
                 Name = list.Name,
                 Owner = list.Owner,
-                Items = items?.Select(i => TodoItemMapper.MapTodoItem(i, options.IncludeSubtasks)).ToList() ?? []
+                Items = items.Select(i => TodoItemMapper.MapTodoItem(i, options.IncludeSubtasks)).ToList() ?? []
             };
         }
         return null;

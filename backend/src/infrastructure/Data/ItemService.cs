@@ -116,7 +116,7 @@ public class ItemService : IItemService
                                 .Include(i => i.Subtasks)
                                 .SingleOrDefaultAsync(i => i.Owner.Equals(user) && i.Id == id);
         if (item is null) { return false; }
-        if (item.Subtasks.Any())
+        if (item.Subtasks.Count != 0)
         {
             _context.TodoItems.RemoveRange(item.Subtasks);
         }
