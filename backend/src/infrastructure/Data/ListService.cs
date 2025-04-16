@@ -31,8 +31,8 @@ public class ListService : IListService
 
     public TodoList? GetList(GetListOptions options)
     {
-        Log.Debug("Getting list {Id} for user {User} with tag {Tag} and completed {Completed}",
-            options.ListId, options.UserId, options.Tag, options.Completed);
+        Log.Debug("Getting list {Id} for user {User} with tag {Tag} and completed {Completed} and IncludeSubtasks {IncludeSubtasks}",
+            options.ListId, options.UserId, options.Tag, options.Completed, options.IncludeSubtasks);
 
         var query = _context.TodoLists.AsNoTracking();
 
@@ -68,7 +68,7 @@ public class ListService : IListService
                 Id = list.Id,
                 Name = list.Name,
                 Owner = list.Owner,
-                Items = items.Select(i => TodoItemMapper.MapTodoItem(i, options.IncludeSubtasks)).ToList() ?? []
+                Items = items.AsSplitQuery().Select(i => TodoItemMapper.MapTodoItem(i, options.IncludeSubtasks)).ToList() ?? []
             };
         }
         return null;

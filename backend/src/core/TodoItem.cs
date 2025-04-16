@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace core;
 
 public record TodoItem
@@ -9,5 +11,6 @@ public record TodoItem
     public string Notes { get; set; } = null!;
     public required IEnumerable<Tag> Tags { get; set; }
     public required IEnumerable<TodoItem> Subtasks { get; set; }
+    [JsonPropertyName("listId")]
     public int ListId { get; set; }
 }

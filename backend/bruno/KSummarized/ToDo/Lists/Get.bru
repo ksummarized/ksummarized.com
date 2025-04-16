@@ -5,14 +5,16 @@ meta {
 }
 
 get {
-  url: https://{{api_base_url}}/api/todo/lists/{{listId}}?page=1&pageSize=2
+  url: https://{{api_base_url}}/api/todo/lists/{{listId}}
   body: none
   auth: bearer
 }
 
 params:query {
-  page: 1
-  pageSize: 2
+  ~includeSubtasks: true
+  ~completed: true
+  ~page: 1
+  ~pageSize: 2
   ~tag: 1
 }
 

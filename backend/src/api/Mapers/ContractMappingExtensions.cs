@@ -56,7 +56,7 @@ public static class ContractMappingExtensions {
             Completed: request.Completed,
             Page: request.Page.HasValue ? request.Page!.Value : GetListRequest.DefaultPage,
             PageSize: request.PageSize.HasValue ? request.PageSize!.Value : GetListRequest.DefaultPageSize,
-            IncludeSubtasks: !request.IncludeSubtasks.HasValue || request.IncludeSubtasks!.Value
+            IncludeSubtasks: request.IncludeSubtasks.HasValue && request.IncludeSubtasks!.Value
         );
     }
 }
