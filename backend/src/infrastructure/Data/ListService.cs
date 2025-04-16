@@ -31,7 +31,7 @@ public class ListService : IListService
 
     public TodoList? GetList(GetListOptions options)
     {
-        Log.Debug("Getting list {id} for user {user} with tag {tag} and completed {completed}",
+        Log.Debug("Getting list {Id} for user {User} with tag {Tag} and completed {Completed}",
             options.ListId, options.UserId, options.Tag, options.Completed);
 
         var query = _context.TodoLists.AsNoTracking();
@@ -93,7 +93,7 @@ public class ListService : IListService
 
     public async Task<bool> RenameList(Guid user, int id, string name)
     {
-        var list = _context.TodoLists.SingleOrDefault(l => l.Owner.Equals(user) && l.Id == id);
+        var list = await _context.TodoLists.SingleOrDefaultAsync(l => l.Owner.Equals(user) && l.Id == id);
         if (list is null) { return false; }
         list.Name = name;
         await _context.SaveChangesAsync();

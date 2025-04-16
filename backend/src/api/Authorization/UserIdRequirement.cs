@@ -4,7 +4,7 @@ namespace api.Authorization;
 
 public class UserIdRequirement : IAuthorizationRequirement
 {
-    public static string PolicyName = "UserIdPolicy";
+    public const string PolicyName = "UserIdPolicy";
 }
 
 public class UserIdRequirementHandler(IHttpContextAccessor httpContextAccessor) : AuthorizationHandler<UserIdRequirement>

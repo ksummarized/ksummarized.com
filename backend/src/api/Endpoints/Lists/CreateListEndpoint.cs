@@ -17,7 +17,7 @@ public static class CreateListEndpoint
         async (HttpContext ctx, CreateListRequest request, [FromServices] IListService service) =>
         {
             var userId = ctx.UserId();
-            Log.Debug("User: {user} created: {list}", userId, request.Name);
+            Log.Debug("User: {User} created: {List}", userId, request.Name);
             var list = await service.CreateList(userId, request.Name);
             return TypedResults.CreatedAtRoute(list.ToResponse(), GetListEndpoint.Name, new { Id = list.Id });
         })

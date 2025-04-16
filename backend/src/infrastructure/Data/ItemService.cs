@@ -31,16 +31,16 @@ public class ItemService : IItemService
             ListId = item.ListId
         };
 
-        foreach (var tag in item.Tags)
+        foreach (var tag in item.Tags.Select(t => t.Name))
         {
-            var t = _context.Tags.FirstOrDefault(t => t.Name == tag.Name && t.Owner.Equals(user));
+            var t = await _context.Tags.FirstOrDefaultAsync(t => t.Name == tag && t.Owner.Equals(user));
             if (t is not null)
             {
                 newItem.Tags.Add(t);
             }
             else
             {
-                newItem.Tags.Add(new() { Name = tag.Name, Owner = user });
+                newItem.Tags.Add(new() { Name = tag, Owner = user });
             }
         }
 
@@ -57,16 +57,16 @@ public class ItemService : IItemService
                 Subtasks = [],
                 ListId = item.ListId
             };
-            foreach (var tag in subtask.Tags)
+            foreach (var tag in subtask.Tags.Select(t => t.Name ))
             {
-                var t = _context.Tags.FirstOrDefault(t => t.Name == tag.Name && t.Owner.Equals(user));
+                var t = await _context.Tags.FirstOrDefaultAsync(t => t.Name == tag && t.Owner.Equals(user));
                 if (t is not null)
                 {
                     newSubtask.Tags.Add(t);
                 }
                 else
                 {
-                    newSubtask.Tags.Add(new() { Name = tag.Name, Owner = user });
+                    newSubtask.Tags.Add(new() { Name = tag, Owner = user });
                 }
             }
             newItem.Subtasks.Add(newSubtask);
@@ -112,9 +112,9 @@ public class ItemService : IItemService
 
     public async Task<bool> DeleteItem(Guid user, int id)
     {
-        var item = _context.TodoItems
+        var item = await _context.TodoItems
                                 .Include(i => i.Subtasks)
-                                .SingleOrDefault(i => i.Owner.Equals(user) && i.Id == id);
+                                .SingleOrDefaultAsync(i => i.Owner.Equals(user) && i.Id == id);
         if (item is null) { return false; }
         if (item.Subtasks.Any())
         {
@@ -127,13 +127,13 @@ public class ItemService : IItemService
 
     public async Task<bool> UpdateItem(Guid user, TodoItem item)
     {
-        var existingItem = _context.TodoItems
+        var existingItem = await _context.TodoItems
                                 .Include(i => i.Subtasks)
                                 .Include(i => i.Tags)
                                 .AsSplitQuery()
-                                .SingleOrDefault(i => i.Owner.Equals(user) && i.Id == item.Id);
+                                .SingleOrDefaultAsync(i => i.Owner.Equals(user) && i.Id == item.Id);
         if (existingItem is null) { return false; }
-        Log.Debug("Updating item {item}", JsonSerializer.Serialize(item, _jsonSerializerOptions));
+        Log.Debug("Updating item {Item}", JsonSerializer.Serialize(item, _jsonSerializerOptions));
         existingItem.Name = item.Name;
         existingItem.Deadline = item.Deadline;
         existingItem.Notes = item.Notes;
