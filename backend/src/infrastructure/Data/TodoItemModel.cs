@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace infrastructure.Data;
 
@@ -12,7 +13,7 @@ public class TodoItemModel
     public required string Name { get; set; }
     public required Guid Owner { get; set; }
     public bool Completed { get; set; }
-    public DateTime Deadline { get; set; }
+    public DateTime? Deadline { get; set; }
     [MaxLength(4096)]
     public string Notes { get; set; } = null!;
     public required ICollection<TagModel> Tags { get; set; }

@@ -1,20 +1,22 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Security.Cryptography;
-using api.Filters;
-using core.Ports;
 using infrastructure.Data;
 using infrastructure.Keycloak;
 using infrastructure.Logging;
+using api.Authorization;
+using api.Middleware;
+using Microsoft.AspNetCore.Authorization;
+using api.Endpoints;
+using Microsoft.OpenApi.Models;
 
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
-Log.Logger = new LoggerConfiguration().Enrich.WithCorrelationId()
+var logConfig = new LoggerConfiguration().Enrich.WithCorrelationId()
                                              .WriteTo
-                                             .Console(outputTemplate: logFormat)
-                                             .CreateLogger();
+                                             .Console(outputTemplate: logFormat);
+Log.Logger = logConfig.CreateLogger();
 
 try
 {
@@ -58,7 +60,7 @@ try
         options.TokenValidationParameters = tokenValidationParameters;
     });
 
-    builder.Services.AddControllers(o => o.Filters.Add(typeof(UserIdFilter)));
+    builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
@@ -71,9 +73,25 @@ try
             Scheme = "bearer",
             BearerFormat = "JWT"
         });
-        c.OperationFilter<SwaggerAuthOperationFilter>();
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            { new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>() 
+            }
+        });
     });
-    builder.Services.AddScoped<ITodoService, TodoService>();
+    builder.Services.AddSingleton<IAuthorizationHandler, UserIdRequirementHandler>();
+    builder.Services.AddAuthorizationBuilder()
+        .AddPolicy(UserIdRequirement.PolicyName, p => p.AddRequirements(new UserIdRequirement()));
+
+    builder.Services.AddTodoServices();
 
     builder.Services.AddCors(options =>
     {
@@ -88,10 +106,9 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseDeveloperExceptionPage();
-        app.UseSwagger();
-        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "api v1"));
     }
 
+    app.UseExceptionHandlers();
     app.UseCors("AllowAll");
 
     app.UseHttpsRedirection();
@@ -101,8 +118,9 @@ try
     app.UseRouting();
     app.UseAuthentication();
     app.UseAuthorization();
-
-    app.MapControllers();
+    app.MapEndpoints();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
     await app.RunAsync();
 }

@@ -1,0 +1,7 @@
+using contracts.Responses;
+namespace api.Mapers;
+
+public static class ResponseMapingExtensions
+{
+    public static GetListResponse ToResponse(this core.TodoList list) => new(list.Id, list.Name, list.Items);
+}
