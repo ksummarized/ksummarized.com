@@ -1,1 +1,7 @@
 @import "tailwindcss";
+@import "./css/colors.css";
+@plugin "daisyui";
+
+body {
+  @apply bg-ks-secondary-paper;
+}

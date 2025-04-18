@@ -6,9 +6,11 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
 import typescriptParser from "@typescript-eslint/parser";
 import vitest from "@vitest/eslint-plugin";
 import importPlugin from "eslint-plugin-import";
+import pluginQuery from "@tanstack/eslint-plugin-query";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
+  ...pluginQuery.configs["flat/recommended"],
   { ignores: ["**/*.csv", "**/*.svg", "**/*.png", "**/src/client/*"] },
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
   { files: ["**/*.js"], languageOptions: { sourceType: "script" } },
