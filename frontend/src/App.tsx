@@ -9,7 +9,6 @@ import SideMenu from "./components/SideMenu/SideMenu";
 import RequireAuth from "./helpers/RequireAuth";
 import NotFound from "./pages/NotFound/NotFound";
 import ToDoListPage from "./pages/ToDoList/ToDoListsPage";
-import ToDoListDetailPage from "./pages/ToDoList/ToDoListDetailPage";
 
 function App(): React.JSX.Element {
   return (
@@ -23,10 +22,6 @@ function App(): React.JSX.Element {
             <Route element={<RequireAuth />}>
               <Route path="home" element={<HomePage />} />
               <Route path="todo-list" element={<ToDoListPage />} />
-              <Route
-                path="todo-list/:listId"
-                element={<ToDoListDetailPage />}
-              />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

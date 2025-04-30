@@ -40,3 +40,13 @@ export const createToDoTask = async (body: CreateTaskRequest) => {
 
   return data;
 };
+
+export const getToDoTask = async (taskId: number) => {
+  const { data, response } = await ApiService.getTask({ path: { Id: taskId } });
+
+  if (response.status !== StatusCode.OK || !data) {
+    throw new Error("Failed to fetch task");
+  }
+
+  return data;
+};

@@ -4,6 +4,7 @@ import {
   createToDoTask,
   getAllToDoLists,
   getToDoList,
+  getToDoTask,
 } from "../../services/api/ToDoList";
 import { CreateListRequest, CreateTaskRequest, TodoItem } from "../../client";
 
@@ -44,5 +45,12 @@ export const useCreateToDoTask = () => {
         queryKey: ["ToDo", "list", data.listId],
       });
     },
+  });
+};
+
+export const useGetToDoTask = (taskId: number) => {
+  return useQuery({
+    queryKey: ["ToDo", "task", taskId],
+    queryFn: () => getToDoTask(taskId),
   });
 };
