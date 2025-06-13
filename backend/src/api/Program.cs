@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Authorization;
 using api.Endpoints;
 using Microsoft.OpenApi.Models;
 
+// Top-level statements must come before type declarations.
+// All using directives and actual code (top-level statements) go here.
+
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
 var logConfig = new LoggerConfiguration().Enrich.WithCorrelationId()
                                              .WriteTo
@@ -83,7 +86,7 @@ try
                         Id = "Bearer"
                     }
                 },
-                Array.Empty<string>() 
+                Array.Empty<string>()
             }
         });
     });
@@ -132,3 +135,7 @@ finally
 {
     await Log.CloseAndFlushAsync();
 }
+
+// Make Program class public for WebApplicationFactory.
+// This must be at the end of the file for top-level statements.
+public partial class Program { }

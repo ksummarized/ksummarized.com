@@ -18,21 +18,23 @@ public class JsonDeserializationExceptionHandlerMiddleware(RequestDelegate next)
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
-                var cause = (ex.InnerException?.Message.Split(Environment.NewLine)[0] ?? string.Empty).AsSpan();
-                var start = cause.IndexOf("missing");
-                if (start != -1){
-                    cause = cause[start..];
+                string causeString = ex.InnerException?.Message.Split(Environment.NewLine)[0] ?? string.Empty;
+                var start = causeString.IndexOf("missing");
+                if (start != -1)
+                {
+                    causeString = causeString[start..];
                 }
 
-                if (cause.Length > 100)
+                if (causeString.Length > 100)
                 {
-                    cause = string.Concat(cause[..100], "...");
+                    // Ensure Substring arguments are valid
+                    causeString = causeString.Substring(0, Math.Min(causeString.Length, 100)) + "...";
                 }
 
                 await context.Response.WriteAsJsonAsync(new 
                 {
                     error = "Invalid JSON in request body",
-                    details = cause.ToString()
+                    details = causeString
                 });
             }
             else

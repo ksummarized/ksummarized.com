@@ -174,7 +174,32 @@ public class ItemService : IItemService
             var t = existingTags.FirstOrDefault(t => t.Id == tag.Id);
             if (t is null)
             {
-                existingTags.Add(new() { Id = tag.Id, Name = tag.Name, Owner = user });
+                // If DTO provides an ID, assume it's for an existing tag. Fetch and add that.
+                if (tag.Id != 0)
+                {
+                    var tagInstanceFromDb = await _context.Tags.FindAsync(tag.Id);
+                    // Ensure it's the correct owner and not null before adding
+                    if (tagInstanceFromDb != null && tagInstanceFromDb.Owner == user)
+                    {
+                        if (!existingTags.Contains(tagInstanceFromDb)) // Avoid adding if somehow already there by reference
+                        {
+                            existingTags.Add(tagInstanceFromDb);
+                        }
+                    }
+                    // Optional: else, handle case where tag ID is provided but not found / wrong owner
+                }
+                else // DTO tag.Id is 0, implies new tag by name. Create if not already existing by name for this user.
+                {
+                    var existingTagByName = await _context.Tags.FirstOrDefaultAsync(dbTag => dbTag.Name == tag.Name && dbTag.Owner == user);
+                    if (existingTagByName != null)
+                    {
+                        if (!existingTags.Contains(existingTagByName)) existingTags.Add(existingTagByName);
+                    }
+                    else
+                    {
+                        existingTags.Add(new TagModel { Name = tag.Name, Owner = user });
+                    }
+                }
             }
             else
             {
