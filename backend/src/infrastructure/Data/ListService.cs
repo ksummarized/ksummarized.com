@@ -38,7 +38,10 @@ public class ListService : IListService
 
         if (options.IncludeSubtasks)
         {
-            query = query.Include(l => l.Items)
+            query = query.Include(l => l.Items.Where(i => i.MainTaskId == null))
+                        .ThenInclude(i => i.Subtasks)
+                        .ThenInclude(s => s.Tags)
+                        .Include(l => l.Items.Where(i => i.MainTaskId == null))
                         .ThenInclude(i => i.Tags);
         }
         else
