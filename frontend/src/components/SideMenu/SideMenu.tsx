@@ -1,10 +1,13 @@
 import * as React from "react";
 
-import CalendarIcon from "../../assets/icons/CalendarIcon.svg";
-import OrganizerIcon from "../../assets/icons/OrganizerIcon.svg";
-import ToDoListIcon from "../../assets/icons/ToDoListIcon.svg";
+import { ListBulletIcon } from "../Icons/ListBulletIcon";
+import { CalendarIcon } from "../Icons/CalendarIcon";
+import { SquaresPlusIcon } from "../Icons/SquaresPlusIcon";
+import { TodoListContent } from "./ToDoListContent";
 
 function SideMenu() {
+  const [isOpen, setIsOpen] = React.useState(false);
+
   return (
     <aside
       id="default-sidebar"
@@ -14,38 +17,32 @@ function SideMenu() {
       <div className="h-full px-3 py-4 overflow-y-auto">
         <ul className="space-y-2 font-medium">
           <li>
-            <div className="collapse collapse-arrow text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-              <input type="checkbox" />
+            <div className="collapse collapse-arrow text-gray-900 rounded-lg hover:bg-gray-100 group">
+              <input type="checkbox" onChange={() => setIsOpen(!isOpen)} />
               <div className="collapse-title flex flex-row items-center p-2 font-semibold">
-                <img src={ToDoListIcon} alt="ToDoList icon" />
+                <ListBulletIcon />
                 <span className="ml-3">ToDoList</span>
               </div>
               <div className="collapse-content bg-ks-secondary-paper">
-                <ul className="space-y-2 font-medium">
-                  <li>List 1</li>
-                  <li>List 2</li>
-                  <li>List 3</li>
-                  <li>List 4</li>
-                  <li>List 5</li>
-                </ul>
+                <TodoListContent isOpen={isOpen} />
               </div>
             </div>
           </li>
           <li>
             <a
               href="/"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
             >
-              <img src={CalendarIcon} alt="Calendar icon" />
+              <CalendarIcon />
               <span className="flex-1 ml-3 whitespace-nowrap">Calendar</span>
             </a>
           </li>
           <li>
             <a
               href="/"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
             >
-              <img src={OrganizerIcon} alt="Organizer icon" />
+              <SquaresPlusIcon />
               <span className="flex-1 ml-3 whitespace-nowrap">Organizer</span>
             </a>
           </li>

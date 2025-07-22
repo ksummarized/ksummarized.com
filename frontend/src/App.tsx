@@ -8,7 +8,7 @@ import TopBar from "./components/TopBar/TopBar";
 import SideMenu from "./components/SideMenu/SideMenu";
 import RequireAuth from "./helpers/RequireAuth";
 import NotFound from "./pages/NotFound/NotFound";
-import ToDoListPage from "./pages/ToDoList/ToDoListsPage";
+import ToDoListPage from "./pages/ToDoList/ToDoListPage";
 
 function App(): React.JSX.Element {
   return (
@@ -21,7 +21,7 @@ function App(): React.JSX.Element {
             <Route index element={<StartPage />} />
             <Route element={<RequireAuth />}>
               <Route path="home" element={<HomePage />} />
-              <Route path="todo-list" element={<ToDoListPage />} />
+              <Route path="todo-list/:listId" element={<ToDoListPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -1,17 +1,24 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createToDoList,
-  createToDoTask,
+  deleteToDoList,
   getAllToDoLists,
   getToDoList,
-  getToDoTask,
+  renameToDoList,
 } from "../../services/api/ToDoList";
-import { CreateListRequest, CreateTaskRequest, TodoItem } from "../../client";
+import { CreateListRequest } from "../../client";
 
-export const useGetAllToDoLists = () => {
+interface GetAllToDoListsProps {
+  enabled?: boolean;
+}
+
+export const useGetAllToDoLists = ({
+  enabled = true,
+}: GetAllToDoListsProps) => {
   return useQuery({
-    queryKey: ["ToDo", "lists"],
+    queryKey: ["ToDo", "lists", "all"],
     queryFn: getAllToDoLists,
+    enabled,
   });
 };
 
@@ -28,29 +35,37 @@ export const useCreateToDoList = () => {
   });
 };
 
-export const useGetToDoList = (listId: number) => {
+export const useGetToDoList = (listId: number, includeSubtasks: boolean) => {
   return useQuery({
-    queryKey: ["ToDo", "list", listId],
-    queryFn: () => getToDoList(listId),
+    queryKey: ["ToDo", "lists", { listId, includeSubtasks }],
+    queryFn: () => getToDoList(listId, includeSubtasks),
+    enabled: !!listId,
   });
 };
 
-export const useCreateToDoTask = () => {
+export const useDeleteToDoList = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (body: CreateTaskRequest) => createToDoTask(body),
-    onSuccess: (data: TodoItem) => {
+    mutationFn: (listId: number) => deleteToDoList(listId),
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["ToDo", "list", data.listId],
+        queryKey: ["ToDo", "lists"],
       });
     },
   });
 };
 
-export const useGetToDoTask = (taskId: number) => {
-  return useQuery({
-    queryKey: ["ToDo", "task", taskId],
-    queryFn: () => getToDoTask(taskId),
+export const useRenameToDoList = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ listId, newName }: { listId: number; newName: string }) =>
+      renameToDoList(listId, newName),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["ToDo", "lists"],
+      });
+    },
   });
 };

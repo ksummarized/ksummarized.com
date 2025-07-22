@@ -1,5 +1,5 @@
 import StatusCode from "../../helpers/StatusCode";
-import { ApiService, CreateListRequest, CreateTaskRequest } from "../../client";
+import { ApiService, CreateListRequest } from "../../client";
 
 export const getAllToDoLists = async () => {
   const { data, response } = await ApiService.getAllLists();
@@ -21,8 +21,11 @@ export const createToDoList = async (body: CreateListRequest) => {
   return data;
 };
 
-export const getToDoList = async (listId: number) => {
-  const { data, response } = await ApiService.getList({ path: { Id: listId } });
+export const getToDoList = async (listId: number, includeSubtasks: boolean) => {
+  const { data, response } = await ApiService.getList({
+    path: { Id: listId },
+    query: { IncludeSubtasks: includeSubtasks },
+  });
 
   if (response.status !== StatusCode.OK || !data) {
     throw new Error("Failed to fetch list");
@@ -31,22 +34,24 @@ export const getToDoList = async (listId: number) => {
   return data;
 };
 
-export const createToDoTask = async (body: CreateTaskRequest) => {
-  const { data, response } = await ApiService.createTask({ body });
+export const deleteToDoList = async (listId: number) => {
+  const { response } = await ApiService.deleteList({ path: { Id: listId } });
 
-  if (response.status !== StatusCode.CREATED || !data) {
-    throw new Error("Failed to create task");
+  if (response.status !== StatusCode.NO_CONTENT) {
+    throw new Error("Failed to delete list");
   }
-
-  return data;
+  return null;
 };
 
-export const getToDoTask = async (taskId: number) => {
-  const { data, response } = await ApiService.getTask({ path: { Id: taskId } });
+export const renameToDoList = async (listId: number, newName: string) => {
+  const { response } = await ApiService.renameList({
+    path: { Id: listId },
+    body: { name: newName },
+  });
 
-  if (response.status !== StatusCode.OK || !data) {
-    throw new Error("Failed to fetch task");
+  if (response.status !== StatusCode.OK) {
+    throw new Error("Failed to rename list");
   }
 
-  return data;
+  return null;
 };
