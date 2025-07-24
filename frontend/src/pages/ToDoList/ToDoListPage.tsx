@@ -37,9 +37,23 @@ export default function ToDoListPage(): React.JSX.Element {
   return (
     <div className="flex flex-col h-full">
       <header className="p-4">
-        <h1 className="text-2xl font-semibold text-ks-primary text-center">
+        <h1 className="text-2xl font-semibold text-ks-primary text-center mb-2">
           {toDoList?.name}
         </h1>
+        <div className="max-w-3xl mx-auto relative">
+          <div className="w-full bg-gray-200 rounded-full h-5">
+            <div
+              className="bg-ks-primary h-5 rounded-full"
+              style={{
+                width: `${((toDoList.items || []).filter((item) => item.completed).length / (toDoList.items || []).length) * 100 || 0}%`,
+              }}
+            ></div>
+          </div>
+          <span className="absolute inset-0 flex items-center justify-center text-sm text-ks-secondary-dark">
+            {(toDoList.items || []).filter((item) => item.completed).length}/
+            {(toDoList.items || []).length}
+          </span>
+        </div>
       </header>
       <main className="flex-1 overflow-y-auto p-4">
         <div className="max-w-3xl mx-auto">
