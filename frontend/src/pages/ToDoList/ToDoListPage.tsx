@@ -67,8 +67,10 @@ export default function ToDoListPage(): React.JSX.Element {
       <header>
         {isEditingName ? (
           <div className="max-w-3xl mx-auto">
-            <label className="input w-full mb-2">
+            <label htmlFor="listNameInput" className="input w-full mb-2">
+              <span className="sr-only">List Name</span>
               <input
+                id="listNameInput"
                 type="text"
                 value={newListName}
                 onChange={(e) => setNewListName(e.target.value)}
