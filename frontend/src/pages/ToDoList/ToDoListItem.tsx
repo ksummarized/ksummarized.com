@@ -5,48 +5,27 @@ import {
   useUpdateToDoTask,
 } from "../../hooks/queries/ToDoTask";
 import { TodoItem } from "../../client";
-import { PlusIcon } from "../../components/Icons/PlusIcon";
 import { ClockIcon } from "../../components/Icons/ClockIcon";
 import { TrashIcon } from "../../components/Icons/TrashIcon";
 import { DocumentIcon } from "../../components/Icons/DocumentIcon";
 import { ItemDetailsModal } from "./ItemDetailsModal";
 import { ToDoSubtaskItem } from "./ToDoSubtaskItem";
+import { AddSubtask } from "./AddSubtask";
 
 interface ToDoListItemProps {
   item: TodoItem;
 }
 
 export function ToDoListItem({ item }: Readonly<ToDoListItemProps>) {
-  const [newSubtaskName, setNewSubtaskName] = React.useState("");
-
   const { mutate: updateToDoTask } = useUpdateToDoTask();
   const { mutate: deleteToDoTask } = useDeleteToDoTask();
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && newSubtaskName.trim() !== "") {
-      event.preventDefault();
-      const newSubtask: TodoItem = {
-        listId: item.listId,
-        name: newSubtaskName.trim(),
-        completed: false,
-        notes: "",
-        tags: [],
-        subtasks: [],
-      };
-      updateToDoTask({
-        ...item,
-        subtasks: [...(item.subtasks || []), newSubtask],
-      });
-      setNewSubtaskName("");
-    }
-  };
 
   const completedSubtasks = item.subtasks?.filter(
     (subtask) => subtask.completed,
   ).length;
 
   return (
-    <div className="collapse border overflow-visible">
+    <div className="collapse border overflow-hidden">
       <input type="checkbox" />
       <div className="collapse-title bg-ks-secondary-soil flex flex-col p-4 gap-2 rounded-box">
         <div className="flex flex-row gap-2 justify-between items-center">
@@ -60,7 +39,7 @@ export function ToDoListItem({ item }: Readonly<ToDoListItemProps>) {
               }}
               className="checkbox size-6 rounded-full border-ks-primary bg-ks-secondary-paper z-10 hover:bg-ks-secondary-sand"
             />
-            <p className="text-ks-secondary-paper">{item.name}</p>
+            <p className="text-ks-secondary-paper break-all">{item.name}</p>
           </div>
           <div className="flex flex-row divide-x-2 divide-ks-secondary-paper items-center">
             {item.notes && (
@@ -70,7 +49,7 @@ export function ToDoListItem({ item }: Readonly<ToDoListItemProps>) {
               </div>
             )}
             {item.subtasks && item.subtasks.length > 0 && (
-              <span className="text-ks-secondary-paper px-1">
+              <span className="text-ks-secondary-paper px-1 whitespace-nowrap">
                 {completedSubtasks}/{item.subtasks.length} subtasks
               </span>
             )}
@@ -97,7 +76,7 @@ export function ToDoListItem({ item }: Readonly<ToDoListItemProps>) {
             </div>
           </div>
         </div>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 flex-wrap">
           {item.tags?.map((tag) => {
             return (
               <div
@@ -115,19 +94,7 @@ export function ToDoListItem({ item }: Readonly<ToDoListItemProps>) {
           {item.subtasks?.map((subtask) => {
             return <ToDoSubtaskItem key={subtask.id} item={subtask} />;
           })}
-          <div className="flex flex-row items-center gap-1">
-            <label className="input" aria-label="Add new subtask">
-              <PlusIcon />
-              <input
-                value={newSubtaskName}
-                onChange={(e) => setNewSubtaskName(e.target.value)}
-                onKeyDown={handleKeyDown}
-                type="text"
-                placeholder="Add new subtask"
-                className="grow"
-              />
-            </label>
-          </div>
+          <AddSubtask item={item} />
         </div>
       </div>
     </div>

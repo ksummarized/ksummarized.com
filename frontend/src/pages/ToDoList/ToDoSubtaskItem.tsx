@@ -31,7 +31,7 @@ export function ToDoSubtaskItem({ item }: Readonly<ToDoSubtaskItemProps>) {
               updateToDoTask({ ...item, completed: !item.completed });
             }}
           />
-          <p className="text-black">{item.name}</p>
+          <p className="text-black break-all">{item.name}</p>
         </div>
         {item.notes && (
           <div className="flex flex-row text-black px-1">
@@ -61,7 +61,7 @@ export function ToDoSubtaskItem({ item }: Readonly<ToDoSubtaskItemProps>) {
           </div>
         </div>
       </div>
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-2 flex-wrap">
         {item.tags?.map((tag) => {
           return (
             <div

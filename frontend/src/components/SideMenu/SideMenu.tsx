@@ -11,7 +11,7 @@ function SideMenu() {
   return (
     <aside
       id="default-sidebar"
-      className="fixed top-16 w-64 bg-ks-secondary-sand h-screen transition-transform -translate-x-full sm:translate-x-0"
+      className="w-64 bg-ks-secondary-sand h-full hidden sm:block"
       aria-label="Sidebar"
     >
       <div className="h-full px-3 py-4 overflow-y-auto">

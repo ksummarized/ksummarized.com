@@ -3,6 +3,7 @@ import * as React from "react";
 import { useGetToDoList } from "../../hooks/queries/ToDoList";
 import { Navigate, useParams } from "react-router-dom";
 import { ToDoListItems } from "./ToDoListItems";
+import { AddTask } from "./AddTask";
 
 export default function ToDoListPage(): React.JSX.Element {
   const { listId } = useParams();
@@ -19,7 +20,7 @@ export default function ToDoListPage(): React.JSX.Element {
 
   if (isLoading) {
     return (
-      <div className="container flex justify-center max-w-full max-h-full overflow-y-auto">
+      <div className="flex justify-center items-center h-full">
         <span className="loading loading-spinner loading-md" />
       </div>
     );
@@ -27,28 +28,27 @@ export default function ToDoListPage(): React.JSX.Element {
 
   if (isError || !toDoList) {
     return (
-      <div className="container flex justify-center max-w-full max-h-full overflow-y-auto">
+      <div className="flex justify-center items-center h-full">
         Error loading ToDo list!
       </div>
     );
   }
 
   return (
-    <div className="container flex max-w-full max-h-full overflow-y-auto">
-      <div className="flex flex-col gap-4 w-full">
-        <div className="flex flex-col p-2 gap-4">
-          <div className="flex flex-col border border-ks-secondary-dark rounded-xl">
-            <div className="flex flex-row justify-between items-center p-4">
-              <h1 className="text-2xl font-semibold text-ks-primary">
-                {toDoList?.name}
-              </h1>
-            </div>
-            <div className="p-4">
-              <ToDoListItems listItems={toDoList.items} listId={toDoList.id!} />
-            </div>
-          </div>
+    <div className="flex flex-col h-full">
+      <header className="p-4">
+        <h1 className="text-2xl font-semibold text-ks-primary text-center">
+          {toDoList?.name}
+        </h1>
+      </header>
+      <main className="flex-1 overflow-y-auto p-4">
+        <div className="max-w-3xl mx-auto">
+          <ToDoListItems listItems={toDoList.items} />
         </div>
-      </div>
+      </main>
+      <footer className="p-4">
+        <AddTask listId={toDoList.id!} />
+      </footer>
     </div>
   );
 }

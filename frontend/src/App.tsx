@@ -15,16 +15,18 @@ function App(): React.JSX.Element {
     <BrowserRouter>
       <div className="h-screen flex flex-col">
         <TopBar />
-        <SideMenu />
-        <div className="ml-64 overflow-y-auto">
-          <Routes>
-            <Route index element={<StartPage />} />
-            <Route element={<RequireAuth />}>
-              <Route path="home" element={<HomePage />} />
-              <Route path="todo-list/:listId" element={<ToDoListPage />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+        <div className="flex flex-1 overflow-hidden">
+          <SideMenu />
+          <main className="flex-1 overflow-y-auto p-4">
+            <Routes>
+              <Route index element={<StartPage />} />
+              <Route element={<RequireAuth />}>
+                <Route path="home" element={<HomePage />} />
+                <Route path="todo-list/:listId" element={<ToDoListPage />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
         </div>
       </div>
     </BrowserRouter>
