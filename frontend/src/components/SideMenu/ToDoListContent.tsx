@@ -11,16 +11,12 @@ import { TrashIcon } from "../Icons/TrashIcon";
 import { PencilSquareIcon } from "../Icons/PencilSquareIcon";
 import { ChevronRightIcon } from "../Icons/ChevronRightIcon";
 
-interface ToDoListContentProps {
-  isOpen: boolean;
-}
-
-export function TodoListContent({ isOpen }: Readonly<ToDoListContentProps>) {
+export function TodoListContent() {
   const [newListName, setNewListName] = React.useState("");
   const [renameListId, setRenameListId] = React.useState<number | null>(null);
   const [renameListName, setRenameListName] = React.useState("");
 
-  const { data: todoLists } = useGetAllToDoLists({ enabled: isOpen });
+  const { data: todoLists } = useGetAllToDoLists({});
   const { mutate: createToDoList } = useCreateToDoList();
   const { mutate: deleteToDoList } = useDeleteToDoList();
   const { mutate: renameToDoList } = useRenameToDoList();
@@ -38,12 +34,12 @@ export function TodoListContent({ isOpen }: Readonly<ToDoListContentProps>) {
   };
 
   return (
-    <ul className="space-y-2 font-medium">
+    <ul className="space-y-3 font-medium">
       {todoLists?.map((list) => (
         <li key={list.id}>
           <a
             href={`/todo-list/${list.id}`}
-            className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
+            className="flex items-center p-3 text-gray-900 rounded-lg hover:bg-gray-100 group"
           >
             <ChevronRightIcon />
             {renameListId === list.id ? (
@@ -98,7 +94,7 @@ export function TodoListContent({ isOpen }: Readonly<ToDoListContentProps>) {
         </li>
       ))}
       <li>
-        <div className="flex flex-row items-center gap-1">
+        <div className="flex flex-row items-center gap-1 p-3">
           <label className="input" aria-label="Add new list">
             <PlusIcon />
             <input
