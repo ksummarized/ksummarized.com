@@ -57,7 +57,7 @@ public class ItemService : IItemService
                 Subtasks = [],
                 ListId = item.ListId
             };
-            foreach (var tag in subtask.Tags.Select(t => t.Name ))
+            foreach (var tag in subtask.Tags.Select(t => t.Name))
             {
                 var t = await _context.Tags.FirstOrDefaultAsync(t => t.Name == tag && t.Owner.Equals(user));
                 if (t is not null)
@@ -139,7 +139,7 @@ public class ItemService : IItemService
         existingItem.Notes = item.Notes;
         existingItem.Completed = item.Completed;
         existingItem.ListId = item.ListId;
-        
+
         foreach (var st in item.Subtasks)
         {
             var existingSubtask = existingItem.Subtasks.FirstOrDefault(t => t.Id == st.Id);
@@ -181,6 +181,10 @@ public class ItemService : IItemService
                 t.Name = tag.Name;
             }
         }
+
+        // Remove tags that are not in the updated item
+        existingTags.RemoveAll(t => !item.Tags.Any(it => it.Id == t.Id));
+
         existingItem.Tags = existingTags;
 
         await _context.SaveChangesAsync();

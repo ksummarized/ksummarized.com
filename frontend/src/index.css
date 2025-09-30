@@ -1,1 +1,10 @@
 @import "tailwindcss";
+@import "./css/colors.css";
+/* Force light theme, as dark one is not yet developed */
+@plugin "daisyui" {
+  themes: light --default;
+}
+
+body {
+  @apply bg-ks-secondary-paper;
+}

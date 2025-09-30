@@ -13,7 +13,7 @@ public static class TodoItemMapper
             Deadline = item.Deadline,
             Notes = item.Notes,
             Subtasks = includeSubtasks ? (item.Subtasks?.Select(st => MapSubtask(st)).ToList() ?? []) : [],
-            Tags = [.. item.Tags.Select(t => new Tag() { Id = t.Id, Name = t.Name })],
+            Tags = item.Tags?.Select(t => new Tag() { Id = t.Id, Name = t.Name }).ToList() ?? [],
             ListId = item.ListId,
             Completed = item.Completed
         };

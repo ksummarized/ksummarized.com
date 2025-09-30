@@ -1,25 +1,23 @@
 import * as React from "react";
 import { useFormContext, Controller } from "react-hook-form";
 
-interface TextFieldInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface TextareaInputProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   id: string;
   name: string;
-  type: string;
   required: boolean;
   label: string;
   placeholder: string;
 }
 
-function TextFieldInput({
+function TextareaInput({
   id,
   name,
-  type,
   required,
   label,
   placeholder,
   ...other
-}: Readonly<TextFieldInputProps>) {
+}: Readonly<TextareaInputProps>) {
   const {
     control,
     formState: { errors },
@@ -39,9 +37,8 @@ function TextFieldInput({
             {label}
             {required === true ? "*" : ""}
           </label>
-          <input
+          <textarea
             id={id}
-            type={type}
             placeholder={placeholder}
             {...field}
             {...other}
@@ -56,4 +53,4 @@ function TextFieldInput({
   );
 }
 
-export default TextFieldInput;
+export default TextareaInput;
