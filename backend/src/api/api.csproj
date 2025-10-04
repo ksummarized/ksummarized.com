@@ -30,6 +30,7 @@
     <ProjectReference Include="..\infrastructure\infrastructure.csproj" />
     <ProjectReference Include="..\core\core.csproj" />
     <ProjectReference Include="..\contracts\contracts.csproj" />
+    <ProjectReference Include="..\..\ServiceDefaults\ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

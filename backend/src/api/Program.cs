@@ -21,6 +21,7 @@ Log.Logger = logConfig.CreateLogger();
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    builder.AddServiceDefaults();
     builder.Services.AddHttpContextAccessor();
     builder.Host.UseSerilog();
     builder.Services.AddDbContext<ApplicationDbContext>(
@@ -119,6 +120,7 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapEndpoints();
+    app.MapDefaultEndpoints();
     app.UseSwagger();
     app.UseSwaggerUI();
 

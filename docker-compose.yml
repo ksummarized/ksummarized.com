@@ -1,90 +1,45 @@
-# Common configuration between services
-x-frontend: &frontend-base
-  build:
-    context: ./frontend
-  ports:
-    - "8888:8888"
-
-x-backend: &backend-base
-  ports:
-    - "5001:80"
-    - "5000:443"
-  environment:
-    ASPNETCORE_ENVIRONMENT: "Development"
-    ConnectionStrings__KSummarized: "Host=db;Database=ksummarized;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
-    ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
-    ASPNETCORE_Kestrel__Certificates__Default__Password: "devcertpasswd"
-    ASPNETCORE_URLS: "https://+:443;http://+:80"
-    DOTNET_USE_POLLING_FILE_WATCHER: true  # dotnet watch uses a a polling file watcher. Required for running it in docker.
-  volumes:
-    - .aspnet/https:/https/:ro  # read-only on the container
-
 services:
-  frontend:
-    <<: *frontend-base
-    container_name: ks-frontend
-    profiles:
-      - without-hot-reload
-
-  frontend-hot-reload:
-    <<: *frontend-base
-    container_name: ks-frontend-hot-reload
-    profiles:
-      - hot-reload
-    command: ["npm", "run", "dev"]
-    develop:
-      watch:
-        - action: sync
-          path: ./frontend
-          target: /src
-          ignore:
-            - node_modules
-        - action: rebuild
-          path: package.json
-
-  backend:
-    <<: *backend-base
-    container_name: ks-backend
+  apphost:
     build:
-      context: ./backend
-      target: final
-    profiles:
-      - without-hot-reload
+      context: .
+      dockerfile: backend/AppHost/Dockerfile
+    container_name: ks-apphost
+    environment:
+      - DOTNET_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__KSummarized=Host=db;Database=ksummarized;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    ports:
+      - "5001:80"
+      - "5000:443"
+      - "17068:17068"
+      - "8888:8888"
     depends_on:
       db:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
-
-  backend-hot-reload:
-    <<: *backend-base
-    container_name: ks-backend-hot-reload
-    build:
-      context: ./backend
-      target: development
-    profiles:
-      - hot-reload
-    depends_on:
-      db:
-        condition: service_healthy
-      migrations:
-        condition: service_completed_successfully
+      redis:
+        condition: service_started
     develop:
       watch:
         - action: sync
           path: ./backend
-          target: /src
+          target: /src/backend
+        - action: sync
+          path: ./frontend
+          target: /src/frontend
 
   migrations:
-    <<: *backend-base
-    container_name: ks-migrations
-    restart: no
     build:
       context: ./backend
       target: migrations
+    container_name: ks-migrations
+    restart: "no"
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      - ConnectionStrings__KSummarized=Host=db;Database=ksummarized;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
 
   db:
     image: postgres:14.0-alpine
@@ -134,6 +89,12 @@ services:
       - smtp4dev-data:/smtp4dev
     environment:
       - ServerOptions__HostName=smtp4dev
+
+  redis:
+    image: "redis:latest"
+    container_name: ks-redis
+    ports:
+      - "6379:6379"
 
 volumes:
   ks_postgresql:
