@@ -1,16 +1,16 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Serilog;
-using System.Security.Cryptography;
+using api.Authorization;
+using api.Endpoints;
+using api.Middleware;
 using infrastructure.Data;
 using infrastructure.Keycloak;
 using infrastructure.Logging;
-using api.Authorization;
-using api.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using api.Endpoints;
-using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
+using Serilog;
+using System.Security.Cryptography;
 
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
 var logConfig = new LoggerConfiguration().Enrich.WithCorrelationId()
@@ -59,34 +59,7 @@ try
         options.RequireHttpsMetadata = true;
         options.TokenValidationParameters = tokenValidationParameters;
     });
-
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen(c =>
-    {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
-        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-        {
-            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-            Name = "Authorization",
-            In = ParameterLocation.Header,
-            Type = SecuritySchemeType.Http,
-            Scheme = "bearer",
-            BearerFormat = "JWT"
-        });
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            { new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                Array.Empty<string>() 
-            }
-        });
-    });
+    builder.Services.AddOpenApi();
     builder.Services.AddSingleton<IAuthorizationHandler, UserIdRequirementHandler>();
     builder.Services.AddAuthorizationBuilder()
         .AddPolicy(UserIdRequirement.PolicyName, p => p.AddRequirements(new UserIdRequirement()));
@@ -106,6 +79,8 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseDeveloperExceptionPage();
+        app.MapOpenApi();
+        app.MapScalarApiReference();
     }
 
     app.UseExceptionHandlers();
@@ -119,8 +94,6 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapEndpoints();
-    app.UseSwagger();
-    app.UseSwaggerUI();
 
     await app.RunAsync();
 }
