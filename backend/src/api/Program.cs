@@ -20,108 +20,7 @@ Log.Logger = logConfig.CreateLogger();
 
 try
 {
-    var builder = WebApplication.CreateBuilder(args);
-    builder.Services.AddHttpContextAccessor();
-    builder.Host.UseSerilog();
-    builder.Services.AddDbContext<ApplicationDbContext>(
-        options => options.UseNpgsql(builder.Configuration.GetConnectionString("KSummarized"),
-        x => x.MigrationsAssembly("infrastructure")
-    ));
-    var keycloakJwtOptions = builder.Configuration.GetRequiredSection("KeycloakJwt").Get<KeycloakJwtOptions>()!;
-
-    // Create RSA key for offline validation of Keycloak token
-    RSA rsa = RSA.Create();
-    rsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(keycloakJwtOptions.Secret), out _);
-    var rsaKeycloakSecurityKey = new RsaSecurityKey(rsa)
-    {
-        KeyId = Guid.NewGuid().ToString()
-    };
-
-    var tokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = rsaKeycloakSecurityKey,
-        ValidAudience = keycloakJwtOptions.Audience,
-        ValidateAudience = true,
-        ValidIssuer = keycloakJwtOptions.Issuer,
-        ValidateIssuer = true,
-        ValidateLifetime = true
-    };
-
-    builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.SaveToken = true;
-        options.RequireHttpsMetadata = true;
-        options.TokenValidationParameters = tokenValidationParameters;
-    });
-
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen(c =>
-    {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
-        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-        {
-            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-            Name = "Authorization",
-            In = ParameterLocation.Header,
-            Type = SecuritySchemeType.Http,
-            Scheme = "bearer",
-            BearerFormat = "JWT"
-        });
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            { new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                Array.Empty<string>() 
-            }
-        });
-    });
-    builder.Services.AddSingleton<IAuthorizationHandler, UserIdRequirementHandler>();
-    builder.Services.AddAuthorizationBuilder()
-        .AddPolicy(UserIdRequirement.PolicyName, p => p.AddRequirements(new UserIdRequirement()));
-
-    builder.Services.AddTodoServices();
-
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy(name: "AllowAll", builder =>
-        {
-            builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-        });
-    });
-
-    var app = builder.Build();
-
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseDeveloperExceptionPage();
-    }
-
-    app.UseExceptionHandlers();
-    app.UseCors("AllowAll");
-
-    app.UseHttpsRedirection();
-    app.UseHsts();
-
-    app.UseSerilogRequestLogging();
-    app.UseRouting();
-    app.UseAuthentication();
-    app.UseAuthorization();
-    app.MapEndpoints();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
+    var app = Program.BuildApp(args);
     await app.RunAsync();
 }
 catch (Exception ex)
@@ -131,4 +30,124 @@ catch (Exception ex)
 finally
 {
     await Log.CloseAndFlushAsync();
+}
+
+public partial class Program
+{
+    public static WebApplication BuildApp(
+        string[] args,
+        Action<WebApplicationBuilder>? configureBuilder = null,
+        Action<IServiceCollection>? configureServices = null)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        configureBuilder?.Invoke(builder);
+
+        builder.Services.AddHttpContextAccessor();
+        builder.Host.UseSerilog();
+        builder.Services.AddDbContext<ApplicationDbContext>(
+            options => options.UseNpgsql(builder.Configuration.GetConnectionString("KSummarized"),
+            x => x.MigrationsAssembly("infrastructure")
+        ));
+        var keycloakJwtOptions = builder.Configuration.GetRequiredSection("KeycloakJwt").Get<KeycloakJwtOptions>()!;
+
+        // Create RSA key for offline validation of Keycloak token
+        RSA rsa = RSA.Create();
+        rsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(keycloakJwtOptions.Secret), out _);
+        var rsaKeycloakSecurityKey = new RsaSecurityKey(rsa)
+        {
+            KeyId = Guid.NewGuid().ToString()
+        };
+
+        var tokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = rsaKeycloakSecurityKey,
+            ValidAudience = keycloakJwtOptions.Audience,
+            ValidateAudience = true,
+            ValidIssuer = keycloakJwtOptions.Issuer,
+            ValidateIssuer = true,
+            ValidateLifetime = true
+        };
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.SaveToken = true;
+            options.RequireHttpsMetadata = true;
+            options.TokenValidationParameters = tokenValidationParameters;
+        });
+
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT"
+            });
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                { new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>() 
+                }
+            });
+        });
+        builder.Services.AddSingleton<IAuthorizationHandler, UserIdRequirementHandler>();
+        builder.Services.AddAuthorizationBuilder()
+            .AddPolicy(UserIdRequirement.PolicyName, p => p.AddRequirements(new UserIdRequirement()));
+
+        builder.Services.AddTodoServices();
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: "AllowAll", builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+            });
+        });
+
+        configureServices?.Invoke(builder.Services);
+
+        var app = builder.Build();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+
+        app.UseExceptionHandlers();
+        app.UseCors("AllowAll");
+
+        if (!app.Environment.IsEnvironment("Test"))
+        {
+            app.UseHttpsRedirection();
+            app.UseHsts();
+        }
+
+        app.UseSerilogRequestLogging();
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapEndpoints();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
+        return app;
+    }
 }

@@ -44,6 +44,10 @@ jobs:
         working-directory: ./backend
         run: dotnet build --configuration Release --no-restore
 
-      - name: Test
+      - name: Unit tests
         working-directory: ./backend
-        run: dotnet test --no-restore --verbosity normal
+        run: dotnet test test/unit/unit.csproj --no-restore --verbosity normal
+
+      - name: Integration tests
+        working-directory: ./backend
+        run: dotnet test test/integration/integration.csproj --no-restore --verbosity normal
