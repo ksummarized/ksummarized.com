@@ -16,6 +16,9 @@ x-backend: &backend-base
     ASPNETCORE_Kestrel__Certificates__Default__Password: "devcertpasswd"
     ASPNETCORE_URLS: "https://+:443;http://+:80"
     DOTNET_USE_POLLING_FILE_WATCHER: true  # dotnet watch uses a a polling file watcher. Required for running it in docker.
+    OTEL_SERVICE_NAME: "ksummarized.api"
+    OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+    OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
   volumes:
     - .aspnet/https:/https/:ro  # read-only on the container
 
@@ -134,6 +137,15 @@ services:
       - smtp4dev-data:/smtp4dev
     environment:
       - ServerOptions__HostName=smtp4dev
+
+  aspire-dashboard:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:8.0
+    container_name: ks-aspire-dashboard
+    ports:
+      - "18888:18888"
+      - "18889:18889"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
 
 volumes:
   ks_postgresql:

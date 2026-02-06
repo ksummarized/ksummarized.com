@@ -11,18 +11,60 @@ using api.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using api.Endpoints;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Serilog.Sinks.OpenTelemetry;
 
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
+var otelServiceName = Environment.GetEnvironmentVariable("OTEL_SERVICE_NAME")
+    ?? Environment.GetEnvironmentVariable("OpenTelemetry__ServiceName")
+    ?? "ksummarized.api";
+var otelServiceVersion = typeof(Program).Assembly.GetName().Version?.ToString();
+var otelEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")
+    ?? Environment.GetEnvironmentVariable("OpenTelemetry__Otlp__Endpoint")
+    ?? "http://localhost:18889";
+var otelProtocol = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_PROTOCOL")
+    ?? Environment.GetEnvironmentVariable("OpenTelemetry__Otlp__Protocol")
+    ?? "grpc";
 var logConfig = new LoggerConfiguration().Enrich.WithCorrelationId()
+                                             .Enrich.FromLogContext()
                                              .WriteTo
-                                             .Console(outputTemplate: logFormat);
+                                             .Console(outputTemplate: logFormat)
+                                             .WriteTo
+                                             .OpenTelemetry(options =>
+                                             {
+                                                 options.Endpoint = otelEndpoint;
+                                                 if (string.Equals(otelProtocol, "http/protobuf", StringComparison.OrdinalIgnoreCase))
+                                                 {
+                                                     options.Protocol = OtlpProtocol.HttpProtobuf;
+                                                 }
+                                                 else if (string.Equals(otelProtocol, "grpc", StringComparison.OrdinalIgnoreCase))
+                                                 {
+                                                     options.Protocol = OtlpProtocol.Grpc;
+                                                 }
+
+                                                 options.IncludedData = IncludedData.TraceIdField
+                                                     | IncludedData.SpanIdField
+                                                     | IncludedData.MessageTemplateTextAttribute;
+                                                 options.ResourceAttributes = new Dictionary<string, object>
+                                                 {
+                                                     ["service.name"] = otelServiceName,
+                                                     ["service.version"] = otelServiceVersion ?? "unknown",
+                                                     ["service.instance.id"] = Environment.MachineName
+                                                 };
+                                             });
 Log.Logger = logConfig.CreateLogger();
 
 try
 {
+    // Allow OTLP/gRPC over HTTP for local Aspire Dashboard usage.
+    AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddHttpContextAccessor();
     builder.Host.UseSerilog();
+    ConfigureOpenTelemetry(builder);
     builder.Services.AddDbContext<ApplicationDbContext>(
         options => options.UseNpgsql(builder.Configuration.GetConnectionString("KSummarized"),
         x => x.MigrationsAssembly("infrastructure")
@@ -131,4 +173,55 @@ catch (Exception ex)
 finally
 {
     await Log.CloseAndFlushAsync();
+}
+
+static void ConfigureOpenTelemetry(WebApplicationBuilder builder)
+{
+    var configuration = builder.Configuration;
+    var serviceName = configuration["OTEL_SERVICE_NAME"]
+        ?? configuration["OpenTelemetry:ServiceName"]
+        ?? builder.Environment.ApplicationName;
+    var serviceVersion = typeof(Program).Assembly.GetName().Version?.ToString();
+
+    builder.Services.AddOpenTelemetry()
+        .ConfigureResource(resource => resource.AddService(
+            serviceName,
+            serviceVersion: serviceVersion,
+            serviceInstanceId: Environment.MachineName))
+        .WithTracing(tracing =>
+        {
+            tracing
+                .AddAspNetCoreInstrumentation(options => options.RecordException = true)
+                .AddHttpClientInstrumentation(options => options.RecordException = true)
+                .AddEntityFrameworkCoreInstrumentation()
+                .AddOtlpExporter(options => ConfigureOtlpExporter(options, configuration));
+        })
+        .WithMetrics(metrics =>
+        {
+            metrics
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddOtlpExporter(options => ConfigureOtlpExporter(options, configuration));
+        });
+}
+
+static void ConfigureOtlpExporter(OtlpExporterOptions options, IConfiguration configuration)
+{
+    var endpoint = configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]
+        ?? configuration["OpenTelemetry:Otlp:Endpoint"];
+    if (!string.IsNullOrWhiteSpace(endpoint))
+    {
+        options.Endpoint = new Uri(endpoint);
+    }
+
+    var protocol = configuration["OTEL_EXPORTER_OTLP_PROTOCOL"]
+        ?? configuration["OpenTelemetry:Otlp:Protocol"];
+    if (string.Equals(protocol, "http/protobuf", StringComparison.OrdinalIgnoreCase))
+    {
+        options.Protocol = OtlpExportProtocol.HttpProtobuf;
+    }
+    else if (string.Equals(protocol, "grpc", StringComparison.OrdinalIgnoreCase))
+    {
+        options.Protocol = OtlpExportProtocol.Grpc;
+    }
 }

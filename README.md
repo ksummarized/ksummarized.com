@@ -37,6 +37,8 @@ Next You should go back to the main directory and run `docker compose --profile 
 
 You can now visit the site at: <http://localhost:8888/>
 
+The Aspire Dashboard is available at: <http://localhost:18888/> (OTLP endpoint on port 18889).
+
 ## Scripts
 
 Directory `scripts` contains some helpful scripts which automate some parts of working with this directory.
