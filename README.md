@@ -71,6 +71,13 @@ The `--watch` parameter starts containers with the `hot-reload` feature. This en
 
 > The `hot-reload` feature for backend applications uses `dotnet watch`, which only detects changes to existing files. It will not restart the container if new files are added (dotnet watch [issue](https://github.com/dotnet/aspnetcore/issues/8321)).
 
+### API Documentation
+
+When running in development, the API documentation is available at:
+
+- Scalar UI: `https://localhost:8888/scalar`
+- OpenAPI JSON: `https://localhost:8888/openapi/v1.json`
+
 ### DB Migrations
 
 When working with migrations remember to add parameter for project and startup project.

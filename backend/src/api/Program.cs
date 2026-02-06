@@ -11,6 +11,7 @@ using api.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using api.Endpoints;
 using Microsoft.OpenApi.Models;
+using Scalar.AspNetCore;
 
 const string logFormat = "[{Timestamp:HH:mm:ss} {Level:u3}] {CorelationId} | {Message:lj}{NewLine}{Exception}";
 var logConfig = new LoggerConfiguration().Enrich.WithCorrelationId()
@@ -60,31 +61,46 @@ try
         options.TokenValidationParameters = tokenValidationParameters;
     });
 
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen(c =>
+    builder.Services.AddOpenApi(options =>
     {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
-        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        options.AddDocumentTransformer((document, context, cancellationToken) =>
         {
-            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-            Name = "Authorization",
-            In = ParameterLocation.Header,
-            Type = SecuritySchemeType.Http,
-            Scheme = "bearer",
-            BearerFormat = "JWT"
-        });
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            { new OpenApiSecurityScheme
+            document.Info = new OpenApiInfo { Title = "api", Version = "v1" };
+
+            document.Components ??= new OpenApiComponents();
+            document.Components.SecuritySchemes ??= new Dictionary<string, OpenApiSecurityScheme>();
+            document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
+            {
+                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                Reference = new OpenApiReference
                 {
-                    Reference = new OpenApiReference
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            };
+
+            document.SecurityRequirements ??= new List<OpenApiSecurityRequirement>();
+            document.SecurityRequirements.Add(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
                     {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                Array.Empty<string>() 
-            }
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+
+            return Task.CompletedTask;
         });
     });
     builder.Services.AddSingleton<IAuthorizationHandler, UserIdRequirementHandler>();
@@ -119,8 +135,12 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapEndpoints();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+        app.MapScalarApiReference();
+    }
 
     await app.RunAsync();
 }
